@@ -1,0 +1,10 @@
+{
+  "name": "care-giver-site-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/care-giver-site-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["care-giver-site"],
+  "// targets": "to see all targets run: nx show project care-giver-site-e2e --web",
+  "targets": {}
+}
