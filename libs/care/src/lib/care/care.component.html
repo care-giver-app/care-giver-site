@@ -1,0 +1,9 @@
+<h3>Care Receiver: {{ receiver.firstName }} {{ receiver.lastName }}</h3>
+<div class="care-container">
+    <care-calendar class="calendar-container" [receiver]="receiver"></care-calendar>
+    <div class="events-container">
+        <h1>Latest Events</h1>
+        <care-event-box *ngFor="let type of eventTypes" [eventType]="type" [receiver]="receiver"
+            (newEvent)="getLatestReceiverData()"></care-event-box>
+    </div>
+</div>

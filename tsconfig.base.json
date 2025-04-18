@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@care-giver-site/care": ["libs/care/src/index.ts"],
+      "@care-giver-site/models": ["libs/models/src/index.ts"],
+      "@care-giver-site/services": ["libs/services/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

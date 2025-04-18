@@ -1,0 +1,45 @@
+/* Flexbox container for the care calendar and Hello div */
+.care-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* Ensures items wrap on smaller screens */
+    gap: 1rem;
+    /* Adds spacing between items */
+}
+
+/* Style for the Hello div */
+.events-container {
+    flex: 1;
+    /* Takes up minimal space */
+    background-color: #f0f0f0;
+    /* Optional: Add a background color */
+    padding: 1rem;
+    /* Optional: Add padding */
+    text-align: center;
+    /* Center the text */
+    border: 1px solid #ccc;
+    /* Optional: Add a border */
+    border-radius: 4px;
+    /* Optional: Add rounded corners */
+}
+
+/* Style for the calendar */
+.calendar-container {
+    flex: 5;
+    /* Takes up most of the space */
+    min-width: 300px;
+    /* Ensures the calendar doesn't shrink too much */
+}
+
+/* Responsive design for mobile view */
+@media (max-width: 768px) {
+    .care-container {
+        flex-direction: column;
+        /* Stack items vertically */
+    }
+
+    .events-container {
+        order: -1;
+        /* Move the Hello div above the calendar */
+    }
+}

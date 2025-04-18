@@ -56,7 +56,8 @@
           "buildTarget": "care-giver-site:build:production"
         },
         "development": {
-          "buildTarget": "care-giver-site:build:development"
+          "buildTarget": "care-giver-site:build:development",
+          "proxyConfig": "apps/care-giver-site/src/app/proxy/proxy.conf.js"
         }
       },
       "defaultConfiguration": "development"
