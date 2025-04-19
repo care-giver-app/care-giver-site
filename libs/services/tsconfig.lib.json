@@ -6,7 +6,6 @@
     "declarationMap": true,
     "inlineSources": true,
     "types": [],
-    "esModuleInterop": true,
   },
   "exclude": [
     "src/**/*.spec.ts",

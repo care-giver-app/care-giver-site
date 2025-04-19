@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DatabaseEvent, DatabaseType, Event } from '@care-giver-site/models';
-import moment from 'moment';
-
+import * as moment from 'moment';
 
 export interface ReceiverData {
     receiverId: string;
