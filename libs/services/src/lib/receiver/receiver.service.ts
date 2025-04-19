@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DatabaseEvent, DatabaseType, Event } from '@care-giver-site/models';
+import moment from 'moment';
+
 
 export interface ReceiverData {
     receiverId: string;
@@ -76,7 +78,7 @@ export class ReceiverService {
         let events = (receiver as any)[eventType?.type];
         if (events && events.length > 0) {
             const latestEvent = events[events.length - 1];
-            const timestamp = new Date(latestEvent.timestamp);
+            const timestamp = moment(latestEvent.timestamp).toDate();
 
             const latestEventData = {
                 type: eventType?.name,
