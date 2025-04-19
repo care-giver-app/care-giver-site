@@ -33,6 +33,10 @@
 
 /* Responsive design for mobile view */
 @media (max-width: 768px) {
+    .events-container {
+        max-width: 100%;
+    }
+
     .care-container {
         flex-direction: column;
         /* Stack items vertically */
