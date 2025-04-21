@@ -34,6 +34,13 @@ export class CareCalendarComponent implements OnChanges {
 
   receiverService = inject(ReceiverService);
 
+  ngOnInit() {
+    // Detect if the user is on mobile and switch to Day view
+    if (this.isMobile()) {
+      this.view = CalendarView.Day;
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['receiver'] && changes['receiver'].currentValue && this.receiver.receiverId) {
       this.events = []
@@ -64,5 +71,10 @@ export class CareCalendarComponent implements OnChanges {
   changeDay(date: Date) {
     this.viewDate = date;
     this.view = CalendarView.Day;
+  }
+
+  private isMobile(): boolean {
+    // Check if the screen width is less than or equal to 768px (common breakpoint for mobile)
+    return window.innerWidth <= 768;
   }
 }
