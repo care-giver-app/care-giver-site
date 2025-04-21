@@ -13,7 +13,7 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
         <h3>Add {{ eventType.name }}</h3>
         <label for="dataInput">{{ eventType.dataName }}</label>
-        <input id="dataInput" [(ngModel)]="inputValue" type="text" placeholder="Enter {{ eventType.dataName }}" />
+        <input id="dataInput" [(ngModel)]="inputValue" type="number" placeholder="Enter {{ eventType.dataName }}" />
         <div class="modal-actions">
             <button class="modal-button" (click)="submitEvent()">Submit</button>
             <button class="modal-button cancel" (click)="closeModal()">Cancel</button>

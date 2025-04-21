@@ -61,7 +61,9 @@ export class ReceiverService {
         }
 
         if (data && eventType.dataName) {
-            requestBody["event"][eventType.dataName] = data;
+            requestBody["event"] = {
+                [eventType.dataName]: data
+            }
         }
 
         return this.http.post(`/receiver/event`, requestBody);
