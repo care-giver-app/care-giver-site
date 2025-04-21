@@ -81,7 +81,7 @@ export class ReceiverService {
             const latestEventData = {
                 type: eventType?.name,
                 data: {} as Record<string, any>,
-                timestamp: `${timestamp.toString()}`,
+                timestamp: `${timestamp.toLocaleDateString(undefined, { weekday: 'long' })}, ${timestamp.toLocaleDateString()} ${timestamp.toLocaleTimeString()}`,
                 user: latestEvent.userId
             }
 
