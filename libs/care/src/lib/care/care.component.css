@@ -29,6 +29,9 @@
     /* Takes up most of the space */
     min-width: 300px;
     /* Ensures the calendar doesn't shrink too much */
+    overflow-x: scroll;
+
+    max-width: 100%;
 }
 
 /* Responsive design for mobile view */
