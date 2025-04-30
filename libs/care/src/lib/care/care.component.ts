@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CareCalendarComponent } from './calendar/calendar.component';
 import { EventBoxComponent } from './event-box/event-box.component';
 import { ReceiverService, ReceiverData, EventTypes } from '@care-giver-site/services'
-import { DatabaseEvent, DatabaseType } from '@care-giver-site/models';
+import { DatabaseEvent, EventMetadata } from '@care-giver-site/models';
 
 @Component({
   selector: 'lib-care',
@@ -13,7 +13,7 @@ import { DatabaseEvent, DatabaseType } from '@care-giver-site/models';
 })
 export class CareComponent implements OnInit {
   private receiverService = inject(ReceiverService);
-  eventTypes: DatabaseType[] = EventTypes;
+  eventTypes: EventMetadata[] = EventTypes;
 
   events: DatabaseEvent[] = [];
   receiverId: string = 'Receiver#aaf12b66-75fe-4b03-97f9-615bf809a537';

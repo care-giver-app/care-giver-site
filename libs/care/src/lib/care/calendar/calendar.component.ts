@@ -10,7 +10,7 @@ import {
 } from 'angular-calendar';
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
 import { DatabaseEvent, Event } from '@care-giver-site/models';
-import { ReceiverService, ReceiverData } from '@care-giver-site/services';
+import { ReceiverService, ReceiverData, EventService } from '@care-giver-site/services';
 
 
 
@@ -33,9 +33,9 @@ export class CareCalendarComponent implements OnChanges {
   refresh = new Subject<void>();
 
   receiverService = inject(ReceiverService);
+  eventService = inject(EventService);
 
   ngOnInit() {
-    // Detect if the user is on mobile and switch to Day view
     if (this.isMobile()) {
       this.view = CalendarView.Day;
     }
@@ -51,6 +51,7 @@ export class CareCalendarComponent implements OnChanges {
         this.events.push({
           start: new Date(eventData.timestamp),
           title: event.name,
+          color: this.eventService.getEventColor(event.type),
         });
       }
 
@@ -74,7 +75,6 @@ export class CareCalendarComponent implements OnChanges {
   }
 
   private isMobile(): boolean {
-    // Check if the screen width is less than or equal to 768px (common breakpoint for mobile)
     return window.innerWidth <= 768;
   }
 }
