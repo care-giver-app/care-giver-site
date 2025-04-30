@@ -1,7 +1,7 @@
 import { Component, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Event, EventMetadata } from '@care-giver-site/models';
-import { ReceiverService, ReceiverData, EventService } from '@care-giver-site/services';
+import { ReceiverService, ReceiverData } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 
 
@@ -23,7 +23,6 @@ export class EventBoxComponent implements OnChanges {
   latestEvent: Event | undefined;
   eventTimestamp!: string;
   receiverService = inject(ReceiverService)
-  eventService = inject(EventService)
 
   showModal: boolean = false;
   inputValue: string = '';
