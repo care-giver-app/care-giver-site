@@ -6,15 +6,20 @@ export interface DatabaseEvent {
     dataName: string;
 }
 
-export interface DatabaseType {
+export interface EventMetadata {
     type: string;
     name: string;
     dataName: string;
+    color: {
+        primary: string;
+        secondary: string;
+        secondaryText: string;
+    };
 }
 
 export interface Event {
     type: string;
     data: any;
-    timestamp: string;
+    timestamp: Date;
     user: string;
 }

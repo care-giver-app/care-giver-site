@@ -1,7 +1,8 @@
 <div class="event-box">
-    <h3 class="event-type">{{ eventType.name }}</h3>
+    <h3 class="event-type" [ngStyle]="{ 'border-bottom': '2px solid ' + eventType.color.primary }">{{ eventType.name }}
+    </h3>
     <div class="event-details">
-        <p><strong>Time:</strong> {{ latestEvent?.timestamp }}</p>
+        <p><strong>Time:</strong> {{ eventTimestamp }}</p>
         <p><strong>User:</strong> {{ latestEvent?.user }}</p>
         <p *ngIf="eventType.dataName"><strong>Data:</strong> {{ latestEvent?.data[eventType.dataName] }}</p>
     </div>

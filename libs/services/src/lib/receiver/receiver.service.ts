@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DatabaseEvent, DatabaseType, Event } from '@care-giver-site/models';
+import { DatabaseEvent, EventMetadata, Event } from '@care-giver-site/models';
+import { EventTypes } from './event.service'
 
 export interface ReceiverData {
     receiverId: string;
@@ -13,33 +14,6 @@ export interface ReceiverData {
     weights: DatabaseEvent[];
 }
 
-export const EventTypes: DatabaseType[] = [
-    {
-        type: 'medications',
-        name: 'Medications',
-        dataName: '',
-    },
-    {
-        type: 'bowelMovements',
-        name: 'Bowel Movements',
-        dataName: '',
-    },
-    {
-        type: 'showers',
-        name: 'Showers',
-        dataName: '',
-    },
-    {
-        type: 'urinations',
-        name: 'Urinations',
-        dataName: '',
-    },
-    {
-        type: 'weights',
-        name: 'Weights',
-        dataName: 'weight',
-    }
-];
 
 @Injectable({
     providedIn: 'root'
@@ -53,7 +27,7 @@ export class ReceiverService {
         return this.http.get<ReceiverData>(`/receiver/${encodeURIComponent(receiverId)}`);
     }
 
-    addEvent(receiverId: string, eventType: DatabaseType, data: any) {
+    addEvent(receiverId: string, eventType: EventMetadata, data: any) {
         let requestBody: any = {
             receiverId: receiverId,
             userId: "User#af61b247-cd63-414a-9e23-776177954e35",
@@ -70,7 +44,7 @@ export class ReceiverService {
     }
 
     getLastEvent(receiver: ReceiverData, type: string): Event | null {
-        const eventType: DatabaseType | undefined = EventTypes.find(et => et.type === type);
+        const eventType: EventMetadata | undefined = EventTypes.find(et => et.type === type);
         if (!eventType) {
             return null;
         }
@@ -83,7 +57,7 @@ export class ReceiverService {
             const latestEventData = {
                 type: eventType?.name,
                 data: {} as Record<string, any>,
-                timestamp: `${timestamp.toLocaleDateString(undefined, { weekday: 'long' })}, ${timestamp.toLocaleDateString()} ${timestamp.toLocaleTimeString()}`,
+                timestamp: timestamp,
                 user: latestEvent.userId
             }
 
