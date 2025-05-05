@@ -6,4 +6,9 @@ export const appRoutes: Routes = [
         loadComponent: () =>
             import('@care-giver-site/care').then((m) => m.CareComponent),
     },
+    {
+        path: 'auth',
+        loadComponent: () =>
+            import('@care-giver-site/auth').then((m) => m.AuthComponent),
+    }
 ];
