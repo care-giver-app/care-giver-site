@@ -2,7 +2,8 @@
 const proxyConfig = [
     {
         context: [
-            "/receiver"
+            "/receiver",
+            "/user",
         ],
         target: "https://api-dev.caretosher.com",
         secure: false,

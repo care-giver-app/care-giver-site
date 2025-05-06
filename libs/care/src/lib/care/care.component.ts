@@ -4,6 +4,7 @@ import { CareCalendarComponent } from './calendar/calendar.component';
 import { EventBoxComponent } from './event-box/event-box.component';
 import { ReceiverService, ReceiverData, EventTypes } from '@care-giver-site/services'
 import { DatabaseEvent, EventMetadata } from '@care-giver-site/models';
+import { getCurrentUser } from '@aws-amplify/auth';
 
 @Component({
   selector: 'lib-care',
@@ -31,6 +32,8 @@ export class CareComponent implements OnInit {
 
   ngOnInit() {
     this.getLatestReceiverData()
+    // const user = getCurrentUser();
+    // console.log('Current user:', user);
   }
 
   getLatestReceiverData() {
