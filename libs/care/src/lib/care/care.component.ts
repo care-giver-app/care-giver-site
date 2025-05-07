@@ -2,9 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CareCalendarComponent } from './calendar/calendar.component';
 import { EventBoxComponent } from './event-box/event-box.component';
-import { ReceiverService, ReceiverData, EventTypes } from '@care-giver-site/services'
+import { ReceiverService, ReceiverData, EventTypes, AuthService } from '@care-giver-site/services'
 import { DatabaseEvent, EventMetadata } from '@care-giver-site/models';
-import { getCurrentUser } from '@aws-amplify/auth';
 
 @Component({
   selector: 'lib-care',
@@ -14,10 +13,12 @@ import { getCurrentUser } from '@aws-amplify/auth';
 })
 export class CareComponent implements OnInit {
   private receiverService = inject(ReceiverService);
+  private authService = inject(AuthService);
   eventTypes: EventMetadata[] = EventTypes;
 
   events: DatabaseEvent[] = [];
   receiverId: string = 'Receiver#aaf12b66-75fe-4b03-97f9-615bf809a537';
+  userId: string = '';
 
   receiver: ReceiverData = {
     receiverId: '',
@@ -32,12 +33,15 @@ export class CareComponent implements OnInit {
 
   ngOnInit() {
     this.getLatestReceiverData()
-    // const user = getCurrentUser();
-    // console.log('Current user:', user);
+
+    this.authService.getCurrentUserId().then((userId) => {
+      this.userId = userId;
+    });
   }
 
-  getLatestReceiverData() {
-    this.receiverService.getReceiverData(this.receiverId).subscribe((data: ReceiverData) => {
+  async getLatestReceiverData() {
+    const observable = await this.receiverService.getReceiverData(this.receiverId);
+    observable.subscribe((data: ReceiverData) => {
       this.receiver = data;
     });
   }

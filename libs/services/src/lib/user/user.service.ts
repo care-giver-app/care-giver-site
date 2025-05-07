@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Observable } from 'rxjs';
@@ -26,10 +26,16 @@ export class UserService {
 
     constructor(
         private http: HttpClient,
+        private authService: AuthService,
     ) { }
 
-    getUserData(userId: string): Observable<GetUserResponse> {
-        return this.http.get<GetUserResponse>(`${this.userPath}${encodeURIComponent(userId)}`);
+    getUserData(userId: string): Promise<Observable<GetUserResponse>> {
+        return this.authService.getBearerToken().then((token) => {
+            const headers: HttpHeaders = new HttpHeaders({
+                'Authorization': token,
+            });
+            return this.http.get<GetUserResponse>(`${this.userPath}${encodeURIComponent(userId)}`, { headers: headers });
+        })
     }
 
     createUser(firstName: string, lastName: string, email: string): Observable<CreateUserResponse> {

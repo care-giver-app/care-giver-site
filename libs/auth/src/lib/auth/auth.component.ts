@@ -51,28 +51,31 @@ export class AuthComponent {
   signUp(form: any) {
     const { firstName, lastName, email, password } = form.value;
 
-    this.authService.signUpUser(
-      email,
-      password,
-      firstName,
-      lastName,
-    ).then(({ isSignUpComplete, userId, nextStep }) => {
-      switch (nextStep.signUpStep) {
-        case CONFIRM_SIGN_UP:
-          this.showCodeVerification = true;
-          this.userId = userId || '';
-          this.firstName = firstName;
-          this.lastName = lastName;
-          this.email = email;
-          break;
-        case COMPLETE_AUTO_SIGN_IN:
-          autoSignIn().then()
-          this.routeToHome();
-          break;
-        case DONE:
-          this.routeToHome();
-          break;
-      }
+    this.userService.createUser(firstName, lastName, email).subscribe((response) => {
+      this.authService.signUpUser(
+        response.userId,
+        email,
+        password,
+        firstName,
+        lastName,
+      ).then(({ isSignUpComplete, userId, nextStep }) => {
+        switch (nextStep.signUpStep) {
+          case CONFIRM_SIGN_UP:
+            this.showCodeVerification = true;
+            this.userId = userId || '';
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+            break;
+          case COMPLETE_AUTO_SIGN_IN:
+            autoSignIn().then()
+            this.routeToHome();
+            break;
+          case DONE:
+            this.routeToHome();
+            break;
+        }
+      })
     })
 
   }
@@ -86,11 +89,13 @@ export class AuthComponent {
           this.showCodeVerification = true;
           break;
         case COMPLETE_AUTO_SIGN_IN:
-          autoSignIn()
-          this.routeToHome();
+          autoSignIn().then(() => {
+            this.routeToHome();
+          })
           break;
         case DONE:
-          this.routeToHome();
+          this.showCodeVerification = false;
+          this.activeTab = 'signIn';
           break;
       }
     })
@@ -98,8 +103,6 @@ export class AuthComponent {
 
 
   handleSignInNextStep(output: SignInOutput, email: string) {
-    console.log(output)
-
     switch (output.nextStep.signInStep) {
       case "DONE":
         this.routeToHome();

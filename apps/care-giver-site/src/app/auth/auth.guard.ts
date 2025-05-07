@@ -6,7 +6,7 @@ import {
     ActivatedRouteSnapshot,
     RouterStateSnapshot,
 } from '@angular/router';
-import { getCurrentUser, GetCurrentUserOutput } from '@aws-amplify/auth';
+import { getCurrentUser } from '@aws-amplify/auth';
 
 @Injectable({
     providedIn: 'root',
@@ -22,6 +22,7 @@ export class AuthGuard implements CanActivate {
             await getCurrentUser();
             return true;
         } catch (err) {
+            console.log('User not authenticated', err);
             return this.router.createUrlTree(['/auth']);
         }
     }

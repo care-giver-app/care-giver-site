@@ -28,40 +28,37 @@ export class ReceiverService {
     ) {
     }
 
-    getReceiverData(receiverId: string): Observable<ReceiverData> {
-        return this.authService.getBearerToken().pipe(
-            switchMap((token) => {
-                const headers: HttpHeaders = new HttpHeaders({
-                    'Authorization': `Bearer ${token}`,
-                });
+    getReceiverData(receiverId: string): Promise<Observable<ReceiverData>> {
+        return this.authService.getBearerToken().then((token) => {
+            const headers: HttpHeaders = new HttpHeaders({
+                'Authorization': token,
+            });
 
-                return this.http.get<ReceiverData>(`/receiver/${encodeURIComponent(receiverId)}`, { headers: headers });
-            })
-        );
+            const url = `/receiver/${encodeURIComponent(receiverId)}`
+            return this.http.get<ReceiverData>(url, { headers: headers });
+        })
     }
 
-    addEvent(receiverId: string, eventType: EventMetadata, data: any): Observable<any> {
-        return this.authService.getBearerToken().pipe(
-            switchMap((token) => {
-                const requestBody: any = {
-                    receiverId: receiverId,
-                    userId: "User#af61b247-cd63-414a-9e23-776177954e35",
-                    eventName: eventType.name.toLowerCase().replace(" ", "_"),
+    addEvent(userId: string, receiverId: string, eventType: EventMetadata, data: any): Promise<Observable<any>> {
+        return this.authService.getBearerToken().then((token) => {
+            const headers: HttpHeaders = new HttpHeaders({
+                'Authorization': token,
+            });
+            const requestBody: any = {
+                receiverId: receiverId,
+                userId: userId,
+                eventName: eventType.name.toLowerCase().replace(" ", "_"),
+            };
+
+            if (data && eventType.dataName) {
+                requestBody["event"] = {
+                    [eventType.dataName]: data,
                 };
+            }
 
-                if (data && eventType.dataName) {
-                    requestBody["event"] = {
-                        [eventType.dataName]: data,
-                    };
-                }
+            return this.http.post(`/receiver/event`, requestBody, { headers: headers });
+        })
 
-                const headers: HttpHeaders = new HttpHeaders({
-                    'Authorization': `Bearer ${token}`,
-                });
-
-                return this.http.post(`/receiver/event`, requestBody, { headers: headers });
-            })
-        );
     }
 
     getLastEvent(receiver: ReceiverData, type: string): Event | null {

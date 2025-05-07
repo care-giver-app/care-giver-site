@@ -1,28 +1,30 @@
 <div class="auth-container">
-    @if (showCodeVerification){
-    <!-- Code Verification Form -->
-    <ng-container *ngTemplateOutlet="codeAuthTemplate"></ng-container>
-    } @else {
-    <!-- Tabs for Sign In and Sign Up -->
-    <div class="tabs">
-        <button [class.active]="activeTab === 'signIn'" (click)="setActiveTab('signIn')">
-            Sign In
-        </button>
-        <button [class.active]="activeTab === 'signUp'" (click)="setActiveTab('signUp')">
-            Sign Up
-        </button>
-    </div>
+    <div class="auth-box">
+        @if (showCodeVerification){
+        <!-- Code Verification Form -->
+        <ng-container *ngTemplateOutlet="codeAuthTemplate"></ng-container>
+        } @else {
+        <!-- Tabs for Sign In and Sign Up -->
+        <div class="tabs">
+            <button [class.active]="activeTab === 'signIn'" (click)="setActiveTab('signIn')">
+                Sign In
+            </button>
+            <button [class.active]="activeTab === 'signUp'" (click)="setActiveTab('signUp')">
+                Sign Up
+            </button>
+        </div>
 
-    <!-- Tab Content -->
-    <div class="tab-content">
-        <ng-container *ngIf="activeTab === 'signIn'">
-            <ng-container *ngTemplateOutlet="signInTemplate"></ng-container>
-        </ng-container>
-        <ng-container *ngIf="activeTab === 'signUp'">
-            <ng-container *ngTemplateOutlet="signUpTemplate"></ng-container>
-        </ng-container>
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <ng-container *ngIf="activeTab === 'signIn'">
+                <ng-container *ngTemplateOutlet="signInTemplate"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="activeTab === 'signUp'">
+                <ng-container *ngTemplateOutlet="signUpTemplate"></ng-container>
+            </ng-container>
+        </div>
+        }
     </div>
-    }
 </div>
 
 <!-- Sign-In Template -->
