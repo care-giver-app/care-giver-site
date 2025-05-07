@@ -3,7 +3,7 @@
     </h3>
     <div class="event-details">
         <p><strong>Time:</strong> {{ eventTimestamp }}</p>
-        <p><strong>User:</strong> {{ latestEvent?.user }}</p>
+        <p><strong>Logged by:</strong> {{ loggedUser }}</p>
         <p *ngIf="eventType.dataName"><strong>Data:</strong> {{ latestEvent?.data[eventType.dataName] }}</p>
     </div>
     <button class="add-event-button" (click)="onAddEvent()">Add Event</button>

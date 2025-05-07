@@ -15,10 +15,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@care-giver-site/auth": ["libs/auth/src/index.ts"],
       "@care-giver-site/care": ["libs/care/src/index.ts"],
       "@care-giver-site/models": ["libs/models/src/index.ts"],
       "@care-giver-site/services": ["libs/services/src/index.ts"]
-    }
+    },
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules", "tmp"]
 }

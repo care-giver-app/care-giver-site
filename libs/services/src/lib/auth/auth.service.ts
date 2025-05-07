@@ -1,50 +1,70 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
-
-
-const CLIENT_SECRET = "CLIENT_SECRET";
-const CLIENT_ID = "CLIENT_ID";
-
-const oauthEndpoint = "/oauth2/token";
+import {
+    signUp,
+    SignUpOutput,
+    confirmSignUp,
+    ConfirmSignUpOutput,
+    fetchUserAttributes,
+    signOut,
+    signIn,
+    SignInOutput,
+    fetchAuthSession,
+} from '@aws-amplify/auth'
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private bearerToken: string | null = null;
+    constructor() { }
 
-    constructor(private http: HttpClient) { }
-
-    getClientSecret(): string {
-        return process.env[CLIENT_SECRET] || '';
+    getBearerToken(): Promise<string> {
+        return fetchAuthSession().then((session) => {
+            return `Bearer ${session.tokens?.accessToken.toString() || ''}`;
+        });
     }
 
-    getClientId(): string {
-        return process.env[CLIENT_ID] || '';
+    async signInUser(email: string, password: string): Promise<SignInOutput> {
+        return await signIn({
+            username: email,
+            password: password
+        })
     }
 
-    retrieveBearerToken(): Observable<string> {
-        if (this.bearerToken) {
-            return of(this.bearerToken);
-        }
-
-        const requestBody = `grant_type=client_credentials&client_id=${this.getClientId()}&client_secret=${this.getClientSecret()}&scope=API/full`;
-
-        const headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        };
-
-        return this.http.post<{ access_token: string }>(oauthEndpoint, requestBody, { headers }).pipe(
-            tap((response) => {
-                this.bearerToken = response.access_token; // Cache the token
-            }),
-            switchMap((response) => of(response.access_token))
-        );
+    async signUpUser(userId: string, email: string, password: string, firstName: string, lastName: string): Promise<SignUpOutput> {
+        return signUp({
+            username: email,
+            password: password,
+            options: {
+                userAttributes: {
+                    "given_name": firstName,
+                    "family_name": lastName,
+                    "custom:user_id": userId
+                },
+                autoSignIn: true,
+            }
+        })
     }
 
-    getBearerToken(): Observable<string> {
-        return this.retrieveBearerToken();
+    async confirmSignUpUser(username: string, code: string): Promise<ConfirmSignUpOutput> {
+        return await confirmSignUp({
+            username: username,
+            confirmationCode: code,
+        })
     }
+
+    signOutUser(): Promise<void> {
+        return signOut({
+            global: true,
+            oauth: {
+                redirectUrl: '/auth/'
+            }
+        })
+    }
+
+    getCurrentUserId(): Promise<string> {
+        return fetchUserAttributes().then((attributes) => {
+            return attributes['custom:user_id'] || '';
+        });
+    }
+
 }

@@ -1,7 +1,7 @@
 import { Component, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Event, EventMetadata } from '@care-giver-site/models';
-import { ReceiverService, ReceiverData } from '@care-giver-site/services';
+import { ReceiverService, ReceiverData, UserService, AuthService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 
 
@@ -23,10 +23,20 @@ export class EventBoxComponent implements OnChanges {
   latestEvent: Event | undefined;
   eventTimestamp!: string;
   receiverService = inject(ReceiverService)
+  userService = inject(UserService)
+  authService = inject(AuthService)
 
   showModal: boolean = false;
   inputValue: string = '';
 
+  currentUserId: string = '';
+  loggedUser: string = '';
+
+  constructor() {
+    this.authService.getCurrentUserId().then((userId) => {
+      this.currentUserId = userId;
+    })
+  }
 
   isToday(date: Date): boolean {
     const today = new Date();
@@ -58,6 +68,12 @@ export class EventBoxComponent implements OnChanges {
     if (changes['receiver'] && changes['receiver'].currentValue && this.receiver.receiverId) {
       this.latestEvent = this.receiverService.getLastEvent(this.receiver, this.eventType.type) as Event;
       this.eventTimestamp = this.setEventTime(new Date(this.latestEvent?.timestamp))
+
+      this.userService.getUserData(this.latestEvent?.user).then((observable) => {
+        observable.subscribe((user) => {
+          this.loggedUser = `${user.firstName} ${user.lastName}`;
+        });
+      });
     }
   }
 
@@ -79,9 +95,10 @@ export class EventBoxComponent implements OnChanges {
     this.closeModal();
   }
 
-  addEvent(data: string | null) {
-    this.receiverService.addEvent(this.receiver.receiverId, this.eventType, data).subscribe(() => {
-      this.newEvent.emit()
+  async addEvent(data: string | null) {
+    const observable = await this.receiverService.addEvent(this.currentUserId, this.receiver.receiverId, this.eventType, data);
+    observable.subscribe(() => {
+      this.newEvent.emit();
     });
   }
 }
