@@ -57,7 +57,6 @@ export class AuthComponent {
       firstName,
       lastName,
     ).then(({ isSignUpComplete, userId, nextStep }) => {
-      console.log('Sign up next step:', nextStep);
       switch (nextStep.signUpStep) {
         case CONFIRM_SIGN_UP:
           this.showCodeVerification = true;
@@ -82,31 +81,15 @@ export class AuthComponent {
     const { code } = form.value;
 
     this.authService.confirmSignUpUser(this.userId, code).then(({ nextStep: confirmSignUpNextStep }) => {
-      console.log('Confirm sign up next step:', confirmSignUpNextStep);
-
       switch (confirmSignUpNextStep.signUpStep) {
         case CONFIRM_SIGN_UP:
           this.showCodeVerification = true;
           break;
         case COMPLETE_AUTO_SIGN_IN:
-          autoSignIn().then()
-          this.userService.createUser(this.firstName, this.lastName, this.email).pipe(
-          ).subscribe({
-            next: () => {
-              this.routeToHome();
-            },
-            error: (err) => {
-              console.error('Error during sign-up:', err);
-            }
-          });
+          autoSignIn()
           this.routeToHome();
           break;
         case DONE:
-          this.userService.createUser(this.firstName, this.lastName, this.email).subscribe({
-            error: (err) => {
-              console.error('Error during sign-up:', err);
-            }
-          });
           this.routeToHome();
           break;
       }
