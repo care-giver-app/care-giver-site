@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DatabaseEvent, EventMetadata, Event } from '@care-giver-site/models';
 import { EventTypes } from './event.service'
 import { AuthService } from '../auth/auth.service';
-import { Observable, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
+import { formatRFC3339 } from 'date-fns'
 
 export interface ReceiverData {
     receiverId: string;
@@ -39,7 +40,7 @@ export class ReceiverService {
         })
     }
 
-    addEvent(userId: string, receiverId: string, eventType: EventMetadata, data: any): Promise<Observable<any>> {
+    addEvent(userId: string, receiverId: string, eventType: EventMetadata, data: any, timestamp: any,): Promise<Observable<any>> {
         return this.authService.getBearerToken().then((token) => {
             const headers: HttpHeaders = new HttpHeaders({
                 'Authorization': token,
@@ -54,6 +55,13 @@ export class ReceiverService {
                 requestBody["event"] = {
                     [eventType.dataName]: data,
                 };
+            }
+
+            if (timestamp) {
+                requestBody["event"] = {
+                    ...requestBody["event"],
+                    timestamp: formatRFC3339(timestamp),
+                }
             }
 
             return this.http.post(`/receiver/event`, requestBody, { headers: headers });
