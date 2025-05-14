@@ -6,15 +6,23 @@
         <p><strong>Logged by:</strong> {{ loggedUser }}</p>
         <p *ngIf="eventType.dataName"><strong>Data:</strong> {{ latestEvent?.data[eventType.dataName] }}</p>
     </div>
-    <button class="add-event-button" (click)="onAddEvent()">Add Event</button>
+    <button class="add-event-button" (click)="onLogEvent()">Log Now</button>
+    <button class="add-event-button" (click)="onLogEventWithTime()">Input Time</button>
 </div>
 
 <!-- Modal -->
 <div class="modal" *ngIf="showModal" (click)="closeModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <h3>Add {{ eventType.name }}</h3>
+
+        <label for="timestampInput">Timestamp</label>
+        <input id="timestampInput" [(ngModel)]="eventTimestampInput" type="datetime-local" value="" />
+
+        @if (eventType.dataName) {
         <label for="dataInput">{{ eventType.dataName }}</label>
         <input id="dataInput" [(ngModel)]="inputValue" type="number" placeholder="Enter {{ eventType.dataName }}" />
+        }
+
         <div class="modal-actions">
             <button class="modal-button" (click)="submitEvent()">Submit</button>
             <button class="modal-button cancel" (click)="closeModal()">Cancel</button>

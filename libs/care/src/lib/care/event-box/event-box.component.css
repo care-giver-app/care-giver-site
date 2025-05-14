@@ -44,6 +44,7 @@
 .add-event-button {
     display: inline-block;
     margin-top: 1rem;
+    margin-left: 1rem;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     color: #fff;
