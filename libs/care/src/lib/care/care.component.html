@@ -1,4 +1,5 @@
 <h3>Care Receiver: {{ receiver.firstName }} {{ receiver.lastName }}</h3>
+<button (click)="signOut()">Sign Out</button>
 <div class="care-container">
     <care-calendar class="calendar-container" [receiver]="receiver"></care-calendar>
     <div class="events-container">
