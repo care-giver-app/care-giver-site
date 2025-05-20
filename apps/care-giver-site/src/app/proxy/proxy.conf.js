@@ -1,21 +1,24 @@
 
+urls = {
+    caretosher: {
+        dev: "https://api-dev.caretosher.com",
+        prod: "https://api.caretosher.com"
+    }
+}
+
+caretosherUrl = urls.caretosher.dev;
+if (process.env.ENV === "prod") {
+    caretosherUrl = urls.caretosher.prod;
+}
+
 const proxyConfig = [
     {
         context: [
             "/receiver",
             "/user",
         ],
-        target: "https://api-dev.caretosher.com",
+        target: caretosherUrl,
         secure: false,
-        changeOrigin: true,
-        logLevel: "debug"
-    },
-    {
-        context: [
-            "/oauth2/token"
-        ],
-        target: "https://us-east-2vpn29prfx.auth.us-east-2.amazoncognito.com",
-        secure: true,
         changeOrigin: true,
         logLevel: "debug"
     }
