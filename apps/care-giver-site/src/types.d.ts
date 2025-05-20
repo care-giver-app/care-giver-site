@@ -1,7 +1,7 @@
 declare const process: {
     env: {
         ENV: string;
-        CLIENT_SECRET: string;
-        CLIENT_ID: string;
+        USER_POOL_ID: string;
+        USER_POOL_CLIENT_ID: string;
     };
 };
