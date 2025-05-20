@@ -45,4 +45,10 @@ export class CareComponent implements OnInit {
       this.receiver = data;
     });
   }
+
+  signOut() {
+    this.authService.signOutUser().then(() => {
+      window.location.reload();
+    })
+  }
 }
