@@ -21,6 +21,11 @@
           {
             "glob": "**/*",
             "input": "apps/care-giver-site/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/shared/assets",
+            "output": "assets"
           }
         ],
         "styles": ["apps/care-giver-site/src/styles.scss"],

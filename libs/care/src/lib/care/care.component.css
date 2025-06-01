@@ -34,6 +34,33 @@
     max-width: 100%;
 }
 
+.care-receiver-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1565c0;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.5px;
+    background: #e3f2fd;
+    border-left: 6px solid #1976d2;
+    border-right: 6px solid #1976d2;
+    padding: 0.5rem 1.5rem 0.5rem 1rem;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
+    transition: background 0.2s;
+}
+
+.care-receiver-name:hover {
+    background: #bbdefb;
+}
+
+.care-receiver-name img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
 /* Responsive design for mobile view */
 @media (max-width: 768px) {
     .events-container {
@@ -48,5 +75,11 @@
     .events-container {
         order: -1;
         /* Move the Hello div above the calendar */
+    }
+
+    .care-receiver-name {
+        font-size: 1rem;
+        padding: 0.5rem 1rem 0.5rem 0.75rem;
+        max-width: 95vw;
     }
 }

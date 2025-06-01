@@ -17,6 +17,7 @@
     "paths": {
       "@care-giver-site/auth": ["libs/auth/src/index.ts"],
       "@care-giver-site/care": ["libs/care/src/index.ts"],
+      "@care-giver-site/common": ["common/src/index.ts"],
       "@care-giver-site/models": ["libs/models/src/index.ts"],
       "@care-giver-site/services": ["libs/services/src/index.ts"]
     },

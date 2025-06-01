@@ -67,4 +67,12 @@ export class AuthService {
         });
     }
 
+    getUsersFullName(): Promise<string> {
+        return fetchUserAttributes().then((attributes) => {
+            const firstName = attributes['given_name'] || '';
+            const lastName = attributes['family_name'] || '';
+            return `${firstName} ${lastName}`.trim();
+        });
+    }
+
 }
