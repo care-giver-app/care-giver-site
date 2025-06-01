@@ -2,12 +2,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CareCalendarComponent } from './calendar/calendar.component';
 import { EventBoxComponent } from './event-box/event-box.component';
+import { NavbarComponent } from './navbar/navbar.component';
 import { ReceiverService, ReceiverData, EventTypes, AuthService } from '@care-giver-site/services'
 import { DatabaseEvent, EventMetadata } from '@care-giver-site/models';
 
 @Component({
   selector: 'lib-care',
-  imports: [CommonModule, CareCalendarComponent, EventBoxComponent],
+  imports: [CommonModule, CareCalendarComponent, EventBoxComponent, NavbarComponent],
   templateUrl: './care.component.html',
   styleUrl: './care.component.css',
 })

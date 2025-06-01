@@ -1,0 +1,24 @@
+<nav class="navbar">
+    <div class="navbar-content">
+        <!-- Logo Section -->
+        <div class="navbar-logo">
+            <a href="/">
+                <img src="assets/caretosher-logo.png" alt="Logo" />
+                <span class="navbar-title"></span>
+            </a>
+        </div>
+        <!-- User Section -->
+        <div class="navbar-user">
+            <button class="user-circle-btn" (click)="toggleDropdown()">
+                <span class="user-circle">{{ getInitials(userName) }}</span>
+                <span class="dropdown-arrow">&#9662;</span>
+            </button>
+            <ul *ngIf="showDropdown" class="dropdown-menu">
+                <li (click)="signOut()">Sign Out</li>
+            </ul>
+            <ul *ngIf="showDropdown" class="dropdown">
+                <li (click)="signOut()">Sign Out</li>
+            </ul>
+        </div>
+    </div>
+</nav>

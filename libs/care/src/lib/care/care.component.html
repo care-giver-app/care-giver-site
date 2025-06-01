@@ -1,5 +1,7 @@
-<h3>Care Receiver: {{ receiver.firstName }} {{ receiver.lastName }}</h3>
-<button (click)="signOut()">Sign Out</button>
+<care-navbar></care-navbar>
+<h3 class="care-receiver-name">
+    <img src="assets/heart-care-icon.png" alt="care logo" /> {{ receiver.firstName }} {{ receiver.lastName }}
+</h3>
 <div class="care-container">
     <care-calendar class="calendar-container" [receiver]="receiver"></care-calendar>
     <div class="events-container">
