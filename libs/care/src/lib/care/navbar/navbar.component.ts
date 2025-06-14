@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReceiverService, ReceiverData, EventTypes, AuthService } from '@care-giver-site/services'
+import { Receiver } from '@care-giver-site/models'
+import { AuthService } from '@care-giver-site/services'
 
 
 @Component({

@@ -1,14 +1,5 @@
-
-export interface DatabaseEvent {
-    type: string;
-    name: string;
-    data: any;
-    dataName: string;
-}
-
 export interface EventMetadata {
     type: string;
-    name: string;
     dataName: string;
     color: {
         primary: string;
@@ -17,9 +8,16 @@ export interface EventMetadata {
     };
 }
 
+export interface DataPoint {
+    name: string;
+    value: string;
+}
+
 export interface Event {
+    receiverId: string;
+    eventId: string;
+    userId: string;
+    timestamp: string;
     type: string;
-    data: any;
-    timestamp: Date;
-    user: string;
+    data: DataPoint[];
 }

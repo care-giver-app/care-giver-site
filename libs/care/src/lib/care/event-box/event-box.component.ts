@@ -1,7 +1,7 @@
 import { Component, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Event, EventMetadata } from '@care-giver-site/models';
-import { ReceiverService, ReceiverData, UserService, AuthService } from '@care-giver-site/services';
+import { EventMetadata, Event, DataPoint } from '@care-giver-site/models';
+import { ReceiverService, UserService, AuthService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -11,8 +11,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './event-box.component.css',
 })
 export class EventBoxComponent implements OnChanges {
-  @Input() eventType!: EventMetadata
-  @Input() receiver!: ReceiverData
+  @Input() eventMetaData!: EventMetadata;
+  @Input() events!: Event[];
+  @Input() receiverId!: string;
   @Output() newEvent: EventEmitter<void> = new EventEmitter<void>();
 
 
@@ -42,17 +43,18 @@ export class EventBoxComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['receiver']?.currentValue && this.receiver.receiverId) {
+    if (changes['events']?.currentValue) {
       this.updateLatestEvent();
     }
   }
 
   private updateLatestEvent() {
-    this.latestEvent = this.receiverService.getLastEvent(this.receiver, this.eventType.type) as Event;
-
-    if (this.latestEvent) {
+    this.latestEvent = undefined
+    const events = this.receiverService.getEventsOfType(this.events, this.eventMetaData.type)
+    if (events.length > 0) {
+      this.latestEvent = events[0]
       this.eventTimestamp = this.formatEventTime(new Date(this.latestEvent.timestamp));
-      this.fetchLoggedUser(this.latestEvent.user);
+      this.fetchLoggedUser(this.latestEvent.userId);
     }
   }
 
@@ -93,7 +95,7 @@ export class EventBoxComponent implements OnChanges {
   }
 
   onLogEvent() {
-    if (this.eventType.dataName) {
+    if (this.eventMetaData.dataName) {
       this.openModal();
     } else {
       this.addEvent(null);
@@ -134,12 +136,16 @@ export class EventBoxComponent implements OnChanges {
     this.closeModal();
   }
 
-  private async addEvent(data: string | null, timestamp: string = this.formatDateTimeLocal(new Date())) {
+  private async addEvent(datavalue: string | null, timestamp: string = this.formatDateTimeLocal(new Date())) {
+    const data: DataPoint[] = datavalue !== null && this.eventMetaData.dataName
+      ? [{ name: this.eventMetaData.dataName, value: datavalue }]
+      : [];
+
     try {
       const observable = await this.receiverService.addEvent(
+        this.receiverId,
         this.currentUserId,
-        this.receiver.receiverId,
-        this.eventType,
+        this.eventMetaData.type,
         data,
         timestamp
       );
@@ -154,6 +160,31 @@ export class EventBoxComponent implements OnChanges {
       });
     } catch (error) {
       console.error('Error in addEvent:', error);
+    }
+  }
+
+  onDeleteEvent(eventId: string) {
+    this.deleteEvent(eventId)
+  }
+
+  private async deleteEvent(eventId: string) {
+    try {
+      const observable = await this.receiverService.deleteEvent(
+        this.receiverId,
+        this.currentUserId,
+        eventId,
+      );
+
+      observable.subscribe({
+        next: () => {
+          this.newEvent.emit();
+        },
+        error: (err) => {
+          console.error('Error deleting event:', err);
+        },
+      });
+    } catch (error) {
+      console.error('Error in deleteEvent:', error);
     }
   }
 }
