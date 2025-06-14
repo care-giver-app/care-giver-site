@@ -3,10 +3,10 @@
     <img src="assets/heart-care-icon.png" alt="care logo" /> {{ receiver.firstName }} {{ receiver.lastName }}
 </h3>
 <div class="care-container">
-    <care-calendar class="calendar-container" [receiver]="receiver"></care-calendar>
+    <care-calendar class="calendar-container" [events]="events"></care-calendar>
     <div class="events-container">
         <h1>Latest Events</h1>
-        <care-event-box *ngFor="let type of eventTypes" [eventType]="type" [receiver]="receiver"
-            (newEvent)="getLatestReceiverData()"></care-event-box>
+        <care-event-box *ngFor="let type of eventTypes" [eventMetaData]="type" [events]="events"
+            [receiverId]="receiverId" (newEvent)="getLatestEvents()"></care-event-box>
     </div>
 </div>

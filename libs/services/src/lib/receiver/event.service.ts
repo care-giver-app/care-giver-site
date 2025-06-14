@@ -3,8 +3,7 @@ import { EventMetadata } from '@care-giver-site/models';
 
 export const EventTypes: EventMetadata[] = [
     {
-        type: 'medications',
-        name: 'Medications',
+        type: 'Medication',
         dataName: '',
         color: {
             primary: '#9b59b6',
@@ -13,8 +12,7 @@ export const EventTypes: EventMetadata[] = [
         }
     },
     {
-        type: 'bowelMovements',
-        name: 'Bowel Movements',
+        type: 'Bowel Movement',
         dataName: '',
         color: {
             primary: '#8B4513',
@@ -23,8 +21,7 @@ export const EventTypes: EventMetadata[] = [
         }
     },
     {
-        type: 'showers',
-        name: 'Showers',
+        type: 'Shower',
         dataName: '',
         color: {
             primary: '#1e90ff',
@@ -33,8 +30,7 @@ export const EventTypes: EventMetadata[] = [
         }
     },
     {
-        type: 'urinations',
-        name: 'Urinations',
+        type: 'Urination',
         dataName: '',
         color: {
             primary: '#d4ac0d',
@@ -43,9 +39,8 @@ export const EventTypes: EventMetadata[] = [
         }
     },
     {
-        type: 'weights',
-        name: 'Weights',
-        dataName: 'weight',
+        type: 'Weight',
+        dataName: 'Weight',
         color: {
             primary: '#27ae60',
             secondary: '#d4efdf',
@@ -53,7 +48,6 @@ export const EventTypes: EventMetadata[] = [
         }
     }
 ];
-
 
 @Injectable({
     providedIn: 'root'

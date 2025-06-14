@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { setMinutes, setHours, addMinutes } from 'date-fns';
 import { Subject } from 'rxjs';
 import {
   CalendarEvent,
@@ -9,8 +8,8 @@ import {
   CalendarModule,
 } from 'angular-calendar';
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
-import { DatabaseEvent, Event } from '@care-giver-site/models';
-import { ReceiverService, ReceiverData, EventService } from '@care-giver-site/services';
+import { Event } from '@care-giver-site/models';
+import { ReceiverService, EventService } from '@care-giver-site/services';
 
 
 
@@ -22,13 +21,13 @@ import { ReceiverService, ReceiverData, EventService } from '@care-giver-site/se
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CareCalendarComponent implements OnChanges {
-  @Input() receiver!: ReceiverData;
+  @Input() events!: Event[];
 
   view: CalendarView = CalendarView.Week;
 
   viewDate: Date = new Date();
 
-  events: CalendarEvent[] = [];
+  calendarEvents: CalendarEvent[] = [];
 
   refresh = new Subject<void>();
 
@@ -42,15 +41,13 @@ export class CareCalendarComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['receiver'] && changes['receiver'].currentValue && this.receiver.receiverId) {
-      this.events = []
-      const dbEvents = this.receiverService.getAllEvents(this.receiver) as DatabaseEvent[];
+    if (changes['events'] && changes['events'].currentValue) {
+      this.calendarEvents = []
 
-      for (const event of dbEvents) {
-        const eventData: Event = event.data
-        this.events.push({
-          start: new Date(eventData.timestamp),
-          title: event.name,
+      for (const event of this.events) {
+        this.calendarEvents.push({
+          start: new Date(event.timestamp),
+          title: event.type,
           color: this.eventService.getEventColor(event.type),
         });
       }
