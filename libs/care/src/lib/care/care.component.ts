@@ -31,8 +31,8 @@ export class CareComponent implements OnInit {
     this.authService.getCurrentUserId().then((userId) => {
       this.userId = userId;
       this.getLatestEvents()
+      this.getReceiver()
     });
-    this.getReceiver()
   }
 
   async getLatestEvents() {
