@@ -4,11 +4,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, UserService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
-import { SignInOutput, signOut, autoSignIn } from 'aws-amplify/auth';
+import { SignInAction, SignUpCodeAction, SignUpAction } from '@care-giver-site/models'
 
 const CONFIRM_SIGN_UP = 'CONFIRM_SIGN_UP'
 const DONE = 'DONE'
-const COMPLETE_AUTO_SIGN_IN = 'COMPLETE_AUTO_SIGN_IN'
 
 @Component({
   selector: 'lib-auth',
@@ -24,10 +23,16 @@ export class AuthComponent {
   activeTab: 'signIn' | 'signUp' = 'signIn';
 
   userId: string = '';
+  signUpEmail: string = '';
 
-  firstName: string = '';
-  lastName: string = '';
-  email: string = '';
+  signInError: string = '';
+  signUpError: string = '';
+  signUpCodeError: string = '';
+
+  signUpCodeMessage: string = '';
+
+  passwordsDoNotMatch = false;
+
 
   private router = new Router()
   constructor(public authenticator: AuthenticatorService, private ref: ChangeDetectorRef) {
@@ -43,73 +48,112 @@ export class AuthComponent {
 
   signIn(form: any) {
     const { email, password } = form.value;
-    this.authService.signInUser(email, password).then((nextStep) => {
-      this.handleSignInNextStep(nextStep, email)
+    this.authService.signInUser(email, password)
+      .then((action: SignInAction) => {
+        if (action.errorMessage) {
+          this.signInError = action.errorMessage;
+        } else if (action.output) {
+          this.handleSignInNextStep(action.output.nextStep.signInStep, email);
+        }
+      })
+  }
+
+  handleSignInNextStep(nextStep: string, email: string) {
+    switch (nextStep) {
+      case DONE:
+        this.authService.isFirstTimeSignIn().then((isFirstTimeSignIn) => {
+          if (isFirstTimeSignIn) {
+            this.runFirstTimeSignInExperience();
+          }
+          this.routeToHome();
+        })
+        break;
+      case CONFIRM_SIGN_UP:
+        this.showCodeVerification = true;
+        this.signUpEmail = email;
+        this.resendSignUpCode();
+        break;
+    }
+  }
+
+  runFirstTimeSignInExperience() {
+    this.authService.getSignUpInformation().then((signUpInfo) => {
+      this.userService.createUser(
+        signUpInfo.firstName,
+        signUpInfo.lastName,
+        signUpInfo.email
+      ).subscribe((resp) => {
+        this.authService.addUserId(resp.userId).then(() => {
+          this.authService.firstTimeSignInComplete()
+        })
+      })
     })
   }
 
   signUp(form: any) {
-    const { firstName, lastName, email, password } = form.value;
+    const { firstName, lastName, email, password, confirmPassword } = form.value;
+    this.passwordsDoNotMatch = password !== confirmPassword;
 
-    this.userService.createUser(firstName, lastName, email).subscribe((response) => {
-      this.authService.signUpUser(
-        response.userId,
-        email,
-        password,
-        firstName,
-        lastName,
-      ).then(({ isSignUpComplete, userId, nextStep }) => {
-        switch (nextStep.signUpStep) {
-          case CONFIRM_SIGN_UP:
-            this.showCodeVerification = true;
-            this.userId = userId || '';
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            break;
-          case COMPLETE_AUTO_SIGN_IN:
-            autoSignIn().then()
-            this.routeToHome();
-            break;
-          case DONE:
-            this.routeToHome();
-            break;
-        }
-      })
+    if (form.invalid || this.passwordsDoNotMatch) {
+      this.signUpError = "Please fill out all required fields correctly.";
+      return;
+    }
+
+    this.authService.signUpUser(email, password, firstName, lastName).then((action: SignUpAction) => {
+      if (action.errorMessage) {
+        this.signUpError = action.errorMessage;
+      } else if (action.output) {
+        this.handleSignUpNextStep(action.output.nextStep.signUpStep, action.output.userId || '', email)
+      }
     })
 
   }
 
+  handleSignUpNextStep(nextStep: string, userAuthId: string, email: string) {
+    switch (nextStep) {
+      case CONFIRM_SIGN_UP:
+        this.showCodeVerification = true;
+        this.userId = userAuthId;
+        this.signUpEmail = email;
+        break;
+      case DONE:
+        this.routeToHome();
+        break;
+    }
+  }
+
   verifyCode(form: any) {
+    this.signUpCodeMessage = '';
     const { code } = form.value;
 
-    this.authService.confirmSignUpUser(this.userId, code).then(({ nextStep: confirmSignUpNextStep }) => {
-      switch (confirmSignUpNextStep.signUpStep) {
-        case CONFIRM_SIGN_UP:
-          this.showCodeVerification = true;
-          break;
-        case COMPLETE_AUTO_SIGN_IN:
-          autoSignIn().then(() => {
-            this.routeToHome();
-          })
-          break;
-        case DONE:
-          this.showCodeVerification = false;
-          this.activeTab = 'signIn';
-          break;
+    this.authService.confirmSignUpUser(this.userId, code).then((action: SignUpCodeAction) => {
+      if (action.errorMessage) {
+        this.signUpCodeError = action.errorMessage
+      } else if (action.output) {
+        this.handleSignUpCodeNextStep(action.output.nextStep.signUpStep)
       }
     })
   }
 
-
-  handleSignInNextStep(output: SignInOutput, email: string) {
-    switch (output.nextStep.signInStep) {
-      case "DONE":
-        this.routeToHome();
-        break;
-      case "CONFIRM_SIGN_UP":
+  handleSignUpCodeNextStep(nextStep: string) {
+    switch (nextStep) {
+      case CONFIRM_SIGN_UP:
         this.showCodeVerification = true;
-        this.email = email;
+        break;
+      case DONE:
+
+        this.showCodeVerification = false;
+        this.setActiveTab('signIn')
+        break;
     }
   }
+
+  resendSignUpCode() {
+    this.authService.resendSignUpCode(this.signUpEmail).then((response) => {
+      this.showCodeVerification = true;
+      this.signUpCodeError = '';
+      this.signUpCodeMessage = 'A new verification code has been sent to your email.';
+    })
+  }
+
 }
