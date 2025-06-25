@@ -9,7 +9,15 @@ import {
     signIn,
     SignInOutput,
     fetchAuthSession,
+    AuthError,
+    resendSignUpCode,
+    ResendSignUpCodeOutput,
+    ResendSignUpCodeInput,
+    updateUserAttribute,
+    UpdateUserAttributeInput,
+    UpdateUserAttributeOutput
 } from '@aws-amplify/auth'
+import { SignInAction, SignUpCodeAction, SignUpAction, SignUpInfomation } from '@care-giver-site/models'
 
 @Injectable({
     providedIn: 'root'
@@ -23,33 +31,77 @@ export class AuthService {
         });
     }
 
-    async signInUser(email: string, password: string): Promise<SignInOutput> {
-        return await signIn({
-            username: email,
-            password: password
-        })
-    }
-
-    async signUpUser(userId: string, email: string, password: string, firstName: string, lastName: string): Promise<SignUpOutput> {
-        return signUp({
-            username: email,
-            password: password,
-            options: {
-                userAttributes: {
-                    "given_name": firstName,
-                    "family_name": lastName,
-                    "custom:user_id": userId
-                },
-                autoSignIn: true,
+    async signInUser(email: string, password: string): Promise<SignInAction> {
+        var output: SignInOutput | undefined = undefined
+        var errorMessage: string | undefined = undefined
+        try {
+            output = await signIn({
+                username: email,
+                password: password
+            });
+        } catch (error) {
+            if (error instanceof AuthError) {
+                errorMessage = error.message
+            } else {
+                errorMessage = 'An unexpected error occurred during sign-in.'
             }
-        })
+        }
+
+        return {
+            output: output,
+            errorMessage: errorMessage
+        }
     }
 
-    async confirmSignUpUser(username: string, code: string): Promise<ConfirmSignUpOutput> {
-        return await confirmSignUp({
-            username: username,
-            confirmationCode: code,
-        })
+    async signUpUser(email: string, password: string, firstName: string, lastName: string): Promise<SignUpAction> {
+        var output: SignUpOutput | undefined = undefined
+        var errorMessage: string | undefined = undefined
+        try {
+            output = await signUp({
+                username: email,
+                password: password,
+                options: {
+                    userAttributes: {
+                        "given_name": firstName,
+                        "family_name": lastName,
+                        "custom:first_time_sign_in": "true",
+                    },
+                    autoSignIn: true,
+                }
+            })
+        } catch (error) {
+            if (error instanceof AuthError) {
+                errorMessage = error.message
+            } else {
+                errorMessage = 'An unexpected error occurred during sign-up.'
+            }
+        }
+        return {
+            output: output,
+            errorMessage: errorMessage
+        }
+    }
+
+    async confirmSignUpUser(username: string, code: string): Promise<SignUpCodeAction> {
+        var output: ConfirmSignUpOutput | undefined = undefined
+        var errorMessage: string | undefined = undefined
+        try {
+            output = await confirmSignUp({
+                username: username,
+                confirmationCode: code
+            });
+        } catch (error) {
+            if (error instanceof AuthError) {
+                errorMessage = error.message
+            } else {
+                errorMessage = 'An unexpected error occurred during sign-up confirmation.'
+            }
+        }
+
+        return {
+            output: output,
+            errorMessage: errorMessage
+        }
     }
 
     signOutUser(): Promise<void> {
@@ -61,9 +113,26 @@ export class AuthService {
         })
     }
 
+    resendSignUpCode(email: string): Promise<ResendSignUpCodeOutput> {
+        const input: ResendSignUpCodeInput = {
+            username: email
+        };
+        return resendSignUpCode(input);
+    }
+
+    getSignUpInformation(): Promise<SignUpInfomation> {
+        return fetchUserAttributes().then((attributes) => {
+            return {
+                email: attributes['email'] || '',
+                firstName: attributes['given_name'] || '',
+                lastName: attributes['family_name'] || ''
+            };
+        });
+    }
+
     getCurrentUserId(): Promise<string> {
         return fetchUserAttributes().then((attributes) => {
-            return attributes['custom:user_id'] || '';
+            return attributes['custom:db_user_id'] || '';
         });
     }
 
@@ -75,4 +144,31 @@ export class AuthService {
         });
     }
 
+    addUserId(userId: string): Promise<UpdateUserAttributeOutput> {
+        const input: UpdateUserAttributeInput = {
+            userAttribute: {
+                attributeKey: 'custom:db_user_id',
+                value: userId
+            }
+
+        }
+        return updateUserAttribute(input)
+    }
+
+    isFirstTimeSignIn(): Promise<boolean> {
+        return fetchUserAttributes().then((attributes) => {
+            return attributes['custom:first_time_sign_in'] === 'true';
+        });
+    }
+
+    firstTimeSignInComplete(): Promise<UpdateUserAttributeOutput> {
+        const input: UpdateUserAttributeInput = {
+            userAttribute: {
+                attributeKey: 'custom:first_time_sign_in',
+                value: 'false'
+            }
+
+        }
+        return updateUserAttribute(input)
+    }
 }

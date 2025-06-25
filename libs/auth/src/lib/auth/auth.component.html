@@ -31,6 +31,11 @@
 <ng-template #signInTemplate>
     <form (ngSubmit)="signIn(signInForm)" #signInForm="ngForm">
         <h2>Sign In</h2>
+        @if (signInError) {
+        <div class="error-message">
+            {{ signInError }}
+        </div>
+        }
 
         <label for="sign-in-email">Email</label>
         <input id="sign-in-email" type="email" name="email" placeholder="Enter your email" required ngModel>
@@ -47,6 +52,12 @@
     <form (ngSubmit)="signUp(signUpForm)" #signUpForm="ngForm">
         <h2>Create an Account</h2>
 
+        @if (signUpError) {
+        <div class="error-message">
+            {{ signUpError }}
+        </div>
+        }
+
         <label for="sign-up-first-name">First Name</label>
         <input id="sign-up-first-name" type="text" name="firstName" placeholder="Enter your first name" required
             ngModel>
@@ -55,16 +66,36 @@
         <input id="sign-up-last-name" type="text" name="lastName" placeholder="Enter your last name" required ngModel>
 
         <label for="sign-up-email">Email</label>
-        <input id="sign-up-email" type="email" name="email" placeholder="Enter your email" required ngModel>
+        <input id="sign-up-email" type="email" name="email" placeholder="Enter your email" required email ngModel
+            #email="ngModel" />
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error-message">
+            <div *ngIf="email.errors?.['required']">Email is required.</div>
+            <div *ngIf="email.errors?.['email']">Please enter a valid email address.</div>
+        </div>
 
         <label for="sign-up-password">Password</label>
-        <input id="sign-up-password" type="password" name="password" placeholder="Enter your password" required ngModel>
+        <input id="sign-up-password" type="password" name="password" placeholder="Enter your password" required
+            minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" ngModel #password="ngModel" />
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error-message">
+            <div *ngIf="password.errors?.['required']">Password is required.</div>
+            <div *ngIf="password.errors?.['minlength']">Password must be at least 8 characters.</div>
+            <div *ngIf="password.errors?.['pattern']">
+                Password must contain uppercase, lowercase, number, and special character.
+            </div>
+        </div>
 
         <label for="sign-up-confirm-password">Confirm Password</label>
         <input id="sign-up-confirm-password" type="password" name="confirmPassword"
-            placeholder="Please confirm your password" required ngModel>
+            placeholder="Please confirm your password" required ngModel #confirmPassword="ngModel" />
+        <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)"
+            class="error-message">
+            <div *ngIf="confirmPassword.errors?.['required']">Please confirm your password.</div>
+            <div *ngIf="passwordsDoNotMatch">Passwords do not match.</div>
+        </div>
 
-        <button type="submit" class="amplify-button amplify-button--primary">Create Account</button>
+        <button type="submit" [disabled]="signUpForm.invalid">
+            Create Account
+        </button>
     </form>
 </ng-template>
 
@@ -73,9 +104,29 @@
     <form (ngSubmit)="verifyCode(codeForm)" #codeForm="ngForm">
         <h2>Verify Your Account</h2>
 
+        @if (signUpCodeError) {
+        <div class="error-message">
+            {{ signUpCodeError }}
+        </div>
+        }
+
+        @if (signUpCodeMessage) {
+        <div class="info-message">
+            {{ signUpCodeMessage }}
+        </div>
+        }
+
         <label for="auth-code">Verification Code</label>
         <input id="auth-code" type="text" name="code" placeholder="Enter the verification code" required ngModel>
 
         <button type="submit" class="amplify-button amplify-button--primary">Verify Code</button>
+
+        <div class="resend-code-text">
+            <small>
+                Didn't get your code?
+                <a href="#" (click)="resendSignUpCode(); $event.preventDefault()">Resend code</a>
+                after a few minutes.
+            </small>
+        </div>
     </form>
 </ng-template>

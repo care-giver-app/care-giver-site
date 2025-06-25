@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f9f9f9;
+    background-color: #cecaca;
 }
 
 .auth-box {
@@ -84,4 +84,33 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.error-message {
+    background-color: #fdecea;
+    color: #b71c1c;
+    border: 1px solid #f5c6cb;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(183, 28, 28, 0.08);
+}
+
+.info-message {
+    background-color: #e8f4fd;
+    color: #0c5460;
+    border: 1px solid #b8daff;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(183, 28, 28, 0.08);
+}
+
+.resend-code-text {
+    text-align: center;
+    margin-top: 1rem;
 }

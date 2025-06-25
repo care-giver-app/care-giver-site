@@ -43,7 +43,6 @@ export class UserService {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            password: "test123",
         }
 
         return this.http.post<CreateUserResponse>(this.userPath, requestBody);

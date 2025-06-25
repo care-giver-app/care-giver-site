@@ -22,7 +22,6 @@ export class AuthGuard implements CanActivate {
             await getCurrentUser();
             return true;
         } catch (err) {
-            console.log('User not authenticated', err);
             return this.router.createUrlTree(['/auth']);
         }
     }
