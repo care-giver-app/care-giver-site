@@ -12,7 +12,6 @@ import { Event } from '@care-giver-site/models';
 import { ReceiverService, EventService } from '@care-giver-site/services';
 
 
-
 @Component({
   selector: 'care-calendar',
   imports: [CommonModule, CalendarModule, CalendarHeaderComponent],

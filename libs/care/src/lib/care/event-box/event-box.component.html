@@ -18,22 +18,19 @@
     <button class="delete-event-button" (click)="onDeleteEvent(latestEvent?.eventId || '')">Delete Latest Event</button>
 </div>
 
-<!-- Modal -->
-<div class="modal" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <h3>Add {{ eventMetaData.type }}</h3>
-
+<care-modal [show]="showModal" [header]="'Add ' + eventMetaData.type" (close)="closeModal()">
+    <div modal-body>
         <label for="timestampInput">Timestamp</label>
-        <input id="timestampInput" [(ngModel)]="eventTimestampInput" type="datetime-local" value="" />
+        <input id="timestampInput" [(ngModel)]="eventTimestampInput" type="datetime-local" class="form-control" />
 
         @if (eventMetaData.dataName) {
         <label for="dataInput">{{ eventMetaData.dataName }}</label>
-        <input id="dataInput" [(ngModel)]="inputValue" type="number" placeholder="Enter {{ eventMetaData.dataName }}" />
+        <input id="dataInput" [(ngModel)]="inputValue" type="number" placeholder="Enter {{ eventMetaData.dataName }}"
+            class="form-control" />
         }
-
-        <div class="modal-actions">
-            <button class="modal-button" (click)="submitEvent()">Submit</button>
-            <button class="modal-button cancel" (click)="closeModal()">Cancel</button>
-        </div>
     </div>
-</div>
+    <div modal-footer>
+        <button class="btn btn-primary modal-button" (click)="submitEvent()">Add Event</button>
+        <button class="btn btn-secondary modal-button" (click)="closeModal()">Cancel</button>
+    </div>
+</care-modal>

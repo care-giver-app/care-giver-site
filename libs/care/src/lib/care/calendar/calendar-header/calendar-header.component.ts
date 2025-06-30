@@ -1,7 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {
-    CalendarEvent,
-    CalendarEventTimesChangedEvent,
     CalendarView,
     CalendarModule,
 } from 'angular-calendar';

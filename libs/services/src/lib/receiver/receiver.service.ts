@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Event, Receiver } from '@care-giver-site/models';
 import { AuthService } from '../auth/auth.service';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { formatRFC3339 } from 'date-fns'
 
 @Injectable({
@@ -14,6 +14,13 @@ export class ReceiverService {
         private http: HttpClient,
         private authService: AuthService,
     ) {
+    }
+
+    async getReceivers(userId: string, receiverIds: string[]): Promise<Receiver[]> {
+        const receiverPromises = receiverIds.map(id =>
+            this.getReceiver(id, userId).then(obs => firstValueFrom(obs))
+        );
+        return Promise.all(receiverPromises);
     }
 
     getReceiver(receiverId: string, userId: string): Promise<Observable<Receiver>> {

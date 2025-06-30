@@ -1,20 +1,17 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
+import { User } from '@care-giver-site/models'
 
 interface CreateUserResponse {
     userId: string;
     status: string;
 }
 
-interface GetUserResponse {
-    userId: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    primaryCareReceivers: string[];
-    additionalCareReceivers: string[];
+interface AddCareReceiverResponse {
+    receiverId: string;
+    status: string;
 }
 
 @Injectable({
@@ -23,19 +20,27 @@ interface GetUserResponse {
 export class UserService {
 
     private userPath = "/user/";
+    private primaryReceiverEndpoint = "primary-receiver/"
+    private additionalCareGiverEndpoint = "additional-receiver/"
 
     constructor(
         private http: HttpClient,
         private authService: AuthService,
     ) { }
 
-    getUserData(userId: string): Promise<Observable<GetUserResponse>> {
-        return this.authService.getBearerToken().then((token) => {
-            const headers: HttpHeaders = new HttpHeaders({
-                'Authorization': token,
-            });
-            return this.http.get<GetUserResponse>(`${this.userPath}${encodeURIComponent(userId)}`, { headers: headers });
-        })
+    async getUserData(userId: string): Promise<User | undefined> {
+        const token = await this.authService.getBearerToken();
+        const headers: HttpHeaders = new HttpHeaders({
+            'Authorization': token,
+        });
+        try {
+            return await firstValueFrom(
+                this.http.get<User>(`${this.userPath}${encodeURIComponent(userId)}`, { headers })
+            );
+        } catch (err) {
+            console.error('Error fetching user data:', err);
+            return undefined;
+        }
     }
 
     createUser(firstName: string, lastName: string, email: string): Observable<CreateUserResponse> {
@@ -46,7 +51,46 @@ export class UserService {
         }
 
         return this.http.post<CreateUserResponse>(this.userPath, requestBody);
+    }
 
+    async addCareReceiver(userId: string, firstName: string, lastName: string): Promise<AddCareReceiverResponse | undefined> {
+        const token = await this.authService.getBearerToken();
+        const headers: HttpHeaders = new HttpHeaders({
+            'Authorization': token,
+        });
+        const requestBody: any = {
+            firstName: firstName,
+            lastName: lastName,
+            userId: userId,
+        }
+        try {
+            return await firstValueFrom(
+                this.http.post<AddCareReceiverResponse>(`${this.userPath}${this.primaryReceiverEndpoint}`, requestBody, { headers })
+            );
+        } catch (err) {
+            console.error('Error adding care receiver:', err);
+            return undefined;
+        }
+    }
+
+    async addCareGiver(userId: string, receiverId: string, email: string): Promise<AddCareReceiverResponse | undefined> {
+        const token = await this.authService.getBearerToken();
+        const headers: HttpHeaders = new HttpHeaders({
+            'Authorization': token,
+        });
+        const requestBody: any = {
+            receiverId: receiverId,
+            email: email,
+            userId: userId,
+        }
+        try {
+            return await firstValueFrom(
+                this.http.post<AddCareReceiverResponse>(`${this.userPath}${this.additionalCareGiverEndpoint}`, requestBody, { headers })
+            );
+        } catch (err) {
+            console.error('Error adding additional care giver:', err);
+            return undefined;
+        }
     }
 
 }

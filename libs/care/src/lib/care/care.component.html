@@ -1,12 +1,58 @@
 <care-navbar></care-navbar>
-<h3 class="care-receiver-name">
-    <img src="assets/heart-care-icon.png" alt="care logo" /> {{ receiver.firstName }} {{ receiver.lastName }}
-</h3>
+
+<div class="care-receiver-header">
+    <div class="care-receiver-info">
+        <img src="assets/heart-care-icon.png" alt="care logo" />
+        <select class="receiver-select" [(ngModel)]="selectedReceiverId" (change)="onReceiverChange()">
+            <option *ngFor="let r of receivers" [value]="r.receiverId">
+                {{ r.firstName }} {{ r.lastName }}
+            </option>
+        </select>
+    </div>
+    <div class="care-receiver-actions">
+        <button class="btn btn-primary" (click)="showAddReceiverModal = true" title="Add Care Receiver">
+            Add Care Receiver
+        </button>
+        <button class="btn btn-primary" (click)="showAddCareGiverModal = true" title="Add Additional Care Giver">
+            Add Additional Care Giver
+        </button>
+    </div>
+</div>
+
 <div class="care-container">
     <care-calendar class="calendar-container" [events]="events"></care-calendar>
     <div class="events-container">
         <h1>Latest Events</h1>
         <care-event-box *ngFor="let type of eventTypes" [eventMetaData]="type" [events]="events"
-            [receiverId]="receiverId" (newEvent)="getLatestEvents()"></care-event-box>
+            [receiverId]="selectedReceiverId" (newEvent)="getLatestEvents()"></care-event-box>
     </div>
 </div>
+
+<care-modal [show]="showAddReceiverModal" header="Add Care Receiver" (close)="showAddReceiverModal = false">
+    <div modal-body>
+        <form (ngSubmit)="submitAddReceiver()" #addReceiverForm="ngForm">
+            <label>First Name</label>
+            <input type="text" [(ngModel)]="newReceiver.firstName" name="firstName" required class="form-control" />
+            <label>Last Name</label>
+            <input type="text" [(ngModel)]="newReceiver.lastName" name="lastName" required class="form-control" />
+        </form>
+    </div>
+    <div modal-footer>
+        <button class="btn btn-primary modal-button" (click)="submitAddReceiver()">Add</button>
+        <button class="btn btn-secondary modal-button" (click)="showAddReceiverModal = false">Cancel</button>
+    </div>
+</care-modal>
+
+<care-modal [show]="showAddCareGiverModal" header="Add Additional Care Giver" (close)="showAddCareGiverModal = false">
+    <div modal-body>
+        <form (ngSubmit)="submitAddCareGiver()" #addCareGiverForm="ngForm">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="additionalCareGiverEmail" name="careGiverEmail" required
+                class="form-control" />
+        </form>
+    </div>
+    <div modal-footer>
+        <button class="btn btn-primary modal-button" (click)="submitAddCareGiver()">Add</button>
+        <button class="btn btn-secondary modal-button" (click)="showAddCareGiverModal = false">Cancel</button>
+    </div>
+</care-modal>
