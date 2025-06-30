@@ -1,12 +1,23 @@
 <care-navbar></care-navbar>
 <h3 class="care-receiver-name">
-    <img src="assets/heart-care-icon.png" alt="care logo" /> {{ receiver.firstName }} {{ receiver.lastName }}
+    <img src="assets/heart-care-icon.png" alt="care logo" />
+    <select class="receiver-select" [(ngModel)]="selectedReceiverId" (change)="onReceiverChange()">
+        <option *ngFor="let r of receivers" [value]="r.receiverId">
+            {{ r.firstName }} {{ r.lastName }}
+        </option>
+    </select>
 </h3>
 <div class="care-container">
-    <care-calendar class="calendar-container" [events]="events"></care-calendar>
-    <div class="events-container">
-        <h1>Latest Events</h1>
-        <care-event-box *ngFor="let type of eventTypes" [eventMetaData]="type" [events]="events"
-            [receiverId]="receiverId" (newEvent)="getLatestEvents()"></care-event-box>
+    <div class="row">
+        <div class="col-md-3 col-sm-12 event-col">
+            @for (type of eventTypes; track $index){
+            <care-event-box [eventMetaData]="type" [events]="events" [receiverId]="selectedReceiverId"
+                (newEvent)="getLatestEvents()">
+            </care-event-box>
+            }
+        </div>
+        <div class="col-md-9 col-sm-12">
+            <care-calendar class="calendar-container" [events]="events"></care-calendar>
+        </div>
     </div>
 </div>

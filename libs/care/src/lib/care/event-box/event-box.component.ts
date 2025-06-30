@@ -1,12 +1,14 @@
 import { Component, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventMetadata, Event, DataPoint } from '@care-giver-site/models';
+import { EventMetadata, Event, DataPoint, User } from '@care-giver-site/models';
 import { ReceiverService, UserService, AuthService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component';
+
 
 @Component({
   selector: 'care-event-box',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './event-box.component.html',
   styleUrl: './event-box.component.css',
 })
@@ -59,15 +61,10 @@ export class EventBoxComponent implements OnChanges {
   }
 
   private fetchLoggedUser(userId: string) {
-    this.userService.getUserData(userId).then((observable) => {
-      observable.subscribe({
-        next: (user) => {
-          this.loggedUser = `${user.firstName} ${user.lastName}`;
-        },
-        error: (err) => {
-          console.error('Error fetching user data:', err);
-        },
-      });
+    this.userService.getUserData(userId).then((user: User | undefined) => {
+      if (user) {
+        this.loggedUser = `${user.firstName} ${user.lastName}`;
+      }
     });
   }
 
