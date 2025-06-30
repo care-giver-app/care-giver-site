@@ -82,21 +82,23 @@ export class CareComponent implements OnInit {
   }
 
   submitAddReceiver() {
-    // Validate and handle new receiver creation
-    // Example: this.receiverService.createReceiver(this.newReceiver).subscribe(...)
-    this.showAddReceiverModal = false;
     this.userService.addCareReceiver(this.userId, this.newReceiver.firstName, this.newReceiver.lastName).then((resp) => {
       if (resp) {
         this.fetchReceivers(resp.receiverId);
       }
+      this.showAddReceiverModal = false;
+      this.newReceiver = { firstName: '', lastName: '' };
     })
   }
 
   submitAddCareGiver() {
-    // Validate and handle adding additional care giver
-    // Example: this.userService.addCareGiver(this.additionalCareGiverEmail).subscribe(...)
-    this.showAddCareGiverModal = false;
-    this.additionalCareGiverEmail = '';
+    this.userService.addCareGiver(this.userId, this.selectedReceiverId, this.additionalCareGiverEmail).then((resp) => {
+      if (resp) {
+        console.log('Care Giver added successfully:')
+      }
+      this.showAddCareGiverModal = false;
+      this.additionalCareGiverEmail = '';
+    })
   }
 
 }

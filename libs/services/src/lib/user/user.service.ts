@@ -21,6 +21,7 @@ export class UserService {
 
     private userPath = "/user/";
     private primaryReceiverEndpoint = "primary-receiver/"
+    private additionalCareGiverEndpoint = "additional-receiver/"
 
     constructor(
         private http: HttpClient,
@@ -68,6 +69,26 @@ export class UserService {
             );
         } catch (err) {
             console.error('Error adding care receiver:', err);
+            return undefined;
+        }
+    }
+
+    async addCareGiver(userId: string, receiverId: string, email: string): Promise<AddCareReceiverResponse | undefined> {
+        const token = await this.authService.getBearerToken();
+        const headers: HttpHeaders = new HttpHeaders({
+            'Authorization': token,
+        });
+        const requestBody: any = {
+            receiverId: receiverId,
+            email: email,
+            userId: userId,
+        }
+        try {
+            return await firstValueFrom(
+                this.http.post<AddCareReceiverResponse>(`${this.userPath}${this.additionalCareGiverEndpoint}`, requestBody, { headers })
+            );
+        } catch (err) {
+            console.error('Error adding additional care giver:', err);
             return undefined;
         }
     }
