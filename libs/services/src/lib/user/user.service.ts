@@ -9,12 +9,18 @@ interface CreateUserResponse {
     status: string;
 }
 
+interface AddCareReceiverResponse {
+    receiverId: string;
+    status: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
 
     private userPath = "/user/";
+    private primaryReceiverEndpoint = "primary-receiver/"
 
     constructor(
         private http: HttpClient,
@@ -44,6 +50,26 @@ export class UserService {
         }
 
         return this.http.post<CreateUserResponse>(this.userPath, requestBody);
+    }
+
+    async addCareReceiver(userId: string, firstName: string, lastName: string): Promise<AddCareReceiverResponse | undefined> {
+        const token = await this.authService.getBearerToken();
+        const headers: HttpHeaders = new HttpHeaders({
+            'Authorization': token,
+        });
+        const requestBody: any = {
+            firstName: firstName,
+            lastName: lastName,
+            userId: userId,
+        }
+        try {
+            return await firstValueFrom(
+                this.http.post<AddCareReceiverResponse>(`${this.userPath}${this.primaryReceiverEndpoint}`, requestBody, { headers })
+            );
+        } catch (err) {
+            console.error('Error adding care receiver:', err);
+            return undefined;
+        }
     }
 
 }

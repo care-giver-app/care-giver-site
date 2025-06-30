@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, inject, ViewChild, ElementRef, Directive } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import {
@@ -21,8 +21,6 @@ import { ReceiverService, EventService } from '@care-giver-site/services';
 })
 export class CareCalendarComponent implements OnChanges {
   @Input() events!: Event[];
-
-  @ViewChild('.cal-time-events') calTimeEvents!: ElementRef
 
   view: CalendarView = CalendarView.Week;
 
