@@ -1,3 +1,7 @@
+.care-body {
+    background: #f5f6fa;
+}
+
 .receiver-select {
     font-size: 1.1rem;
     font-weight: 600;
@@ -24,28 +28,6 @@
 .receiver-select:focus {
     border-color: #004ba0;
     box-shadow: 0 0 0 2px #bbdefb;
-}
-
-.care-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.events-container {
-    flex: 1;
-    background-color: #f0f0f0;
-    padding: 1rem;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.calendar-container {
-    flex: 5;
-    min-width: 300px;
-    overflow-x: scroll;
-    max-width: 100%;
 }
 
 .care-receiver-header {
@@ -99,25 +81,8 @@
     font-size: 1rem;
 }
 
-.modal-button {
-    margin: 0 0.5rem;
-}
-
 /* Responsive design for mobile view */
 @media (max-width: 768px) {
-    .events-container {
-        max-width: 100%;
-    }
-
-    .care-container {
-        flex-direction: column;
-        /* Stack items vertically */
-    }
-
-    .events-container {
-        order: -1;
-    }
-
     .care-receiver-header {
         flex-direction: column;
         align-items: flex-start;

@@ -1,0 +1,98 @@
+<div class="recent-activity-card">
+    <div class="recent-activity-header">
+        <h2 class="recent-activity-title">Recent Activity</h2>
+        <button class="add-event-btn" type="button" (click)="onLogEvent()">+ Add Event</button>
+    </div>
+    <table class="recent-activity-table">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Last Logged</th>
+                <th>Logged By</th>
+                <th>Data Point</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (row of rows; track row.meta.type) {
+            <tr>
+                <td>
+                    <img class="event-icon" [src]="row.meta.icon" alt="{{ row.meta.type }}">
+                    <span class="event-name">{{ row.meta.type }}</span>
+                </td>
+                <td>
+                    @if (row.readableTimestamp) {
+                    {{ row.readableTimestamp }}
+                    }
+                    @else {
+                    N/A
+                    }
+                </td>
+                <td>
+                    @if (row.loggedUser) {
+                    {{ row.loggedUser }}
+                    }
+                    @else {
+                    N/A
+                    }
+                </td>
+                <td>
+                    @if (row.data) {
+                    {{ row.data.value }} {{ row.meta.data ? row.meta.data.unit : '' }}
+                    }
+                    @else {
+                    N/A
+                    }
+                </td>
+                <td>
+                    <button class="icon-btn log-now-btn" title="Log Now" (click)="onQuickLogEvent(row.meta.type)">
+                        <!-- Plus SVG (green) -->
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <circle cx="10" cy="10" r="9" stroke="#43a047" stroke-width="2" fill="#fff" />
+                            <rect x="9" y="5" width="2" height="10" rx="1" fill="#43a047" />
+                            <rect x="5" y="9" width="10" height="2" rx="1" fill="#43a047" />
+                        </svg>
+                    </button>
+                    <button class="icon-btn delete-btn" title="Delete Latest Event"
+                        (click)="onDeleteEvent(row.eventId || '')">
+                        <!-- Trash SVG (bigger) -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <rect x="7" y="10" width="10" height="10" rx="2" fill="#e53935" />
+                            <rect x="11" y="14" width="2" height="4" rx="1" fill="#fff" />
+                            <rect x="13" y="14" width="2" height="4" rx="1" fill="#fff" />
+                            <rect x="8" y="6" width="8" height="2" rx="1" fill="#e53935" />
+                            <rect x="10" y="4" width="4" height="2" rx="1" fill="#e53935" />
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<care-modal [show]="showModal" [header]="'Add Event'" (close)="closeModal()">
+    <div modal-body>
+        <label for="eventTypeSelect">Type</label>
+        <select id="eventTypeSelect" [(ngModel)]="selectedEventType" (ngModelChange)="getMetadata($event)"
+            class="form-control">
+            @for (type of eventTypes; track type) {
+            <option [value]="type.type">{{ type.type }}</option>
+            }
+        </select>
+        <div class="modal-row">
+            <label for="dateInput">Date</label>
+            <input id="dateInput" type="date" class="form-control" [(ngModel)]="dateValue" />
+            <label for="timeInput">Time</label>
+            <input id="timeInput" type="time" class="form-control" [(ngModel)]="timeValue" />
+        </div>
+        @if (selectedEventMetadata && selectedEventMetadata.data) {
+        <label for="dataInput">{{ selectedEventMetadata.data.name }}</label>
+        <input id="dataInput" [(ngModel)]="inputData" type="number"
+            placeholder="Enter {{ selectedEventMetadata.data.name }}" class="form-control" />
+        }
+    </div>
+    <div modal-footer>
+        <button class="btn btn-primary modal-button" (click)="submitEvent()">Add Event</button>
+        <button class="btn btn-secondary modal-button" (click)="closeModal()">Cancel</button>
+    </div>
+</care-modal>

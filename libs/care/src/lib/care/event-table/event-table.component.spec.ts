@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EventBoxComponent } from './event-box.component';
+import { EventTableComponent } from './event-table.component';
 
 describe('CareComponent', () => {
-  let component: EventBoxComponent;
-  let fixture: ComponentFixture<EventBoxComponent>;
+  let component: EventTableComponent;
+  let fixture: ComponentFixture<EventTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EventBoxComponent],
+      imports: [EventTableComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EventBoxComponent);
+    fixture = TestBed.createComponent(EventTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,11 @@
+.calendar-container {
+    flex: 5;
+    min-width: 300px;
+    overflow-x: scroll;
+    max-width: 100%;
+    padding: 1.5rem;
+    margin: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CareCalendarComponent } from './calendar/calendar.component';
 import { EventBoxComponent } from './event-box/event-box.component';
+import { EventTableComponent } from './event-table/event-table.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ModalComponent } from './modal/modal.component';
 import { ReceiverService, EventTypes, AuthService, UserService } from '@care-giver-site/services'
@@ -10,7 +11,7 @@ import { Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 
 @Component({
   selector: 'lib-care',
-  imports: [CommonModule, CareCalendarComponent, EventBoxComponent, NavbarComponent, FormsModule, ModalComponent],
+  imports: [CommonModule, CareCalendarComponent, EventBoxComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent],
   templateUrl: './care.component.html',
   styleUrl: './care.component.css',
 })

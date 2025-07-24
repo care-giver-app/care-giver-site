@@ -15,6 +15,7 @@
     "@angular/router": "~19.2.0",
     "@aws-amplify/ui-angular": "^5.1.2",
     "@dotenvx/dotenvx": "^1.42.0",
+    "@ng-icons/huge-icons": "^32.1.0",
     "angular-calendar": "^0.31.1",
     "aws-amplify": "^6.14.4",
     "bootstrap": "^5.3.3",

@@ -1,31 +1,30 @@
-<care-navbar></care-navbar>
+<div class="care-body">
+    <care-navbar></care-navbar>
 
-<div class="care-receiver-header">
-    <div class="care-receiver-info">
-        <img src="assets/heart-care-icon.png" alt="care logo" />
-        <select class="receiver-select" [(ngModel)]="selectedReceiverId" (change)="onReceiverChange()">
-            <option *ngFor="let r of receivers" [value]="r.receiverId">
-                {{ r.firstName }} {{ r.lastName }}
-            </option>
-        </select>
+    <div class="care-receiver-header">
+        <div class="care-receiver-info">
+            <img src="assets/heart-care-icon.png" alt="care logo" />
+            <select class="receiver-select" [(ngModel)]="selectedReceiverId" (change)="onReceiverChange()">
+                <option *ngFor="let r of receivers" [value]="r.receiverId">
+                    {{ r.firstName }} {{ r.lastName }}
+                </option>
+            </select>
+        </div>
+        <div class="care-receiver-actions">
+            <button class="btn btn-primary" (click)="showAddReceiverModal = true" title="Add Care Receiver">
+                Add Care Receiver
+            </button>
+            <button class="btn btn-primary" (click)="showAddCareGiverModal = true" title="Add Additional Care Giver">
+                Add Additional Care Giver
+            </button>
+        </div>
     </div>
-    <div class="care-receiver-actions">
-        <button class="btn btn-primary" (click)="showAddReceiverModal = true" title="Add Care Receiver">
-            Add Care Receiver
-        </button>
-        <button class="btn btn-primary" (click)="showAddCareGiverModal = true" title="Add Additional Care Giver">
-            Add Additional Care Giver
-        </button>
-    </div>
-</div>
 
-<div class="care-container">
-    <care-calendar class="calendar-container" [events]="events"></care-calendar>
-    <div class="events-container">
-        <h1>Latest Events</h1>
-        <care-event-box *ngFor="let type of eventTypes" [eventMetaData]="type" [events]="events"
-            [receiverId]="selectedReceiverId" (newEvent)="getLatestEvents()"></care-event-box>
-    </div>
+    <care-event-table [events]="events" [eventTypes]="eventTypes" [receiverId]="selectedReceiverId"
+        (newEvent)="getLatestEvents()"></care-event-table>
+
+
+    <care-calendar [events]="events"></care-calendar>
 </div>
 
 <care-modal [show]="showAddReceiverModal" header="Add Care Receiver" (close)="showAddReceiverModal = false">
