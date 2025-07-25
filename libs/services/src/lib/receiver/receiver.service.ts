@@ -24,14 +24,33 @@ export class ReceiverService {
     }
 
     getReceiver(receiverId: string, userId: string): Promise<Observable<Receiver>> {
+        const cacheKey = `receiverCache_${receiverId}_${userId}`;
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            try {
+                const receiver: Receiver = JSON.parse(cached);
+                // Return an Observable that emits the cached value
+                return Promise.resolve(new Observable<Receiver>(subscriber => {
+                    subscriber.next(receiver);
+                    subscriber.complete();
+                }));
+            } catch {
+                localStorage.removeItem(cacheKey);
+            }
+        }
         return this.authService.getBearerToken().then((token) => {
             const headers: HttpHeaders = new HttpHeaders({
                 'Authorization': token,
             });
-
             const url = `/receiver/${encodeURIComponent(receiverId)}?userId=${encodeURIComponent(userId)}`;
-            return this.http.get<Receiver>(url, { headers: headers });
-        })
+            const obs = this.http.get<Receiver>(url, { headers: headers });
+            obs.subscribe({
+                next: (receiver) => {
+                    localStorage.setItem(cacheKey, JSON.stringify(receiver));
+                }
+            });
+            return obs;
+        });
     }
 
     getReceiverEvents(receiverId: string, userId: string): Promise<Observable<Event[]>> {

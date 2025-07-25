@@ -29,14 +29,27 @@ export class UserService {
     ) { }
 
     async getUserData(userId: string): Promise<User | undefined> {
+        const cacheKey = `userCache_${userId}`;
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            try {
+                return JSON.parse(cached) as User;
+            } catch {
+                localStorage.removeItem(cacheKey);
+            }
+        }
         const token = await this.authService.getBearerToken();
         const headers: HttpHeaders = new HttpHeaders({
             'Authorization': token,
         });
         try {
-            return await firstValueFrom(
+            const user = await firstValueFrom(
                 this.http.get<User>(`${this.userPath}${encodeURIComponent(userId)}`, { headers })
             );
+            if (user) {
+                localStorage.setItem(cacheKey, JSON.stringify(user));
+            }
+            return user;
         } catch (err) {
             console.error('Error fetching user data:', err);
             return undefined;

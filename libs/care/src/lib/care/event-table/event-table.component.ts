@@ -68,9 +68,8 @@ export class EventTableComponent implements OnInit, OnChanges {
 
   private async updateRowsWithEvents() {
     for (let i = 0; i < this.eventTypes.length; i++) {
-      const eventType = this.eventTypes[i].type;
-      const latestEvent = await this.getLatestEvent(eventType);
-      this.selectedEventMetadata = undefined;
+      const meta = this.eventTypes[i];
+      const latestEvent = await this.getLatestEvent(meta);
       if (latestEvent) {
         this.rows[i].data = latestEvent.data;
         this.rows[i].loggedUser = latestEvent.loggedUser;
@@ -84,15 +83,14 @@ export class EventTableComponent implements OnInit, OnChanges {
     }
   }
 
-  private async getLatestEvent(eventType: string): Promise<RowEntry | undefined> {
-    const events = this.receiverService.getEventsOfType(this.events, eventType);
+  private async getLatestEvent(meta: EventMetadata): Promise<RowEntry | undefined> {
+    const events = this.receiverService.getEventsOfType(this.events, meta.type);
     if (events.length > 0) {
       const latestEvent = events[0];
       const readableTimestamp = this.formatEventTime(new Date(latestEvent.timestamp));
       const loggedUser = await this.fetchLoggedUser(latestEvent.userId);
-      this.getMetadata(eventType);
       return {
-        meta: this.selectedEventMetadata!,
+        meta: meta,
         data: latestEvent.data ? latestEvent.data[0] : undefined,
         loggedUser,
         readableTimestamp,
