@@ -3,8 +3,8 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  margin: 2rem;
+  padding: 1rem;
+  margin: 0.5rem;
 }
 
 .recent-activity-title {
@@ -109,6 +109,12 @@
 .delete-btn svg {
   width: 1.7rem;
   height: 1.7rem;
+}
+
+.wrap-cell {
+  white-space: normal;
+  word-break: break-word;
+  max-width: 10rem;
 }
 
 /* Responsive: horizontal scroll on small screens */

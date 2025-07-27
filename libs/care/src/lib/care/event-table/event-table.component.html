@@ -19,7 +19,7 @@
                     <img class="event-icon" [src]="row.meta.icon" alt="{{ row.meta.type }}">
                     <span class="event-name">{{ row.meta.type }}</span>
                 </td>
-                <td>
+                <td class="wrap-cell">
                     @if (row.readableTimestamp) {
                     {{ row.readableTimestamp }}
                     }
@@ -27,7 +27,7 @@
                     N/A
                     }
                 </td>
-                <td>
+                <td class="wrap-cell">
                     @if (row.loggedUser) {
                     {{ row.loggedUser }}
                     }
@@ -43,7 +43,7 @@
                     N/A
                     }
                 </td>
-                <td>
+                <td style="border: none;">
                     <button class="icon-btn log-now-btn" title="Log Now" (click)="onQuickLogEvent(row.meta.type)">
                         <!-- Plus SVG (green) -->
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
