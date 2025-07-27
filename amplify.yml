@@ -7,6 +7,8 @@ applications:
             - yarn install
         build:
           commands:
+            - npx nx show projects
+            - yarn workspaces list
             - export CLIENT_ID=$(aws ssm get-parameter --name "/amplify/shared/dkil4qksjo9wf/CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)
             - export CLIENT_SECRET=$(aws ssm get-parameter --name "/amplify/shared/dkil4qksjo9wf/CLIENT_SECRET" --with-decryption --query "Parameter.Value" --output text)
             - npx nx build care-giver-site --configuration=production --skip-nx-cache --verbose
