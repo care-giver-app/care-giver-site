@@ -4,7 +4,7 @@ applications:
       phases:
         preBuild:
           commands:
-            - yarn install --prefer-offline
+            - yarn install
         build:
           commands:
             - export CLIENT_ID=$(aws ssm get-parameter --name "/amplify/shared/dkil4qksjo9wf/CLIENT_ID" --with-decryption --query "Parameter.Value" --output text)
