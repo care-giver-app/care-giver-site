@@ -4,48 +4,52 @@ import { EventMetadata } from '@care-giver-site/models';
 export const EventTypes: EventMetadata[] = [
     {
         type: 'Medication',
-        dataName: '',
         color: {
             primary: '#9b59b6',
             secondary: '#e1bee7',
             secondaryText: '#9b59b6',
-        }
+        },
+        icon: 'assets/medication-icon.png'
     },
     {
         type: 'Bowel Movement',
-        dataName: '',
         color: {
             primary: '#8B4513',
             secondary: '#bcaaa4',
             secondaryText: '#8B4513',
-        }
+        },
+        icon: 'assets/bowel-movement-icon.png'
     },
     {
         type: 'Shower',
-        dataName: '',
         color: {
             primary: '#1e90ff',
             secondary: '#D1E8FF',
             secondaryText: '#1e90ff',
-        }
+        },
+        icon: 'assets/shower-icon.png'
     },
     {
         type: 'Urination',
-        dataName: '',
         color: {
             primary: '#d4ac0d',
             secondary: '#FFF8DC',
             secondaryText: '#d4ac0d',
-        }
+        },
+        icon: 'assets/urination-icon.png'
     },
     {
         type: 'Weight',
-        dataName: 'Weight',
+        data: {
+            name: "Weight",
+            unit: "lbs"
+        },
         color: {
             primary: '#27ae60',
             secondary: '#d4efdf',
             secondaryText: '#27ae60',
-        }
+        },
+        icon: 'assets/weight-icon.png'
     }
 ];
 

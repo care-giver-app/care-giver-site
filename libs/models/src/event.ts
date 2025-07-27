@@ -1,11 +1,15 @@
 export interface EventMetadata {
     type: string;
-    dataName: string;
+    data?: {
+        name: string;
+        unit: string;
+    }
     color: {
         primary: string;
         secondary: string;
         secondaryText: string;
     };
+    icon: string;
 }
 
 export interface DataPoint {
