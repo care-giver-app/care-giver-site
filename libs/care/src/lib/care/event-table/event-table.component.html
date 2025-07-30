@@ -80,10 +80,8 @@
             }
         </select>
         <div class="modal-row">
-            <label for="dateInput">Date</label>
-            <input id="dateInput" type="date" class="form-control" [(ngModel)]="dateValue" />
-            <label for="timeInput">Time</label>
-            <input id="timeInput" type="time" class="form-control" [(ngModel)]="timeValue" />
+            <label for="timestampInput">Timestamp</label>
+            <input id="timestampInput" type="datetime-local" class="form-control" [(ngModel)]="timestampValue" />
         </div>
         @if (selectedEventMetadata && selectedEventMetadata.data) {
         <label for="dataInput">{{ selectedEventMetadata.data.name }}</label>

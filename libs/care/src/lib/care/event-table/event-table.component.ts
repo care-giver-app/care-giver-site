@@ -35,8 +35,7 @@ export class EventTableComponent implements OnInit, OnChanges {
   // Modal state
   showModal = false;
   inputData = '';
-  dateValue = '';
-  timeValue = '';
+  timestampValue = '';
   selectedEventType = '';
   selectedEventMetadata?: EventMetadata;
 
@@ -141,13 +140,18 @@ export class EventTableComponent implements OnInit, OnChanges {
 
   private resetModalState() {
     this.inputData = '';
+    this.timestampValue = this.getLocaleDateTime();
+  }
+
+  private getLocaleDateTime(): string {
     const now = new Date();
-    this.dateValue = now.toISOString().slice(0, 10);
-    this.timeValue = now.toTimeString().slice(0, 5);
+    const offset = now.getTimezoneOffset();
+    const localDate = new Date(now.getTime() - (offset * 60 * 1000));
+    return localDate.toISOString().split('T')[0] + 'T' + now.toTimeString().slice(0, 5);
   }
 
   submitEvent() {
-    const timestamp = new Date(`${this.dateValue}T${this.timeValue}`).toISOString();
+    const timestamp = new Date(`${this.timestampValue}`).toISOString();
     this.addEvent(this.selectedEventType, this.inputData, timestamp);
     this.closeModal();
   }
