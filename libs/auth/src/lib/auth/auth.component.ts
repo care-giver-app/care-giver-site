@@ -36,6 +36,11 @@ export class AuthComponent {
 
   private router = new Router()
   constructor(public authenticator: AuthenticatorService, private ref: ChangeDetectorRef) {
+    this.authService.isLoggedIn().then((isLoggedIn) => {
+      if (isLoggedIn) {
+        this.routeToHome();
+      }
+    })
   }
 
   routeToHome() {

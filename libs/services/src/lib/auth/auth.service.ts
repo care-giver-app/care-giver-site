@@ -15,7 +15,8 @@ import {
     ResendSignUpCodeInput,
     updateUserAttribute,
     UpdateUserAttributeInput,
-    UpdateUserAttributeOutput
+    UpdateUserAttributeOutput,
+    getCurrentUser,
 } from '@aws-amplify/auth'
 import { SignInAction, SignUpCodeAction, SignUpAction, SignUpInfomation } from '@care-giver-site/models'
 
@@ -170,5 +171,14 @@ export class AuthService {
 
         }
         return updateUserAttribute(input)
+    }
+
+    async isLoggedIn(): Promise<boolean> {
+        try {
+            await getCurrentUser();
+            return true;
+        } catch (err) {
+            return false
+        }
     }
 }
