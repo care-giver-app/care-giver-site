@@ -1,0 +1,37 @@
+@switch (eventAction) {
+@case('delete'){
+<care-modal [show]="showModal" [header]="'Delete Event?'" (close)="closeModal()">
+    <div modal-body>
+        <p>Are you sure you want to delete this event?</p>
+        <div><strong>Event:</strong> {{ eventType }}</div>
+        <div><strong>Logged By:</strong> {{loggedUser }}</div>
+        <div><strong>Timestamp:</strong> {{ readableTimestamp }}</div>
+        @if (data) {
+        <div><strong>{{ data.name }}:</strong> {{ data.value }} {{ dataUnit }}
+        </div>
+        }
+    </div>
+    <div modal-footer>
+        <button class="btn btn-danger modal-button" (click)="deleteEvent()">Delete</button>
+        <button class="btn btn-secondary modal-button" (click)="closeModal()">Cancel</button>
+    </div>
+</care-modal>
+}
+@case('view'){
+<care-modal [show]="showModal" [header]="'Event Info'" (close)="closeModal()">
+    <div modal-body>
+        <div><strong>Event:</strong> {{ eventType }}</div>
+        <div><strong>Logged By:</strong> {{loggedUser }}</div>
+        <div><strong>Timestamp:</strong> {{ readableTimestamp }}</div>
+        @if (data) {
+        <div><strong>{{ data.name }}:</strong> {{ data.value }} {{ dataUnit }}
+        </div>
+        }
+    </div>
+    <div modal-footer>
+        <button class="btn btn-danger modal-button" (click)="confirmDeleteEvent()">Delete</button>
+        <button class="btn btn-secondary modal-button" (click)="closeModal()">Cancel</button>
+    </div>
+</care-modal>
+}
+}

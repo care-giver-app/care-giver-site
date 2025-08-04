@@ -94,7 +94,7 @@ export class EventService {
 
     private formatEventTime(date: Date): string {
         if (!date) return 'Not Available';
-        const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
+        const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
         if (this.isToday(date)) return `Today at ${date.toLocaleTimeString([], timeOptions)}`;
         if (this.isYesterday(date)) return `Yesterday at ${date.toLocaleTimeString([], timeOptions)}`;
         return `${date.toLocaleDateString([], { weekday: 'long' })}, ${date.toLocaleDateString([], { dateStyle: 'long' })} ${date.toLocaleTimeString([], timeOptions)}`;

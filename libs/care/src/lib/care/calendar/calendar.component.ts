@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import {
@@ -10,18 +10,19 @@ import {
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
 import { Event } from '@care-giver-site/models';
 import { ReceiverService, EventService, UserService } from '@care-giver-site/services';
-import { ModalComponent } from '../modal/modal.component';
 
 
 @Component({
   selector: 'care-calendar',
-  imports: [CommonModule, CalendarModule, CalendarHeaderComponent, ModalComponent],
+  imports: [CommonModule, CalendarModule, CalendarHeaderComponent],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CareCalendarComponent implements OnChanges {
   @Input() events!: Event[];
+  @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
+  @Output() eventToView: EventEmitter<Event> = new EventEmitter<Event>();
 
   view: CalendarView = CalendarView.Week;
 
@@ -53,6 +54,7 @@ export class CareCalendarComponent implements OnChanges {
           start: new Date(event.timestamp),
           title: event.type,
           color: this.eventService.getEventColor(event.type),
+          id: event.eventId,
         });
       }
 
@@ -80,10 +82,10 @@ export class CareCalendarComponent implements OnChanges {
   }
 
   showEvent(event: CalendarEvent) {
-    const foundEvent = this.events.find(e => new Date(e.timestamp).getTime() === event.start.getTime());
+    const foundEvent = this.events.find(e => e.eventId === event.id)
     if (foundEvent) {
       this.selectedEvent = foundEvent;
-      this.showEventModal = true;
+      this.eventToView.emit(this.selectedEvent)
     }
   }
 
@@ -91,4 +93,12 @@ export class CareCalendarComponent implements OnChanges {
     this.showEventModal = false;
     this.selectedEvent = undefined;
   }
+
+  deleteEvent() {
+    if (this.selectedEvent) {
+      this.eventToDelete.emit(this.selectedEvent);
+      this.closeEventModal();
+    }
+  }
+
 }

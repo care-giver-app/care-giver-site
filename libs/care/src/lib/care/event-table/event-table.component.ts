@@ -4,7 +4,6 @@ import { EventMetadata, Event, DataPoint, User, AlertType } from '@care-giver-si
 import { ReceiverService, UserService, AuthService, AlertService, EventService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
-import { AlertComponent } from '../alert/alert.component';
 
 interface RowEntry {
   meta: EventMetadata;
@@ -16,15 +15,15 @@ interface RowEntry {
 
 @Component({
   selector: 'care-event-table',
-  imports: [CommonModule, FormsModule, ModalComponent, AlertComponent],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './event-table.component.html',
   styleUrl: './event-table.component.css',
 })
 export class EventTableComponent implements OnInit, OnChanges {
   @Input() eventTypes!: EventMetadata[]
   @Input() events!: Event[];
-  @Input() receiverId!: string;
   @Output() newEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
 
   rows: RowEntry[] = [];
   private receiverService = inject(ReceiverService);
@@ -34,6 +33,7 @@ export class EventTableComponent implements OnInit, OnChanges {
   private eventService = inject(EventService);
 
   currentUserId: string = '';
+  receiverId: string | undefined = undefined;
 
   // Modal state
   showModal = false;
@@ -42,9 +42,6 @@ export class EventTableComponent implements OnInit, OnChanges {
   selectedEventType = '';
   selectedEventMetadata?: EventMetadata;
 
-  // Delete confirmation modal state
-  showDeleteModal = false;
-  eventToDelete: RowEntry | null = null;
 
   constructor() { this.initializeCurrentUser(); }
 
@@ -57,6 +54,7 @@ export class EventTableComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.receiverId = this.receiverService.currentReceiverId;
     this.rows = this.eventTypes.map(meta => ({
       meta: meta,
       data: undefined,
@@ -94,7 +92,7 @@ export class EventTableComponent implements OnInit, OnChanges {
     if (events.length > 0) {
       const latestEvent = events[0];
       const readableTimestamp = this.eventService.getReadableTimestamp(latestEvent);
-      const loggedUser = await this.fetchLoggedUser(latestEvent.userId);
+      const loggedUser = await this.userService.getLoggedUser(latestEvent.userId);
       return {
         meta: meta,
         data: latestEvent.data ? latestEvent.data[0] : undefined,
@@ -104,12 +102,6 @@ export class EventTableComponent implements OnInit, OnChanges {
       };
     }
     return undefined;
-  }
-
-  private fetchLoggedUser(userId: string): Promise<string> {
-    return this.userService.getUserData(userId).then((user: User | undefined) =>
-      user ? `${user.firstName} ${user.lastName}` : "Not Available"
-    );
   }
 
   onQuickLogEvent(type: string) {
@@ -155,7 +147,7 @@ export class EventTableComponent implements OnInit, OnChanges {
 
     try {
       const observable = await this.receiverService.addEvent(
-        this.receiverId,
+        this.receiverId!,
         this.currentUserId,
         type,
         data,
@@ -168,57 +160,18 @@ export class EventTableComponent implements OnInit, OnChanges {
           this.alertService.show(`${type} event added successfully`, AlertType.Success);
         },
         error: (err) => {
-          console.error('Error adding event:', err);
           this.alertService.show(`Error adding event. Please try again later.`, AlertType.Failure);
         },
       });
     } catch (error) {
-      console.error('Error in addEvent:', error);
       this.alertService.show(`Error adding event. Please try again later.`, AlertType.Failure);
     }
   }
 
   onDeleteEvent(eventId: string) {
-    const event = this.rows.find(row => row.eventId === eventId);
+    const event = this.events.find(row => row.eventId === eventId);
     if (event) {
-      this.eventToDelete = event;
-      this.showDeleteModal = true;
-    }
-  }
-
-  confirmDeleteEvent() {
-    if (this.eventToDelete) {
-      this.deleteEvent(this.eventToDelete.eventId);
-      this.closeDeleteModal();
-    }
-  }
-
-  closeDeleteModal() {
-    this.showDeleteModal = false;
-    this.eventToDelete = null;
-  }
-
-  private async deleteEvent(eventId: string) {
-    try {
-      const observable = await this.receiverService.deleteEvent(
-        this.receiverId,
-        this.currentUserId,
-        eventId,
-      );
-
-      observable.subscribe({
-        next: () => {
-          this.newEvent.emit();
-          this.alertService.show(`Event deleted successfully`, AlertType.Success);
-        },
-        error: (err) => {
-          console.error('Error deleting event:', err);
-          this.alertService.show(`Error deleting event. Please try again later.`, AlertType.Failure);
-        },
-      });
-    } catch (error) {
-      console.error('Error in deleteEvent:', error);
-      this.alertService.show(`Error deleting event. Please try again later.`, AlertType.Failure);
+      this.eventToDelete.emit(event);
     }
   }
 }

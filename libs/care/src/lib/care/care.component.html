@@ -20,11 +20,12 @@
         </div>
     </div>
 
-    <care-event-table [events]="events" [eventTypes]="eventTypes" [receiverId]="selectedReceiverId"
-        (newEvent)="getLatestEvents()"></care-event-table>
+    <care-event-table [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"
+        (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
 
 
-    <care-calendar [events]="events"></care-calendar>
+    <care-calendar [events]="events" (eventToDelete)="handleDeleteEvent($event)"
+        (eventToView)="handleViewEvent($event)"></care-calendar>
 </div>
 
 <care-modal [show]="showAddReceiverModal" header="Add Care Receiver" (close)="showAddReceiverModal = false">
@@ -55,3 +56,11 @@
         <button class="btn btn-secondary modal-button" (click)="showAddCareGiverModal = false">Cancel</button>
     </div>
 </care-modal>
+
+
+@if (selectedEvent){
+<care-event-modal [event]="selectedEvent" [eventAction]="eventAction" [(showModal)]="showEventModal"
+    (eventChange)="getLatestEvents()"></care-event-modal>
+}
+
+<care-alert></care-alert>

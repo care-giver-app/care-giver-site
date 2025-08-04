@@ -14,20 +14,3 @@
         </mwl-calendar-day-view>
     </div>
 </div>
-
-<care-modal [show]="showEventModal" [header]="'Event Info'" (close)="closeEventModal()">
-    <div modal-body *ngIf="selectedEvent">
-        <div><strong>Event:</strong> {{ selectedEvent.type }}</div>
-        <div><strong>Logged By:</strong> {{ userService.getLoggedUser(selectedEvent.userId) }}</div>
-        <div><strong>Timestamp:</strong> {{ eventService.getReadableTimestamp(selectedEvent) }}</div>
-        @if (eventService.hasData(selectedEvent)) {
-        <div><strong>{{ eventService.getDataName(selectedEvent) }}:</strong> {{ selectedEvent.data[0].value }} {{
-            eventService.getDataUnit(selectedEvent) }}
-        </div>
-        }
-    </div>
-    <div modal-footer>
-        <!-- <button class="btn btn-danger modal-button" (click)="confirmDeleteEvent()">Delete</button>
-        <button class="btn btn-secondary modal-button" (click)="closeDeleteModal()">Cancel</button> -->
-    </div>
-</care-modal>

@@ -5,12 +5,14 @@ import { CareCalendarComponent } from './calendar/calendar.component';
 import { EventTableComponent } from './event-table/event-table.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ModalComponent } from './modal/modal.component';
-import { ReceiverService, EventTypes, AuthService, UserService } from '@care-giver-site/services'
-import { Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
+import { EventModalComponent } from './modal/event-modal/event-modal.component';
+import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
+import { AlertType, Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
+import { AlertComponent } from './alert/alert.component';
 
 @Component({
   selector: 'lib-care',
-  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent],
+  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent, AlertComponent, EventModalComponent],
   templateUrl: './care.component.html',
   styleUrl: './care.component.css',
 })
@@ -18,6 +20,8 @@ export class CareComponent implements OnInit {
   private receiverService = inject(ReceiverService);
   private authService = inject(AuthService);
   private userService = inject(UserService)
+  private eventService = inject(EventService);
+  private alertService = inject(AlertService);
   eventTypes: EventMetadata[] = EventTypes;
 
   events: Event[] = [];
@@ -28,15 +32,21 @@ export class CareComponent implements OnInit {
 
   showAddReceiverModal = false;
   showAddCareGiverModal = false;
+  showEventModal = false
 
   newReceiver = { firstName: '', lastName: '' };
   additionalCareGiverEmail = '';
+
+  selectedEvent: Event | null = null;
+  eventAction: 'create' | 'update' | 'delete' | 'view' = 'view';
 
   ngOnInit() {
     this.fetchReceivers();
   }
 
   onReceiverChange() {
+    console.log('Setting current receiver to:', this.selectedReceiverId);
+    this.receiverService.currentReceiverId = this.selectedReceiverId;
     this.getLatestEvents()
   }
 
@@ -70,8 +80,10 @@ export class CareComponent implements OnInit {
             if (this.receivers.length) {
               if (receiverId) {
                 this.selectedReceiverId = receiverId
+                this.receiverService.currentReceiverId = this.selectedReceiverId;
               } else {
                 this.selectedReceiverId = this.receivers[0].receiverId;
+                this.receiverService.currentReceiverId = this.selectedReceiverId;
               }
               this.getLatestEvents()
             }
@@ -99,6 +111,18 @@ export class CareComponent implements OnInit {
       this.showAddCareGiverModal = false;
       this.additionalCareGiverEmail = '';
     })
+  }
+
+  handleDeleteEvent(event: Event) {
+    this.selectedEvent = event;
+    this.showEventModal = true;
+    this.eventAction = 'delete';
+  }
+
+  handleViewEvent(event: Event) {
+    this.selectedEvent = event;
+    this.showEventModal = true;
+    this.eventAction = 'view';
   }
 
 }
