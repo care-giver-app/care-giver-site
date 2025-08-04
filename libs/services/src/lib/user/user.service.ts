@@ -106,4 +106,10 @@ export class UserService {
         }
     }
 
+    getLoggedUser(userId: string): Promise<string> {
+        return this.getUserData(userId).then((user: User | undefined) =>
+            user ? `${user.firstName} ${user.lastName}` : "Not Available"
+        );
+    }
+
 }

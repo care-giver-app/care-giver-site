@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EventMetadata } from '@care-giver-site/models';
+import { EventMetadata, Event, User } from '@care-giver-site/models';
+import { UserService } from '../user/user.service';
 
 export const EventTypes: EventMetadata[] = [
     {
@@ -70,5 +71,49 @@ export class EventService {
                 secondaryText: '#ad2121',
             };
         }
+    }
+
+    hasData(event: Event): boolean {
+        const eventType = EventTypes.find(e => e.type === event.type);
+        return !!(eventType && eventType.data && event.data && event.data.length > 0);
+    }
+
+    getDataUnit(event: Event): string | undefined {
+        const eventType = EventTypes.find(e => e.type === event.type);
+        return eventType && eventType.data ? eventType.data.unit : undefined;
+    }
+
+    getDataName(event: Event): string | undefined {
+        const eventType = EventTypes.find(e => e.type === event.type);
+        return eventType && eventType.data ? eventType.data.name : undefined;
+    }
+
+    getReadableTimestamp(event: Event): string {
+        return this.formatEventTime(new Date(event.timestamp));
+    }
+
+    private formatEventTime(date: Date): string {
+        if (!date) return 'Not Available';
+        const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
+        if (this.isToday(date)) return `Today at ${date.toLocaleTimeString([], timeOptions)}`;
+        if (this.isYesterday(date)) return `Yesterday at ${date.toLocaleTimeString([], timeOptions)}`;
+        return `${date.toLocaleDateString([], { weekday: 'long' })}, ${date.toLocaleDateString([], { dateStyle: 'long' })} ${date.toLocaleTimeString([], timeOptions)}`;
+    }
+
+    private isToday(date: Date): boolean {
+        const today = new Date();
+        return date.toDateString() === today.toDateString();
+    }
+
+    private isYesterday(date: Date): boolean {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        return date.toDateString() === yesterday.toDateString();
+    }
+
+    getLoggedUser(event: Event, userService: UserService): Promise<string> {
+        return userService.getUserData(event.userId).then((user: User | undefined) =>
+            user ? `${user.firstName} ${user.lastName}` : "Not Available"
+        );
     }
 }

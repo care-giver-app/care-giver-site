@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventMetadata, Event, DataPoint, User } from '@care-giver-site/models';
-import { ReceiverService, UserService, AuthService } from '@care-giver-site/services';
+import { EventMetadata, Event, DataPoint, User, AlertType } from '@care-giver-site/models';
+import { ReceiverService, UserService, AuthService, AlertService, EventService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
 
@@ -22,13 +22,15 @@ interface RowEntry {
 export class EventTableComponent implements OnInit, OnChanges {
   @Input() eventTypes!: EventMetadata[]
   @Input() events!: Event[];
-  @Input() receiverId!: string;
   @Output() newEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
 
   rows: RowEntry[] = [];
   private receiverService = inject(ReceiverService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private alertService = inject(AlertService);
+  private eventService = inject(EventService);
 
   currentUserId: string = '';
 
@@ -38,6 +40,7 @@ export class EventTableComponent implements OnInit, OnChanges {
   timestampValue = '';
   selectedEventType = '';
   selectedEventMetadata?: EventMetadata;
+
 
   constructor() { this.initializeCurrentUser(); }
 
@@ -86,8 +89,8 @@ export class EventTableComponent implements OnInit, OnChanges {
     const events = this.receiverService.getEventsOfType(this.events, meta.type);
     if (events.length > 0) {
       const latestEvent = events[0];
-      const readableTimestamp = this.formatEventTime(new Date(latestEvent.timestamp));
-      const loggedUser = await this.fetchLoggedUser(latestEvent.userId);
+      const readableTimestamp = this.eventService.getReadableTimestamp(latestEvent);
+      const loggedUser = await this.userService.getLoggedUser(latestEvent.userId);
       return {
         meta: meta,
         data: latestEvent.data ? latestEvent.data[0] : undefined,
@@ -97,31 +100,6 @@ export class EventTableComponent implements OnInit, OnChanges {
       };
     }
     return undefined;
-  }
-
-  private fetchLoggedUser(userId: string): Promise<string> {
-    return this.userService.getUserData(userId).then((user: User | undefined) =>
-      user ? `${user.firstName} ${user.lastName}` : "Not Available"
-    );
-  }
-
-  private formatEventTime(date: Date): string {
-    if (!date) return 'Not Available';
-    const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
-    if (this.isToday(date)) return `Today at ${date.toLocaleTimeString([], timeOptions)}`;
-    if (this.isYesterday(date)) return `Yesterday at ${date.toLocaleTimeString([], timeOptions)}`;
-    return `${date.toLocaleDateString([], { weekday: 'long' })}, ${date.toLocaleDateString([], { dateStyle: 'long' })} ${date.toLocaleTimeString([], timeOptions)}`;
-  }
-
-  private isToday(date: Date): boolean {
-    const today = new Date();
-    return date.toDateString() === today.toDateString();
-  }
-
-  private isYesterday(date: Date): boolean {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    return date.toDateString() === yesterday.toDateString();
   }
 
   onQuickLogEvent(type: string) {
@@ -166,8 +144,12 @@ export class EventTableComponent implements OnInit, OnChanges {
     }
 
     try {
+      if (!this.receiverService.currentReceiverId) {
+        this.alertService.show('No receiver selected. Please select a receiver before adding an event.', AlertType.Failure);
+        return;
+      }
       const observable = await this.receiverService.addEvent(
-        this.receiverId,
+        this.receiverService.currentReceiverId,
         this.currentUserId,
         type,
         data,
@@ -177,38 +159,21 @@ export class EventTableComponent implements OnInit, OnChanges {
       observable.subscribe({
         next: () => {
           this.newEvent.emit();
+          this.alertService.show(`${type} event added successfully`, AlertType.Success);
         },
         error: (err) => {
-          console.error('Error adding event:', err);
+          this.alertService.show(`Error adding event. Please try again later.`, AlertType.Failure);
         },
       });
     } catch (error) {
-      console.error('Error in addEvent:', error);
+      this.alertService.show(`Error adding event. Please try again later.`, AlertType.Failure);
     }
   }
 
   onDeleteEvent(eventId: string) {
-    this.deleteEvent(eventId)
-  }
-
-  private async deleteEvent(eventId: string) {
-    try {
-      const observable = await this.receiverService.deleteEvent(
-        this.receiverId,
-        this.currentUserId,
-        eventId,
-      );
-
-      observable.subscribe({
-        next: () => {
-          this.newEvent.emit();
-        },
-        error: (err) => {
-          console.error('Error deleting event:', err);
-        },
-      });
-    } catch (error) {
-      console.error('Error in deleteEvent:', error);
+    const event = this.events.find(row => row.eventId === eventId);
+    if (event) {
+      this.eventToDelete.emit(event);
     }
   }
 }

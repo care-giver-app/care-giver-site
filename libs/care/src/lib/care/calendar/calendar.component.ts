@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import {
@@ -9,7 +9,7 @@ import {
 } from 'angular-calendar';
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
 import { Event } from '@care-giver-site/models';
-import { ReceiverService, EventService } from '@care-giver-site/services';
+import { ReceiverService, EventService, UserService } from '@care-giver-site/services';
 
 
 @Component({
@@ -21,6 +21,8 @@ import { ReceiverService, EventService } from '@care-giver-site/services';
 })
 export class CareCalendarComponent implements OnChanges {
   @Input() events!: Event[];
+  @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
+  @Output() eventToView: EventEmitter<Event> = new EventEmitter<Event>();
 
   view: CalendarView = CalendarView.Week;
 
@@ -32,6 +34,10 @@ export class CareCalendarComponent implements OnChanges {
 
   receiverService = inject(ReceiverService);
   eventService = inject(EventService);
+  userService = inject(UserService);
+
+  showEventModal = false;
+  selectedEvent?: Event;
 
   ngOnInit() {
     if (this.isMobile()) {
@@ -48,6 +54,7 @@ export class CareCalendarComponent implements OnChanges {
           start: new Date(event.timestamp),
           title: event.type,
           color: this.eventService.getEventColor(event.type),
+          id: event.eventId,
         });
       }
 
@@ -73,4 +80,25 @@ export class CareCalendarComponent implements OnChanges {
   private isMobile(): boolean {
     return window.innerWidth <= 768;
   }
+
+  showEvent(event: CalendarEvent) {
+    const foundEvent = this.events.find(e => e.eventId === event.id)
+    if (foundEvent) {
+      this.selectedEvent = foundEvent;
+      this.eventToView.emit(this.selectedEvent)
+    }
+  }
+
+  closeEventModal() {
+    this.showEventModal = false;
+    this.selectedEvent = undefined;
+  }
+
+  deleteEvent() {
+    if (this.selectedEvent) {
+      this.eventToDelete.emit(this.selectedEvent);
+      this.closeEventModal();
+    }
+  }
+
 }

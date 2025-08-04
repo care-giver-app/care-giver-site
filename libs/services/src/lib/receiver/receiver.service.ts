@@ -9,6 +9,7 @@ import { formatRFC3339 } from 'date-fns'
     providedIn: 'root'
 })
 export class ReceiverService {
+    currentReceiverId: string | undefined;
 
     constructor(
         private http: HttpClient,

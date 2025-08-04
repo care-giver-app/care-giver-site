@@ -1,0 +1,7 @@
+<div class="alert-container">
+    <div *ngFor="let alert of alerts; let i = index" class="alert-box {{ getAlertClass(alert.type) }}"
+        [style.top.px]="16 + i * 25">
+        <span class="alert-message">{{ alert.message }}</span>
+        <button class="alert-close" (click)="closeAlert(alert.id)" aria-label="Close">&times;</button>
+    </div>
+</div>
