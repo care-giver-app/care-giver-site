@@ -59,7 +59,7 @@
 
 
 @if (selectedEvent){
-<care-event-modal [event]="selectedEvent" [eventAction]="eventAction" [(showModal)]="showEventModal"
+<care-event-modal [event]="selectedEvent" [(eventAction)]="eventAction" [(showModal)]="showEventModal"
     (eventChange)="getLatestEvents()"></care-event-modal>
 }
 

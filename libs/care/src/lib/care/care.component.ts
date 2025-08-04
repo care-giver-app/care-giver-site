@@ -45,7 +45,6 @@ export class CareComponent implements OnInit {
   }
 
   onReceiverChange() {
-    console.log('Setting current receiver to:', this.selectedReceiverId);
     this.receiverService.currentReceiverId = this.selectedReceiverId;
     this.getLatestEvents()
   }
@@ -98,6 +97,8 @@ export class CareComponent implements OnInit {
       if (resp) {
         this.alertService.show('Care Receiver added successfully', AlertType.Success);
         this.fetchReceivers(resp.receiverId);
+      } else {
+        this.alertService.show('Error adding care receiver. Please try again later.', AlertType.Failure);
       }
       this.showAddReceiverModal = false;
       this.newReceiver = { firstName: '', lastName: '' };
@@ -108,6 +109,8 @@ export class CareComponent implements OnInit {
     this.userService.addCareGiver(this.userId, this.selectedReceiverId, this.additionalCareGiverEmail).then((resp) => {
       if (resp) {
         this.alertService.show('Care Giver added successfully', AlertType.Success);
+      } else {
+        this.alertService.show('Error adding care giver. Please try again later.', AlertType.Failure);
       }
       this.showAddCareGiverModal = false;
       this.additionalCareGiverEmail = '';
@@ -116,14 +119,15 @@ export class CareComponent implements OnInit {
 
   handleDeleteEvent(event: Event) {
     this.selectedEvent = event;
-    this.showEventModal = true;
     this.eventAction = 'delete';
+    this.showEventModal = true;
   }
 
   handleViewEvent(event: Event) {
+    console.log(this.eventAction);
     this.selectedEvent = event;
-    this.showEventModal = true;
     this.eventAction = 'view';
+    this.showEventModal = true;
   }
 
 }

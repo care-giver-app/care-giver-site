@@ -33,7 +33,6 @@ export class EventTableComponent implements OnInit, OnChanges {
   private eventService = inject(EventService);
 
   currentUserId: string = '';
-  receiverId: string | undefined = undefined;
 
   // Modal state
   showModal = false;
@@ -54,7 +53,6 @@ export class EventTableComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.receiverId = this.receiverService.currentReceiverId;
     this.rows = this.eventTypes.map(meta => ({
       meta: meta,
       data: undefined,
@@ -146,8 +144,12 @@ export class EventTableComponent implements OnInit, OnChanges {
     }
 
     try {
+      if (!this.receiverService.currentReceiverId) {
+        this.alertService.show('No receiver selected. Please select a receiver before adding an event.', AlertType.Failure);
+        return;
+      }
       const observable = await this.receiverService.addEvent(
-        this.receiverId!,
+        this.receiverService.currentReceiverId,
         this.currentUserId,
         type,
         data,

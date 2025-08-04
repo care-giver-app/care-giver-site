@@ -3,6 +3,8 @@ import { ModalComponent } from '../modal.component';
 import { Event, DataPoint, AlertType } from '@care-giver-site/models';
 import { EventService, UserService, ReceiverService, AuthService, AlertService } from '@care-giver-site/services';
 
+type EventAction = 'create' | 'update' | 'delete' | 'view';
+
 @Component({
     selector: 'care-event-modal',
     templateUrl: './event-modal.component.html',
@@ -11,8 +13,9 @@ import { EventService, UserService, ReceiverService, AuthService, AlertService }
 })
 export class EventModalComponent implements OnChanges {
     @Input() event!: Event;
-    @Input() eventAction!: 'create' | 'update' | 'delete' | 'view';
+    @Input() eventAction!: EventAction;
     @Input() showModal!: boolean;
+    @Output() eventActionChange = new EventEmitter<EventAction>();
     @Output() showModalChange = new EventEmitter<boolean>();
     @Output() eventChange = new EventEmitter<void>();
 
@@ -51,12 +54,12 @@ export class EventModalComponent implements OnChanges {
 
     confirmDeleteEvent() {
         this.eventAction = 'delete';
+        this.eventActionChange.emit(this.eventAction);
     }
 
     async deleteEvent() {
         try {
             const currentUserId = await this.authService.getCurrentUserId();
-            console.log('Current Receiver ID:', this.receiverService.currentReceiverId);
             const observable = await this.receiverService.deleteEvent(
                 this.receiverService.currentReceiverId!,
                 currentUserId,
