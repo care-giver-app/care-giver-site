@@ -96,6 +96,7 @@ export class CareComponent implements OnInit {
   submitAddReceiver() {
     this.userService.addCareReceiver(this.userId, this.newReceiver.firstName, this.newReceiver.lastName).then((resp) => {
       if (resp) {
+        this.alertService.show('Care Receiver added successfully', AlertType.Success);
         this.fetchReceivers(resp.receiverId);
       }
       this.showAddReceiverModal = false;
@@ -106,7 +107,7 @@ export class CareComponent implements OnInit {
   submitAddCareGiver() {
     this.userService.addCareGiver(this.userId, this.selectedReceiverId, this.additionalCareGiverEmail).then((resp) => {
       if (resp) {
-        console.log('Care Giver added successfully:')
+        this.alertService.show('Care Giver added successfully', AlertType.Success);
       }
       this.showAddCareGiverModal = false;
       this.additionalCareGiverEmail = '';
