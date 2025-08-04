@@ -9,12 +9,13 @@ import {
 } from 'angular-calendar';
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
 import { Event } from '@care-giver-site/models';
-import { ReceiverService, EventService } from '@care-giver-site/services';
+import { ReceiverService, EventService, UserService } from '@care-giver-site/services';
+import { ModalComponent } from '../modal/modal.component';
 
 
 @Component({
   selector: 'care-calendar',
-  imports: [CommonModule, CalendarModule, CalendarHeaderComponent],
+  imports: [CommonModule, CalendarModule, CalendarHeaderComponent, ModalComponent],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +33,10 @@ export class CareCalendarComponent implements OnChanges {
 
   receiverService = inject(ReceiverService);
   eventService = inject(EventService);
+  userService = inject(UserService);
+
+  showEventModal = false;
+  selectedEvent?: Event;
 
   ngOnInit() {
     if (this.isMobile()) {
@@ -72,5 +77,18 @@ export class CareCalendarComponent implements OnChanges {
 
   private isMobile(): boolean {
     return window.innerWidth <= 768;
+  }
+
+  showEvent(event: CalendarEvent) {
+    const foundEvent = this.events.find(e => new Date(e.timestamp).getTime() === event.start.getTime());
+    if (foundEvent) {
+      this.selectedEvent = foundEvent;
+      this.showEventModal = true;
+    }
+  }
+
+  closeEventModal() {
+    this.showEventModal = false;
+    this.selectedEvent = undefined;
   }
 }

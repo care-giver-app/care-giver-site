@@ -94,3 +94,22 @@
         <button class="btn btn-secondary modal-button" (click)="closeModal()">Cancel</button>
     </div>
 </care-modal>
+
+<care-modal [show]="showDeleteModal" [header]="'Delete Event?'" (close)="closeDeleteModal()">
+    <div modal-body *ngIf="eventToDelete">
+        <p>Are you sure you want to delete this event?</p>
+        <div><strong>Event:</strong> {{ eventToDelete.meta.type }}</div>
+        <div><strong>Logged By:</strong> {{ eventToDelete.loggedUser }}</div>
+        <div><strong>Timestamp:</strong> {{ eventToDelete.readableTimestamp }}</div>
+        @if (eventToDelete.data) {
+        <div><strong>Data:</strong> {{ eventToDelete.data.value }} {{
+            eventToDelete.meta.data?.unit || '' }}</div>
+        }
+    </div>
+    <div modal-footer>
+        <button class="btn btn-danger modal-button" (click)="confirmDeleteEvent()">Delete</button>
+        <button class="btn btn-secondary modal-button" (click)="closeDeleteModal()">Cancel</button>
+    </div>
+</care-modal>
+
+<care-alert></care-alert>
