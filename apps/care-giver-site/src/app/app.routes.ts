@@ -7,7 +7,13 @@ export const appRoutes: Routes = [
         path: '',
         canActivate: [AuthGuard],
         loadComponent: () =>
-            import('@care-giver-site/care').then((m) => m.CareComponent),
+            import('@care-giver-site/care').then((m) => m.DashboardComponent),
+    },
+    {
+        path: 'stats',
+        canActivate: [AuthGuard],
+        loadComponent: () =>
+            import('@care-giver-site/care').then((m) => m.StatsComponent),
     },
     {
         path: 'auth',

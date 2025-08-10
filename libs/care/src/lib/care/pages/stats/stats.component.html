@@ -1,0 +1,14 @@
+<div class="care-body">
+    <care-navbar></care-navbar>
+
+    <care-event-table [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"
+        (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
+
+</div>
+
+@if (selectedEvent){
+<care-event-modal [event]="selectedEvent" [(eventAction)]="eventAction" [(showModal)]="showEventModal"
+    (eventChange)="getLatestEvents()"></care-event-modal>
+}
+
+<care-alert></care-alert>
