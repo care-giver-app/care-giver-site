@@ -7288,6 +7288,7 @@ __metadata:
     aws-amplify: "npm:^6.14.4"
     aws-cdk-lib: "npm:^2.189.1"
     bootstrap: "npm:^5.3.3"
+    chart.js: "npm:^4.5.0"
     clean-modules: "npm:^3.1.1"
     constructs: "npm:^10.4.2"
     cypress: "npm:^13.13.0"
@@ -7299,6 +7300,7 @@ __metadata:
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
     jest-preset-angular: "npm:~14.4.0"
+    ng2-charts: "npm:^8.0.0"
     ngx-bootstrap: "npm:^19.0.2"
     nx: "npm:20.6.2"
     prettier: "npm:^2.6.2"
@@ -8846,6 +8848,13 @@ __metadata:
   peerDependencies:
     tslib: 2
   checksum: 10c0/98182d8a5a0f5e04cdf755dacb523ba5e3e6a81e4941cbfeb157f8954c0e90e2e972fc7237c2378995fc3fa9f2b2649d28b197f556da3b5a80e56c6966c559e3
+  languageName: node
+  linkType: hard
+
+"@kurkle/color@npm:^0.3.0":
+  version: 0.3.4
+  resolution: "@kurkle/color@npm:0.3.4"
+  checksum: 10c0/0e9fd55c614b005c5f0c4c755bca19ec0293bc7513b4ea3ec1725234f9c2fa81afbc78156baf555c8b9cb0d305619253c3f5bca016067daeebb3d00ebb4ea683
   languageName: node
   linkType: hard
 
@@ -14870,6 +14879,15 @@ __metadata:
   version: 0.0.2
   resolution: "charenc@npm:0.0.2"
   checksum: 10c0/a45ec39363a16799d0f9365c8dd0c78e711415113c6f14787a22462ef451f5013efae8a28f1c058f81fc01f2a6a16955f7a5fd0cd56247ce94a45349c89877d8
+  languageName: node
+  linkType: hard
+
+"chart.js@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "chart.js@npm:4.5.0"
+  dependencies:
+    "@kurkle/color": "npm:^0.3.0"
+  checksum: 10c0/f12c7f9a238ee7ce6d3f7111628e9daba86bb8ff8e54cfe63525fde6ded9003c72c4c8d2c7d5702539dc0aff7e682dfec058660ade8d03a970da002656d4ac91
   languageName: node
   linkType: hard
 
@@ -21083,7 +21101,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.21":
+"lodash-es@npm:^4.17.15, lodash-es@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: 10c0/fb407355f7e6cd523a9383e76e6b455321f0f153a6c9625e21a8827d10c54c2a2341bd2ae8d034358b60e07325e1330c14c224ff582d04612a46a4f0479ff2f2
@@ -21967,6 +21985,23 @@ __metadata:
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
   checksum: 10c0/c2f5a604a54a8ec5438a342e1f356dff4bc33ccccdb6dc668d94fe8e5eccfc9d2c2eea6064b0967a767ba63b33763f51ccf2cd2441b461a7322656c1f06b3f5d
+  languageName: node
+  linkType: hard
+
+"ng2-charts@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "ng2-charts@npm:8.0.0"
+  dependencies:
+    lodash-es: "npm:^4.17.15"
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/cdk": ">=19.0.0"
+    "@angular/common": ">=19.0.0"
+    "@angular/core": ">=19.0.0"
+    "@angular/platform-browser": ">=19.0.0"
+    chart.js: ^3.4.0 || ^4.0.0
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: 10c0/15b3a9d382017e9db3dfdbfd28230f4702dd7d60180bfb998de2a3d1752c33aaed79f2e9270a9056cdaf406f5f2dabb3549ca3db365bb82fea815706f5f437be
   languageName: node
   linkType: hard
 

@@ -9,10 +9,11 @@ import { EventModalComponent } from '../../modal/event-modal/event-modal.compone
 import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
 import { AlertType, Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
+import { ChartComponent } from '../../chart/chart.component';
 
 @Component({
   selector: 'lib-stats',
-  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent, AlertComponent, EventModalComponent],
+  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent, AlertComponent, EventModalComponent, ChartComponent],
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.css',
 })

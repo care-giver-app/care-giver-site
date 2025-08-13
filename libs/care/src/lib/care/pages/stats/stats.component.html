@@ -1,6 +1,8 @@
 <div class="care-body">
     <care-navbar></care-navbar>
 
+    <care-chart [events]="events"></care-chart>
+
     <care-event-table [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"
         (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
 

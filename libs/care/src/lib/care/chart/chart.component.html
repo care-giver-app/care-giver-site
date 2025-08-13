@@ -1,0 +1,17 @@
+<div class="chart-container">
+    <div class="chart-controls" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
+        <label>
+            Start Date:
+            <input type="date" [(ngModel)]="startDate" (change)="onDateRangeChange()" />
+        </label>
+        <label>
+            End Date:
+            <input type="date" [(ngModel)]="endDate" (change)="onDateRangeChange()" />
+        </label>
+    </div>
+    <div class="chart-canvas">
+        <canvas class="chart" baseChart [datasets]="scatterChartDatasets" [options]="scatterChartOptions"
+            [type]="'scatter'">
+        </canvas>
+    </div>
+</div>
