@@ -1,22 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CareCalendarComponent } from './calendar/calendar.component';
-import { EventTableComponent } from './event-table/event-table.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { ModalComponent } from './modal/modal.component';
-import { EventModalComponent } from './modal/event-modal/event-modal.component';
+import { EventTableComponent } from '../../event-table/event-table.component';
+import { NavbarComponent } from '../../navbar/navbar.component';
+import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
 import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
 import { AlertType, Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
-import { AlertComponent } from './alert/alert.component';
+import { AlertComponent } from '../../alert/alert.component';
+import { ChartComponent } from '../../chart/chart.component';
 
 @Component({
-  selector: 'lib-care',
-  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent, AlertComponent, EventModalComponent],
-  templateUrl: './care.component.html',
-  styleUrl: './care.component.css',
+  selector: 'lib-stats',
+  imports: [CommonModule, NavbarComponent, FormsModule, EventTableComponent, AlertComponent, EventModalComponent, ChartComponent],
+  templateUrl: './stats.component.html',
+  styleUrl: './stats.component.css',
 })
-export class CareComponent implements OnInit {
+export class StatsComponent implements OnInit {
   private receiverService = inject(ReceiverService);
   private authService = inject(AuthService);
   private userService = inject(UserService)
@@ -39,6 +38,8 @@ export class CareComponent implements OnInit {
 
   selectedEvent: Event | null = null;
   eventAction: 'create' | 'update' | 'delete' | 'view' = 'view';
+
+  weightMetaData: EventMetadata = EventTypes.find(e => e.type === 'Weight')!
 
   ngOnInit() {
     this.fetchReceivers();

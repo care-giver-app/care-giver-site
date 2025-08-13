@@ -1,72 +1,65 @@
 <div class="recent-activity-card">
     <div class="recent-activity-header">
         <h2 class="recent-activity-title">Recent Activity</h2>
-        <button class="add-event-btn" type="button" (click)="onLogEvent()">+ Add Event</button>
+        <button mat-button color="primary" class="add-event-btn" type="button" (click)="onLogEvent()">Add Event</button>
     </div>
-    <table class="recent-activity-table">
-        <thead>
-            <tr>
-                <th>Event</th>
-                <th>Last Logged</th>
-                <th>Logged By</th>
-                <th>Data Point</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (row of rows; track row.meta.type) {
-            <tr>
-                <td>
-                    <img class="event-icon" [src]="row.meta.icon" alt="{{ row.meta.type }}">
-                    <span class="event-name">{{ row.meta.type }}</span>
-                </td>
-                <td class="wrap-cell">
-                    @if (row.readableTimestamp) {
-                    {{ row.readableTimestamp }}
-                    }
-                    @else {
-                    N/A
-                    }
-                </td>
-                <td class="wrap-cell">
-                    @if (row.loggedUser) {
-                    {{ row.loggedUser }}
-                    }
-                    @else {
-                    N/A
-                    }
-                </td>
-                <td>
-                    @if (row.data) {
-                    {{ row.data.value }} {{ row.meta.data ? row.meta.data.unit : '' }}
-                    }
-                    @else {
-                    N/A
-                    }
-                </td>
-                <td style="border: none;">
-                    <button class="icon-btn log-now-btn" title="Log Now" (click)="onQuickLogEvent(row.meta.type)">
-                        <!-- Plus SVG (green) -->
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                            <circle cx="10" cy="10" r="9" stroke="#43a047" stroke-width="2" fill="#fff" />
-                            <rect x="9" y="5" width="2" height="10" rx="1" fill="#43a047" />
-                            <rect x="5" y="9" width="10" height="2" rx="1" fill="#43a047" />
-                        </svg>
-                    </button>
-                    <button class="icon-btn delete-btn" title="Delete Latest Event"
-                        (click)="onDeleteEvent(row.eventId || '')">
-                        <!-- Trash SVG (bigger) -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <rect x="7" y="10" width="10" height="10" rx="2" fill="#e53935" />
-                            <rect x="11" y="14" width="2" height="4" rx="1" fill="#fff" />
-                            <rect x="13" y="14" width="2" height="4" rx="1" fill="#fff" />
-                            <rect x="8" y="6" width="8" height="2" rx="1" fill="#e53935" />
-                            <rect x="10" y="4" width="4" height="2" rx="1" fill="#e53935" />
-                        </svg>
-                    </button>
-                </td>
-            </tr>
-            }
-        </tbody>
+    <table mat-table [dataSource]="rows">
+
+        <!-- Event Column -->
+        <ng-container matColumnDef="event">
+            <th mat-header-cell *matHeaderCellDef>Event</th>
+            <td mat-cell *matCellDef="let row">
+                <img class="event-icon" [src]="row.meta.icon" alt="{{ row.meta.type }}">
+                <span class="event-name">{{ row.meta.type }}</span>
+            </td>
+        </ng-container>
+
+        <!-- Last Logged Column -->
+        <ng-container matColumnDef="lastLogged">
+            <th mat-header-cell *matHeaderCellDef>Last Logged</th>
+            <td mat-cell *matCellDef="let row">
+                <span class="wrap-cell">
+                    {{ row.readableTimestamp || 'N/A' }}
+                </span>
+            </td>
+        </ng-container>
+
+        <!-- Logged By Column -->
+        <ng-container matColumnDef="loggedBy">
+            <th mat-header-cell *matHeaderCellDef>Logged By</th>
+            <td mat-cell *matCellDef="let row">
+                <span class="wrap-cell">
+                    {{ row.loggedUser || 'N/A' }}
+                </span>
+            </td>
+        </ng-container>
+
+        <!-- Data Point Column -->
+        <ng-container matColumnDef="dataPoint">
+            <th mat-header-cell *matHeaderCellDef>Data Point</th>
+            <td mat-cell *matCellDef="let row">
+                <span>
+                    {{ row.data ? (row.data.value + ' ' + (row.meta.data ? row.meta.data.unit : '')) : 'N/A' }}
+                </span>
+            </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef style="border: none;"></th>
+            <td mat-cell *matCellDef="let row" class="quick-event-buttons" style="border: none;">
+                <button mat-icon-button class="log-now-btn" title="Log Now" (click)="onQuickLogEvent(row.meta.type)">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button mat-icon-button class="delete-btn" title="Delete Latest Event"
+                    (click)="onDeleteEvent(row.eventId || '')">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 </div>
 

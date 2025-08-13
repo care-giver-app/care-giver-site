@@ -4,6 +4,9 @@ import { EventMetadata, Event, DataPoint, User, AlertType } from '@care-giver-si
 import { ReceiverService, UserService, AuthService, AlertService, EventService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 interface RowEntry {
   meta: EventMetadata;
@@ -15,7 +18,14 @@ interface RowEntry {
 
 @Component({
   selector: 'care-event-table',
-  imports: [CommonModule, FormsModule, ModalComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ModalComponent,
+    MatIconModule,
+    MatButtonModule,
+    MatTableModule
+  ],
   templateUrl: './event-table.component.html',
   styleUrl: './event-table.component.css',
 })
@@ -41,6 +51,7 @@ export class EventTableComponent implements OnInit, OnChanges {
   selectedEventType = '';
   selectedEventMetadata?: EventMetadata;
 
+  displayedColumns: string[] = ['event', 'lastLogged', 'loggedBy', 'dataPoint', 'actions'];
 
   constructor() { this.initializeCurrentUser(); }
 
@@ -63,7 +74,7 @@ export class EventTableComponent implements OnInit, OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes['events']?.currentValue) {
+    if (changes['events']) {
       await this.updateRowsWithEvents();
     }
   }

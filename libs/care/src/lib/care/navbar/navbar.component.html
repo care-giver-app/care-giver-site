@@ -7,18 +7,19 @@
                 <span class="navbar-title"></span>
             </a>
         </div>
+        <!-- Navigation Links -->
+        <div class="navbar-links">
+            <a matButton href="/" class="nav-link"><strong>Dashboard</strong></a>
+            <a matButton href="/stats" class="nav-link"><strong>Stats</strong></a>
+        </div>
         <!-- User Section -->
         <div class="navbar-user">
-            <button class="user-circle-btn" (click)="toggleDropdown()">
+            <button matButton [matMenuTriggerFor]="userMenu" class="user-circle-btn">
                 <span class="user-circle">{{ getInitials(userName) }}</span>
-                <span class="dropdown-arrow">&#9662;</span>
             </button>
-            <ul *ngIf="showDropdown" class="dropdown-menu">
-                <li (click)="signOut()">Sign Out</li>
-            </ul>
-            <ul *ngIf="showDropdown" class="dropdown">
-                <li (click)="signOut()">Sign Out</li>
-            </ul>
+            <mat-menu #userMenu="matMenu">
+                <button mat-menu-item (click)="signOut()">Sign Out</button>
+            </mat-menu>
         </div>
     </div>
 </nav>
