@@ -9,6 +9,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core'
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'care-chart',
@@ -45,6 +46,7 @@ export class ChartComponent implements OnInit, OnChanges {
   ];
 
   scatterChartOptions: ChartConfiguration<'scatter'>['options'] = {
+    events: ['click', 'touchstart', 'mousemove'],
     plugins: {
       tooltip: {
         callbacks: {
@@ -55,18 +57,16 @@ export class ChartComponent implements OnInit, OnChanges {
             return `${day} at ${time}`;
           }
         }
-      }
+      },
     },
     responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 1,
   };
 
   constructor() {
     this.endDate = ChartComponent.getDateString(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000));
     this.startDate = ChartComponent.getDateString(new Date(Date.now() - 6 * 24 * 60 * 60 * 1000));
-    if (window.innerWidth < 600) {
-      this.fontSize = 6;
-      this.pointSize = 4;
-    }
   }
 
   ngOnInit() {
@@ -123,7 +123,6 @@ export class ChartComponent implements OnInit, OnChanges {
 
   private getDateRange(): [number, number] {
     const start = new Date(this.startDate).setHours(0, 0, 0, 0);
-    console.log('Start date:', new Date(start));
     const end = new Date(this.endDate).setHours(0, 0, 0, 0);
     return [start, end];
   }
@@ -161,7 +160,7 @@ export class ChartComponent implements OnInit, OnChanges {
 
   private static getTimeInAMPM(hourDecimal: number): string {
     const hour = Math.floor(hourDecimal) % 24;
-    const minute = Math.round((hourDecimal - hour) * 60);
+    const minute = Math.round((hourDecimal % 24 - hour) * 60);
     const period = hour < 12 ? 'AM' : 'PM';
     const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
     const minStr = minute.toString().padStart(2, '0');

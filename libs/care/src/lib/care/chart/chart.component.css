@@ -22,14 +22,4 @@
         margin: 0.5rem;
     }
 
-    .chart-canvas {
-        font-size: 0.75rem;
-    }
-
-    .chart {
-        min-width: 150vw;
-        min-height: 30vh;
-    }
-
-
 }
