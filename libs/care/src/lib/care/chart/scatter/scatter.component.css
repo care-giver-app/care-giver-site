@@ -1,0 +1,8 @@
+.chart-canvas {
+    overflow-x: auto;
+}
+
+.chart-canvas>canvas {
+    width: 100%;
+    max-height: 50vh;
+}

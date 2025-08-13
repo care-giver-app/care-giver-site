@@ -1,4 +1,7 @@
 <div class="chart-container">
+    <div class="chart-title">
+        <h2>{{ chartTitle }}</h2>
+    </div>
     <div class="chart-controls" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
         <mat-form-field appearance="fill">
             <mat-label>Start Date</mat-label>
@@ -15,9 +18,12 @@
             <mat-datepicker #pickerEnd></mat-datepicker>
         </mat-form-field>
     </div>
-    <div class="chart-canvas">
-        <canvas class="chart" baseChart [datasets]="scatterChartDatasets" [options]="scatterChartOptions"
-            [type]="'scatter'">
-        </canvas>
-    </div>
+
+    <ng-container [ngSwitch]="chartType">
+        <care-timeseries-scatter-chart *ngSwitchCase="'scatter'" [startDate]="startDate" [endDate]="endDate"
+            [datasets]="scatterChartDatasets"></care-timeseries-scatter-chart>
+
+        <care-line-chart *ngSwitchCase="'line'" [startDate]="startDate" [endDate]="endDate"
+            [datasets]="lineChartDatasets"></care-line-chart>
+    </ng-container>
 </div>
