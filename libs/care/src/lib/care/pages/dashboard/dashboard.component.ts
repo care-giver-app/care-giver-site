@@ -124,7 +124,6 @@ export class DashboardComponent implements OnInit {
   }
 
   handleViewEvent(event: Event) {
-    console.log(this.eventAction);
     this.selectedEvent = event;
     this.eventAction = 'view';
     this.showEventModal = true;

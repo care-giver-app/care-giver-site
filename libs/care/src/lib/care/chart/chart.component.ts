@@ -5,11 +5,23 @@ import { ChartConfiguration } from 'chart.js';
 import { Event } from '@care-giver-site/models';
 import { FormsModule } from '@angular/forms';
 import { EventTypes, EventService } from '@care-giver-site/services';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core'
 
 @Component({
   selector: 'care-chart',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, FormsModule],
+  imports: [
+    CommonModule,
+    BaseChartDirective,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule
+  ],
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.css',
 })
@@ -49,8 +61,8 @@ export class ChartComponent implements OnInit, OnChanges {
   };
 
   constructor() {
-    this.endDate = ChartComponent.getDateString(new Date());
-    this.startDate = ChartComponent.getDateString(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+    this.endDate = ChartComponent.getDateString(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000));
+    this.startDate = ChartComponent.getDateString(new Date(Date.now() - 6 * 24 * 60 * 60 * 1000));
     if (window.innerWidth < 600) {
       this.fontSize = 6;
       this.pointSize = 4;
@@ -124,7 +136,7 @@ export class ChartComponent implements OnInit, OnChanges {
   private updateAxisRange() {
     this.scatterChartOptions!.scales = this.scatterChartOptions!.scales || {};
     this.scatterChartOptions!.scales['x'] = {
-      min: new Date(this.startDate).setHours(24, 0, 0, 0),
+      min: new Date(this.startDate).setHours(0, 0, 0, 0),
       max: new Date(this.endDate).setHours(0, 0, 0, 0),
       ticks: {
         stepSize: 24 * 60 * 60 * 1000,

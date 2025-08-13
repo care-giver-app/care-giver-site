@@ -2,11 +2,13 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Receiver } from '@care-giver-site/models'
 import { AuthService } from '@care-giver-site/services'
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button'
 
 
 @Component({
   selector: 'care-navbar',
-  imports: [CommonModule],
+  imports: [CommonModule, MatMenuModule, MatButtonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })

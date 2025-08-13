@@ -1,13 +1,19 @@
 <div class="chart-container">
     <div class="chart-controls" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
-        <label>
-            Start Date:
-            <input type="date" [(ngModel)]="startDate" (change)="onDateRangeChange()" />
-        </label>
-        <label>
-            End Date:
-            <input type="date" [(ngModel)]="endDate" (change)="onDateRangeChange()" />
-        </label>
+        <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="pickerStart" [(ngModel)]="startDate" (dateChange)="onDateRangeChange()"
+                [ngModelOptions]="{standalone: true}">
+            <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+            <mat-datepicker #pickerStart></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="endDate" (dateChange)="onDateRangeChange()"
+                [ngModelOptions]="{standalone: true}">
+            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+            <mat-datepicker #pickerEnd></mat-datepicker>
+        </mat-form-field>
     </div>
     <div class="chart-canvas">
         <canvas class="chart" baseChart [datasets]="scatterChartDatasets" [options]="scatterChartOptions"
