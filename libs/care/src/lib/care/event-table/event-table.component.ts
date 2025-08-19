@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventMetadata, Event, DataPoint, User, AlertType } from '@care-giver-site/models';
-import { ReceiverService, UserService, AuthService, AlertService, EventService } from '@care-giver-site/services';
+import { ReceiverService, UserService, AuthService, AlertService, EventService, ViewService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -41,6 +41,7 @@ export class EventTableComponent implements OnInit, OnChanges {
   private authService = inject(AuthService);
   private alertService = inject(AlertService);
   private eventService = inject(EventService);
+  private viewService = inject(ViewService);
 
   currentUserId: string = '';
 
@@ -53,7 +54,11 @@ export class EventTableComponent implements OnInit, OnChanges {
 
   displayedColumns: string[] = ['event', 'lastLogged', 'loggedBy', 'dataPoint', 'actions'];
 
-  constructor() { this.initializeCurrentUser(); }
+  isMobile: boolean = this.viewService.isMobile();
+
+  constructor() {
+    this.initializeCurrentUser();
+  }
 
   private async initializeCurrentUser() {
     try {
@@ -100,7 +105,7 @@ export class EventTableComponent implements OnInit, OnChanges {
     const events = this.receiverService.getEventsOfType(this.events, meta.type);
     if (events.length > 0) {
       const latestEvent = events[0];
-      const readableTimestamp = this.eventService.getReadableTimestamp(latestEvent);
+      const readableTimestamp = this.isMobile ? this.eventService.getCalendarTimestamp(latestEvent) : this.eventService.getReadableTimestamp(latestEvent);
       const loggedUser = await this.userService.getLoggedUser(latestEvent.userId);
       return {
         meta: meta,

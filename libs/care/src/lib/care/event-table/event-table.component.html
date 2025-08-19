@@ -3,24 +3,24 @@
         <h2 class="recent-activity-title">Recent Activity</h2>
         <button mat-button color="primary" class="add-event-btn" type="button" (click)="onLogEvent()">Add Event</button>
     </div>
-    <table mat-table [dataSource]="rows">
+    <table mat-table class="event-table" [dataSource]="rows">
 
         <!-- Event Column -->
         <ng-container matColumnDef="event">
             <th mat-header-cell *matHeaderCellDef>Event</th>
             <td mat-cell *matCellDef="let row">
-                <img class="event-icon" [src]="row.meta.icon" alt="{{ row.meta.type }}">
+                <img class="event-icon" [src]="row.meta.icon" title="{{ row.meta.type }}" alt="{{ row.meta.type }}">
+                @if (!isMobile){
                 <span class="event-name">{{ row.meta.type }}</span>
+                }
             </td>
         </ng-container>
 
         <!-- Last Logged Column -->
         <ng-container matColumnDef="lastLogged">
-            <th mat-header-cell *matHeaderCellDef>Last Logged</th>
+            <th mat-header-cell *matHeaderCellDef>Logged</th>
             <td mat-cell *matCellDef="let row">
-                <span class="wrap-cell">
-                    {{ row.readableTimestamp || 'N/A' }}
-                </span>
+                {{ row.readableTimestamp || 'N/A' }}
             </td>
         </ng-container>
 
@@ -28,18 +28,16 @@
         <ng-container matColumnDef="loggedBy">
             <th mat-header-cell *matHeaderCellDef>Logged By</th>
             <td mat-cell *matCellDef="let row">
-                <span class="wrap-cell">
-                    {{ row.loggedUser || 'N/A' }}
-                </span>
+                {{ row.loggedUser || 'N/A' }}
             </td>
         </ng-container>
 
         <!-- Data Point Column -->
         <ng-container matColumnDef="dataPoint">
-            <th mat-header-cell *matHeaderCellDef>Data Point</th>
+            <th mat-header-cell *matHeaderCellDef>Data</th>
             <td mat-cell *matCellDef="let row">
                 <span>
-                    {{ row.data ? (row.data.value + ' ' + (row.meta.data ? row.meta.data.unit : '')) : 'N/A' }}
+                    {{ row.data ? (row.data.value + ' ' + (row.meta.data ? row.meta.data.unit : '')) : '' }}
                 </span>
             </td>
         </ng-container>
@@ -47,7 +45,7 @@
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef style="border: none;"></th>
-            <td mat-cell *matCellDef="let row" class="quick-event-buttons" style="border: none;">
+            <td mat-cell *matCellDef="let row" style="border: none;">
                 <button mat-icon-button class="log-now-btn" title="Log Now" (click)="onQuickLogEvent(row.meta.type)">
                     <mat-icon>add</mat-icon>
                 </button>

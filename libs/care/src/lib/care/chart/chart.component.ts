@@ -48,7 +48,7 @@ export class ChartComponent implements OnChanges {
 
   constructor() {
     this.endDate = ChartComponent.getDateString(new Date(Date.now() + 1 * 24 * 60 * 60 * 1000));
-    this.startDate = ChartComponent.getDateString(new Date(Date.now() - 6 * 24 * 60 * 60 * 1000));
+    this.startDate = ChartComponent.getDateString(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
   }
 
   ngOnChanges(changes: SimpleChanges) {

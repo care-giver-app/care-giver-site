@@ -30,7 +30,11 @@ export class LineChartComponent implements OnInit, OnChanges {
         callbacks: {
           label: context => {
             const day = new Date(context.parsed.x).toLocaleDateString();
-            return `${day}`;
+            const val = context.parsed.y;
+            return `${day}: ${val} lbs`;
+          },
+          title: context => {
+            return ``;
           }
         }
       },

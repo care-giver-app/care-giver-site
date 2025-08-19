@@ -41,28 +41,22 @@
   background: #1769aa;
 }
 
-.log-now-btn {
-  margin: 0.1rem !important;
-  color: #3fa347 !important;
+:host ::ng-deep .log-now-btn {
+  color: #3fa347;
+  padding: 0rem;
 }
 
 .log-now-btn:hover {
   background: #e8f5e9;
 }
 
-.delete-btn {
-  margin: 0.1rem !important;
-  color: #e53935 !important;
+:host ::ng-deep .delete-btn {
+  color: #e53935;
+  padding: 0rem;
 }
 
 .delete-btn:hover {
   background: #ffebee;
-}
-
-.wrap-cell {
-  white-space: normal;
-  word-break: break-word;
-  max-width: 10rem;
 }
 
 .modal-button {
@@ -72,6 +66,14 @@
 :host ::ng-deep th,
 :host ::ng-deep .mat-header-cell {
   font-weight: bold;
+}
+
+.event-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
 }
 
 /* Responsive: horizontal scroll on small screens */
@@ -86,5 +88,20 @@
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+  }
+
+  :host ::ng-deep td,
+  :host ::ng-deep th {
+    padding: 0.25rem !important;
+  }
+
+  .event-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  th,
+  td {
+    text-align: center;
   }
 }
