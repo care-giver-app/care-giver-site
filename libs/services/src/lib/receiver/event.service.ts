@@ -89,15 +89,45 @@ export class EventService {
     }
 
     getReadableTimestamp(event: Event): string {
-        return this.formatEventTime(new Date(event.timestamp));
+        return this.formatEventTime(new Date(event.timestamp), true);
     }
 
-    private formatEventTime(date: Date): string {
+    getCalendarTimestamp(event: Event): string {
+        return this.formatEventTime(new Date(event.timestamp), false);
+    }
+
+    private formatEventTime(date: Date, long: boolean): string {
         if (!date) return 'Not Available';
         const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit' };
+        const dateOfWeekOptions: Intl.DateTimeFormatOptions = { weekday: long ? 'long' : 'short' };
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const eventYear = date.getFullYear();
+
+        const isOverAWeekAgo = (now.getTime() - date.getTime()) > (7 * 24 * 60 * 60 * 1000);
+
+        let dateString: string;
+        if (long) {
+            dateString = date.toLocaleDateString([], { dateStyle: 'long' });
+        }
+        else {
+            if (eventYear === currentYear) {
+                dateString = date.toLocaleDateString([], { month: 'numeric', day: 'numeric' });
+            } else {
+                dateString = date.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: 'numeric' });
+            }
+        }
+
+        let dayOfWeekString: string = "";
+        if (!isOverAWeekAgo) {
+            dayOfWeekString = date.toLocaleDateString([], dateOfWeekOptions);
+        }
+
         if (this.isToday(date)) return `Today at ${date.toLocaleTimeString([], timeOptions)}`;
         if (this.isYesterday(date)) return `Yesterday at ${date.toLocaleTimeString([], timeOptions)}`;
-        return `${date.toLocaleDateString([], { weekday: 'long' })}, ${date.toLocaleDateString([], { dateStyle: 'long' })} ${date.toLocaleTimeString([], timeOptions)}`;
+
+        return `${dayOfWeekString} ${dateString} ${date.toLocaleTimeString([], timeOptions)}`;
     }
 
     private isToday(date: Date): boolean {
