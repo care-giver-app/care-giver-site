@@ -4,7 +4,9 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
-  margin: 2rem;
+  margin: auto;
+  max-width: 1000px;
+
 }
 
 .recent-activity-title {
@@ -76,6 +78,93 @@
   margin: 0 auto;
 }
 
+tr.event-detail-row {
+  height: 0;
+}
+
+tr.event-row {
+  cursor: pointer;
+}
+
+tr.event-row:not(.expanded-event-row):hover {
+  background: whitesmoke;
+}
+
+tr.event-row:not(.expanded-event-row):active {
+  background: #efefef;
+}
+
+.event-row td {
+  border-bottom-width: 0;
+}
+
+.event-detail-wrapper {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 0fr;
+  grid-template-columns: 100%;
+  transition: grid-template-rows 225ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.event-detail-wrapper-expanded {
+  grid-template-rows: 1fr;
+}
+
+.event-detail {
+  display: flex;
+  min-height: 0;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-items: center;
+}
+
+.event-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.event-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.event-description {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-description-attribution {
+  opacity: 0.5;
+}
+
+.toggle-button {
+  transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-button-expanded {
+  transform: rotate(180deg);
+}
+
+.event-description-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
 /* Responsive: horizontal scroll on small screens */
 @media (max-width: 600px) {
   .recent-activity-card {
@@ -85,9 +174,6 @@
 
   table {
     font-size: 0.75rem;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
   }
 
   :host ::ng-deep td,

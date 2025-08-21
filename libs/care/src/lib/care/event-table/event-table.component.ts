@@ -52,7 +52,9 @@ export class EventTableComponent implements OnInit, OnChanges {
   selectedEventType = '';
   selectedEventMetadata?: EventMetadata;
 
-  displayedColumns: string[] = ['event', 'lastLogged', 'loggedBy', 'dataPoint', 'actions'];
+  columnsToDisplay: string[] = ['event', 'lastLogged'];
+  columnsToDisplayWithActions = [...this.columnsToDisplay, 'actions'];
+  expandedRow: RowEntry | null = null;
 
   isMobile: boolean = this.viewService.isMobile();
 
@@ -76,6 +78,14 @@ export class EventTableComponent implements OnInit, OnChanges {
       readableTimestamp: '',
       eventId: '',
     }));
+  }
+
+  isExpanded(row: RowEntry) {
+    return this.expandedRow === row;
+  }
+
+  toggle(row: RowEntry) {
+    this.expandedRow = this.isExpanded(row) ? null : row;
   }
 
   async ngOnChanges(changes: SimpleChanges) {
