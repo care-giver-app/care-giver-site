@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventMetadata, Event, DataPoint, User, AlertType } from '@care-giver-site/models';
 import { ReceiverService, UserService, AuthService, AlertService, EventService, ViewService } from '@care-giver-site/services';
@@ -6,7 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatChipsModule } from '@angular/material/chips';
+
+
 
 interface RowEntry {
   meta: EventMetadata;
@@ -14,6 +20,15 @@ interface RowEntry {
   loggedUser: string;
   readableTimestamp: string;
   eventId: string;
+}
+
+interface ComponentConfig {
+  hasPaginator: boolean;
+  hasFilter: boolean;
+  hasQuickAdd: boolean;
+  tableTitle: string;
+  initFunction: () => void;
+  onChangesFunction: (changes: SimpleChanges) => void;
 }
 
 @Component({
@@ -24,18 +39,28 @@ interface RowEntry {
     ModalComponent,
     MatIconModule,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatChipsModule
   ],
   templateUrl: './event-table.component.html',
   styleUrl: './event-table.component.css',
 })
-export class EventTableComponent implements OnInit, OnChanges {
+export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
+  @Input() variant: 'recent_activity' | 'all_events' = 'recent_activity';
   @Input() eventTypes!: EventMetadata[]
   @Input() events!: Event[];
   @Output() newEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   rows: RowEntry[] = [];
+  dataSource: MatTableDataSource<RowEntry> = new MatTableDataSource(this.rows);
+  filterTypes: string[] = [];
+
   private receiverService = inject(ReceiverService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
@@ -58,6 +83,25 @@ export class EventTableComponent implements OnInit, OnChanges {
 
   isMobile: boolean = this.viewService.isMobile();
 
+  configs: { [key: string]: ComponentConfig } = {
+    recent_activity: {
+      hasPaginator: false,
+      hasFilter: false,
+      hasQuickAdd: true,
+      tableTitle: 'Recent Activity',
+      initFunction: () => this.initRecentActivity(),
+      onChangesFunction: (changes) => this.updateRowsWithLatestEvents(changes),
+    },
+    all_events: {
+      hasPaginator: true,
+      hasFilter: true,
+      hasQuickAdd: false,
+      tableTitle: 'All Events',
+      initFunction: () => this.initAllActivity(),
+      onChangesFunction: (changes) => this.updateRowsWithAllEvents(changes),
+    },
+  };
+
   constructor() {
     this.initializeCurrentUser();
   }
@@ -71,6 +115,10 @@ export class EventTableComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.configs[this.variant].initFunction();
+  }
+
+  initRecentActivity() {
     this.rows = this.eventTypes.map(meta => ({
       meta: meta,
       data: undefined,
@@ -78,6 +126,23 @@ export class EventTableComponent implements OnInit, OnChanges {
       readableTimestamp: '',
       eventId: '',
     }));
+    this.dataSource.data = this.rows;
+  }
+
+  initAllActivity() {
+    this.filterTypes = this.eventTypes.map(meta => meta.type);
+  }
+
+  onFilterChange(selected: string[]) {
+    this.filterTypes = selected;
+    const filteredRows = this.rows.filter(row => this.filterTypes.includes(row.meta.type));
+    this.dataSource.data = filteredRows;
+  }
+
+  ngAfterViewInit() {
+    if (this.configs[this.variant].hasPaginator) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   isExpanded(row: RowEntry) {
@@ -89,25 +154,53 @@ export class EventTableComponent implements OnInit, OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
+    this.configs[this.variant].onChangesFunction(changes);
+  }
+
+  private async updateRowsWithAllEvents(changes: SimpleChanges) {
     if (changes['events']) {
-      await this.updateRowsWithEvents();
+      const newRows: RowEntry[] = [];
+      this.events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      for (const event of this.events) {
+        const metadata = this.eventTypes.find(meta => meta.type === event.type)!
+        const readableTimestamp = this.isMobile ? this.eventService.getCalendarTimestamp(event) : this.eventService.getReadableTimestamp(event);
+        const loggedUser = await this.userService.getLoggedUser(event.userId);
+        newRows.push({
+          meta: metadata,
+          data: event.data ? event.data[0] : undefined,
+          loggedUser,
+          readableTimestamp,
+          eventId: event.eventId || '',
+        });
+      }
+
+      this.rows = newRows;
+      this.dataSource.data = this.rows;
+
+      if (this.configs[this.variant].hasFilter) {
+        const filteredRows = this.rows.filter(row => this.filterTypes.includes(row.meta.type));
+        this.dataSource.data = filteredRows;
+      }
     }
   }
 
-  private async updateRowsWithEvents() {
-    for (let i = 0; i < this.eventTypes.length; i++) {
-      const meta = this.eventTypes[i];
-      const latestEvent = await this.getLatestEvent(meta);
-      if (latestEvent) {
-        this.rows[i].data = latestEvent.data;
-        this.rows[i].loggedUser = latestEvent.loggedUser;
-        this.rows[i].readableTimestamp = latestEvent.readableTimestamp;
-        this.rows[i].eventId = latestEvent.eventId;
-      } else {
-        this.rows[i].data = undefined;
-        this.rows[i].loggedUser = '';
-        this.rows[i].readableTimestamp = '';
+  private async updateRowsWithLatestEvents(changes: SimpleChanges) {
+    if (changes['events']) {
+      for (let i = 0; i < this.eventTypes.length; i++) {
+        const meta = this.eventTypes[i];
+        const latestEvent = await this.getLatestEvent(meta);
+        if (latestEvent) {
+          this.rows[i].data = latestEvent.data;
+          this.rows[i].loggedUser = latestEvent.loggedUser;
+          this.rows[i].readableTimestamp = latestEvent.readableTimestamp;
+          this.rows[i].eventId = latestEvent.eventId;
+        } else {
+          this.rows[i].data = undefined;
+          this.rows[i].loggedUser = '';
+          this.rows[i].readableTimestamp = '';
+        }
       }
+      this.dataSource.data = this.rows;
     }
   }
 
