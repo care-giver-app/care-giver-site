@@ -1,15 +1,15 @@
-/* Recent Activity Card Styles */
-.recent-activity-card {
+/* Event Table Card Styles */
+.event-table-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
-  margin: auto;
+  margin: 1rem auto;
   max-width: 1000px;
 
 }
 
-.recent-activity-title {
+.event-table-title {
   font-size: 1.35rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -26,8 +26,7 @@
   vertical-align: middle;
 }
 
-/* Header styles */
-.recent-activity-header {
+.event-table-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -167,7 +166,7 @@ tr.event-row:not(.expanded-event-row):active {
 
 /* Responsive: horizontal scroll on small screens */
 @media (max-width: 600px) {
-  .recent-activity-card {
+  .event-table-card {
     padding: 1rem;
     margin: 0.5rem;
   }
@@ -184,10 +183,5 @@ tr.event-row:not(.expanded-event-row):active {
   .event-logo {
     width: 24px;
     height: 24px;
-  }
-
-  th,
-  td {
-    text-align: center;
   }
 }

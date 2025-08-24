@@ -1,9 +1,20 @@
-<div class="recent-activity-card">
-    <div class="recent-activity-header">
-        <h2 class="recent-activity-title">Recent Activity</h2>
+<div class="event-table-card">
+    <div class="event-table-header">
+        <h2 class="event-table-title">{{ configs[variant].tableTitle }}</h2>
         <button mat-button color="primary" class="add-event-btn" type="button" (click)="onLogEvent()">Add Event</button>
     </div>
-    <table mat-table class="event-table" [dataSource]="rows" multiTemplateDataRows>
+
+    @if (configs[variant].hasFilter) {
+    <div>
+        <mat-chip-listbox multiple [(ngModel)]="filterTypes" (ngModelChange)="onFilterChange($event)">
+            @for (type of eventTypes; track type) {
+            <mat-chip-option [value]="type.type">{{ type.type }}</mat-chip-option>
+            }
+        </mat-chip-listbox>
+    </div>
+    }
+
+    <table mat-table class="event-table" [dataSource]="dataSource" multiTemplateDataRows>
 
         <!-- Event Column -->
         <ng-container matColumnDef="event">
@@ -22,14 +33,6 @@
             </td>
         </ng-container>
 
-        <!-- Logged By Column -->
-        <ng-container matColumnDef="loggedBy">
-            <th mat-header-cell *matHeaderCellDef>Logged By</th>
-            <td mat-cell *matCellDef="let row">
-                {{ row.loggedUser || 'N/A' }}
-            </td>
-        </ng-container>
-
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
             <td mat-cell *matCellDef="let row">
@@ -38,10 +41,12 @@
                         class="event-toggle-button" [class.event-toggle-button-expanded]="isExpanded(row)">
                         <mat-icon>keyboard_arrow_down</mat-icon>
                     </button>
+                    @if (configs[variant].hasQuickAdd) {
                     <button mat-icon-button class="log-now-btn" title="Log Now"
                         (click)="onQuickLogEvent(row.meta.type); $event.stopPropagation()">
                         <mat-icon>add</mat-icon>
                     </button>
+                    }
                 </span>
             </td>
         </ng-container>
@@ -59,7 +64,8 @@
                             </span>
                             @if (row.data) {
                             <span class="event-description-entry">
-                                <mat-icon>bar_chart</mat-icon> {{ row.data ? (row.data.value + ' ' + (row.meta.data ?
+                                <mat-icon>bar_chart</mat-icon> {{ row.data ? (row.data.value + ' ' + (row.meta.data
+                                ?
                                 row.meta.data.unit : '')) : '' }}
                             </span>
                             }
@@ -73,14 +79,16 @@
             </td>
         </ng-container>
 
-
-
         <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithActions"></tr>
         <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithActions;" class="event-row"
             [class.expanded-event-row]="isExpanded(row)" (click)="toggle(row)">
         </tr>
         <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="event-detail-row"></tr>
     </table>
+
+    @if (configs[variant].hasPaginator) {
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of events"></mat-paginator>
+    }
 </div>
 
 <care-modal [show]="showModal" [header]="'Add Event'" (close)="closeModal()">
