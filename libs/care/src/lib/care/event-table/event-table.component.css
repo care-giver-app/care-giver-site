@@ -166,7 +166,7 @@ tr.event-row:not(.expanded-event-row):active {
 
 /* Responsive: horizontal scroll on small screens */
 @media (max-width: 600px) {
-  .recent-activity-card {
+  .event-table-card {
     padding: 1rem;
     margin: 0.5rem;
   }
