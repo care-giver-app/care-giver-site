@@ -10,7 +10,6 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 0.1rem 0.5rem;
     width: 100%;
 }
 
@@ -31,6 +30,6 @@
 
 .navbar-user {
     margin-left: auto;
-    padding-right: 2rem;
+    padding-right: 1rem;
     position: relative;
 }
