@@ -160,6 +160,11 @@ tr.event-row:not(.expanded-event-row):active {
   justify-content: flex-end;
 }
 
+.secondary-button {
+  background-color: #d3d3d3 !important;
+  color: black !important;
+}
+
 /* Responsive: horizontal scroll on small screens */
 @media (max-width: 600px) {
   .event-table-card {

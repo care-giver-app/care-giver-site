@@ -66,6 +66,15 @@
     margin-left: auto;
 }
 
+.secondary-button {
+    background-color: #d3d3d3 !important;
+    color: black !important;
+}
+
+.modal-button {
+    margin: 0.5rem;
+}
+
 /* Responsive design for mobile view */
 @media (max-width: 768px) {
     .care-receiver-header {

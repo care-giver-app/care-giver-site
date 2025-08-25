@@ -2,6 +2,7 @@ import { Component, Input, SimpleChanges, OnChanges, Output, EventEmitter } from
 import { ModalComponent } from '../modal.component';
 import { Event, DataPoint, AlertType } from '@care-giver-site/models';
 import { EventService, UserService, ReceiverService, AuthService, AlertService } from '@care-giver-site/services';
+import { MatButtonModule } from '@angular/material/button';
 
 type EventAction = 'create' | 'update' | 'delete' | 'view';
 
@@ -9,7 +10,7 @@ type EventAction = 'create' | 'update' | 'delete' | 'view';
     selector: 'care-event-modal',
     templateUrl: './event-modal.component.html',
     styleUrl: './event-modal.component.css',
-    imports: [ModalComponent]
+    imports: [ModalComponent, MatButtonModule]
 })
 export class EventModalComponent implements OnChanges {
     @Input() event!: Event;

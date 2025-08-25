@@ -11,6 +11,10 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 
 
 
@@ -43,7 +47,11 @@ interface ComponentConfig {
     MatPaginatorModule,
     MatInputModule,
     MatFormFieldModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTimepickerModule
   ],
   templateUrl: './event-table.component.html',
   styleUrl: './event-table.component.css',
@@ -74,6 +82,9 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   showModal = false;
   inputData = '';
   timestampValue = '';
+  timeValue: Date | null = null;
+  dateValue: Date | null = null;
+
   selectedEventType = '';
   selectedEventMetadata?: EventMetadata;
 
@@ -238,6 +249,8 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   private resetModalState() {
     this.inputData = '';
     this.timestampValue = this.getLocaleDateTime();
+    this.dateValue = new Date(this.timestampValue)
+    this.timeValue = new Date(this.timestampValue);
   }
 
   private getLocaleDateTime(): string {
@@ -248,7 +261,13 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   submitEvent() {
-    const timestamp = new Date(`${this.timestampValue}`).toISOString();
+    let timestamp = '';
+    if (this.dateValue && this.timeValue) {
+      this.dateValue.setHours(this.timeValue.getHours(), this.timeValue.getMinutes(), 0, 0);
+      timestamp = this.dateValue.toISOString();
+    } else {
+      timestamp = new Date().toISOString();
+    }
     this.addEvent(this.selectedEventType, this.inputData, timestamp);
     this.closeModal();
   }

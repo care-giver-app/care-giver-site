@@ -66,7 +66,7 @@ export class StatsComponent implements OnInit {
   fetchReceivers(receiverId?: string) {
     this.authService.getCurrentUserId().then((userId) => {
       this.userId = userId;
-      this.userService.getUserData(this.userId).then((user: User | undefined) => {
+      this.userService.getUserData(this.userId, true).then((user: User | undefined) => {
         if (user) {
           this.user = user;
           this.receiverService.getReceivers(
