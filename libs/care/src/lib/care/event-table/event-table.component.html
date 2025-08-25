@@ -1,7 +1,7 @@
 <div class="event-table-card">
     <div class="event-table-header">
         <h2 class="event-table-title">{{ configs[variant].tableTitle }}</h2>
-        <button mat-button color="primary" class="add-event-btn" type="button" (click)="onLogEvent()">Add Event</button>
+        <button matButton="filled" type="button" (click)="onLogEvent()">Add Event</button>
     </div>
 
     @if (configs[variant].hasFilter) {
@@ -87,31 +87,49 @@
     </table>
 
     @if (configs[variant].hasPaginator) {
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of events"></mat-paginator>
+    <mat-paginator class="paginator" [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page of events"></mat-paginator>
     }
 </div>
 
 <care-modal [show]="showModal" [header]="'Add Event'" (close)="closeModal()">
     <div modal-body>
-        <label for="eventTypeSelect">Type</label>
-        <select id="eventTypeSelect" [(ngModel)]="selectedEventType" (ngModelChange)="getMetadata($event)"
-            class="form-control">
-            @for (type of eventTypes; track type) {
-            <option [value]="type.type">{{ type.type }}</option>
-            }
-        </select>
+        <mat-form-field>
+            <mat-label>Type</mat-label>
+            <mat-select id="eventTypeSelect" [(ngModel)]="selectedEventType" (ngModelChange)="getMetadata($event)"
+                class="form-control">
+                @for (type of eventTypes; track type) {
+                <mat-option [value]="type.type">{{ type.type }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
         <div class="modal-row">
-            <label for="timestampInput">Timestamp</label>
-            <input id="timestampInput" type="datetime-local" class="form-control" [(ngModel)]="timestampValue" />
+            <mat-form-field>
+                <mat-label>Date</mat-label>
+                <input matInput [matDatepicker]="datePicker" [(ngModel)]="dateValue" placeholder="MM/DD/YYYY"
+                    class="form-control" />
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Pick a time</mat-label>
+                <input matInput [matTimepicker]="timePicker" [(ngModel)]="timeValue" placeholder="HH:MM"
+                    class="form-control" />
+                <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
+                <mat-timepicker #timePicker />
+            </mat-form-field>
         </div>
         @if (selectedEventMetadata && selectedEventMetadata.data) {
-        <label for="dataInput">{{ selectedEventMetadata.data.name }}</label>
-        <input id="dataInput" [(ngModel)]="inputData" type="number"
-            placeholder="Enter {{ selectedEventMetadata.data.name }}" class="form-control" />
+        <mat-form-field>
+            <mat-label>{{ selectedEventMetadata.data.name }}</mat-label>
+            <input matInput id="dataInput" [(ngModel)]="inputData" type="number"
+                placeholder="Enter {{ selectedEventMetadata.data.name }}" class="form-control" />
+        </mat-form-field>
         }
     </div>
     <div modal-footer>
-        <button class="btn btn-primary modal-button" (click)="submitEvent()">Add Event</button>
-        <button class="btn btn-secondary modal-button" (click)="closeModal()">Cancel</button>
+        <button matButton="filled" class="modal-button" (click)="submitEvent()">Add Event</button>
+        <button matButton="filled" class="secondary-button modal-button" (click)="closeModal()">Cancel</button>
     </div>
 </care-modal>

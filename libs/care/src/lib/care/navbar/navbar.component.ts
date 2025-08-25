@@ -4,11 +4,11 @@ import { Receiver } from '@care-giver-site/models'
 import { AuthService } from '@care-giver-site/services'
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button'
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'care-navbar',
-  imports: [CommonModule, MatMenuModule, MatButtonModule],
+  imports: [CommonModule, MatMenuModule, MatButtonModule, MatIconModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
@@ -19,23 +19,16 @@ export class NavbarComponent {
   userName: string = "";
 
   constructor() {
-    this.getUserInitials();
+    this.getUserFirstName();
   }
 
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
   }
 
-  getInitials(name: string): string {
-    if (!name) return '';
-    const parts = name.trim().split(' ');
-    if (parts.length === 1) return parts[0][0].toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  }
-
-  getUserInitials() {
-    this.authService.getUsersFullName().then((fullName) => {
-      this.userName = fullName;
+  getUserFirstName() {
+    this.authService.getUserFirstName().then((firstName) => {
+      this.userName = firstName;
     });
   }
 

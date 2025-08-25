@@ -9,10 +9,25 @@ import { EventModalComponent } from '../../modal/event-modal/event-modal.compone
 import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
 import { AlertType, Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'lib-dashboard',
-  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent, AlertComponent, EventModalComponent],
+  imports: [
+    CommonModule,
+    CareCalendarComponent,
+    NavbarComponent,
+    FormsModule,
+    ModalComponent,
+    EventTableComponent,
+    AlertComponent,
+    EventModalComponent,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -65,7 +80,7 @@ export class DashboardComponent implements OnInit {
   fetchReceivers(receiverId?: string) {
     this.authService.getCurrentUserId().then((userId) => {
       this.userId = userId;
-      this.userService.getUserData(this.userId).then((user: User | undefined) => {
+      this.userService.getUserData(this.userId, true).then((user: User | undefined) => {
         if (user) {
           this.user = user;
           this.receiverService.getReceivers(

@@ -1,0 +1,45 @@
+.calendar-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.calendar-header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 0;
+    justify-content: flex-start;
+}
+
+.calendar-header-date {
+    flex: 2 1 0;
+    text-align: center;
+}
+
+.calendar-header-view {
+    display: flex;
+    justify-content: flex-end;
+    flex: 1 1 0;
+}
+
+/* Stack vertically and center on mobile */
+@media (max-width: 600px) {
+    .calendar-header-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.1rem;
+    }
+
+    .calendar-header-nav,
+    .calendar-header-date,
+    .calendar-header-view {
+        justify-content: center;
+        flex: unset;
+        width: 100%;
+        text-align: center;
+    }
+}

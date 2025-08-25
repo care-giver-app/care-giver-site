@@ -28,10 +28,10 @@ export class UserService {
         private authService: AuthService,
     ) { }
 
-    async getUserData(userId: string): Promise<User | undefined> {
+    async getUserData(userId: string, forceRefresh: boolean = false): Promise<User | undefined> {
         const cacheKey = `userCache_${userId}`;
         const cached = localStorage.getItem(cacheKey);
-        if (cached) {
+        if (cached && !forceRefresh) {
             try {
                 return JSON.parse(cached) as User;
             } catch {

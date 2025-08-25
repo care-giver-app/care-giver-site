@@ -1,5 +1,5 @@
 .care-body {
-    background: #f5f6fa;
+    width: 100%;
 }
 
 .receiver-select {
@@ -25,11 +25,6 @@
     background-size: 1rem;
 }
 
-.receiver-select:focus {
-    border-color: #004ba0;
-    box-shadow: 0 0 0 2px #bbdefb;
-}
-
 .care-receiver-header {
     display: flex;
     align-items: center;
@@ -37,16 +32,10 @@
     margin-bottom: 1rem;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #1565c0;
     width: 100%;
     text-align: center;
     letter-spacing: 0.5px;
-    background: #e3f2fd;
-    border-left: 6px solid #1976d2;
-    border-right: 6px solid #1976d2;
-    padding: 0.5rem 1.5rem 0.5rem 1rem;
-    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
-    transition: background 0.2s;
+    padding-top: 0.5rem;
 }
 
 .care-receiver-info img {
@@ -74,11 +63,17 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-left: auto;
+    padding-right: 2rem;
 }
 
-.care-receiver-actions button {
-    padding: 0.4rem 1rem;
-    font-size: 1rem;
+.secondary-button {
+    background-color: #d3d3d3 !important;
+    color: black !important;
+}
+
+.modal-button {
+    margin: 0.5rem;
 }
 
 /* Responsive design for mobile view */
@@ -87,12 +82,5 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
-    }
-
-    .care-receiver-actions {
-        margin-top: 0.5rem;
-        align-self: stretch;
-        width: 100%;
-        justify-content: flex-start;
     }
 }

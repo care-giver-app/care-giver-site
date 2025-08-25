@@ -2,22 +2,17 @@
     <div class="chart-title">
         <h2>{{ chartTitle }}</h2>
     </div>
-    <div class="chart-controls" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
-        <mat-form-field appearance="fill">
-            <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="pickerStart" [(ngModel)]="startDate" (dateChange)="onDateRangeChange()"
-                [ngModelOptions]="{standalone: true}">
-            <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
-            <mat-datepicker #pickerStart></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="endDate" (dateChange)="onDateRangeChange()"
-                [ngModelOptions]="{standalone: true}">
-            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-            <mat-datepicker #pickerEnd></mat-datepicker>
-        </mat-form-field>
-    </div>
+
+    <mat-form-field>
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}" placeholder="Start date">
+            <input matEndDate [(ngModel)]="endDate" [ngModelOptions]="{standalone: true}" placeholder="End date">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker (dateChange)="onDateRangeChange()"></mat-date-range-picker>
+    </mat-form-field>
 
     <ng-container [ngSwitch]="chartType">
         <care-timeseries-scatter-chart *ngSwitchCase="'scatter'" [startDate]="startDate" [endDate]="endDate"

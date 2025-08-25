@@ -1,0 +1,14 @@
+@use "../../../node_modules/@angular/material/" as mat;
+
+html {
+    @include mat.theme((color: (primary: mat.$azure-palette,
+                theme-type: light,
+            ),
+            typography: (plain-family: Roboto,
+                brand-family: Open Sans,
+                bold-weight: 900,
+                medium-weight: 500,
+                regular-weight: 300,
+            ),
+            density: 0));
+}
