@@ -9,10 +9,12 @@ import { EventModalComponent } from '../../modal/event-modal/event-modal.compone
 import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
 import { AlertType, Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
   selector: 'lib-dashboard',
-  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent, AlertComponent, EventModalComponent],
+  imports: [CommonModule, CareCalendarComponent, NavbarComponent, FormsModule, ModalComponent, EventTableComponent, AlertComponent, EventModalComponent, MatButtonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })

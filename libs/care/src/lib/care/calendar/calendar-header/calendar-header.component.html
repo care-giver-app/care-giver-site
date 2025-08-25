@@ -1,38 +1,31 @@
-<div class="row text-center">
-    <div class="col-md-4">
-        <div class="btn-group">
-            <div class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
-                (viewDateChange)="viewDateChange.next(viewDate)">
-                Previous
-            </div>
-            <div class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate"
-                (viewDateChange)="viewDateChange.next(viewDate)">
-                Today
-            </div>
-            <div class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
-                (viewDateChange)="viewDateChange.next(viewDate)">
-                Next
-            </div>
-        </div>
+<div class="calendar-header-container">
+    <div class="calendar-header-nav">
+        <button matIconButton mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+            (viewDateChange)="viewDateChange.next(viewDate)">
+            <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+
+        <button matButton="outlined" mwlCalendarToday [(viewDate)]="viewDate"
+            (viewDateChange)="viewDateChange.next(viewDate)">
+            Today
+        </button>
+
+        <button matIconButton mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+            (viewDateChange)="viewDateChange.next(viewDate)">
+            <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
     </div>
-    <div class="col-md-4">
+
+    <div class="calendar-header-date">
         <h3>{{ viewDate | calendarDate: view + 'ViewTitle':locale }}</h3>
     </div>
-    <div class="col-md-4">
-        <div class="btn-group">
-            <div class="btn btn-primary" (click)="viewChange.emit(CalendarView.Month)"
-                [class.active]="view === CalendarView.Month">
-                Month
-            </div>
-            <div class="btn btn-primary" (click)="viewChange.emit(CalendarView.Week)"
-                [class.active]="view === CalendarView.Week">
-                Week
-            </div>
-            <div class="btn btn-primary" (click)="viewChange.emit(CalendarView.Day)"
-                [class.active]="view === CalendarView.Day">
-                Day
-            </div>
-        </div>
+
+    <div class="calendar-header-view">
+        <mat-button-toggle-group hideSingleSelectionIndicator="true" name="calendarView" aria-label="Calendar View"
+            [value]="view" (change)="onToggleView($event)">
+            <mat-button-toggle [value]="CalendarView.Month">Month</mat-button-toggle>
+            <mat-button-toggle [value]="CalendarView.Week">Week</mat-button-toggle>
+            <mat-button-toggle [value]="CalendarView.Day">Day</mat-button-toggle>
+        </mat-button-toggle-group>
     </div>
 </div>
-<br />

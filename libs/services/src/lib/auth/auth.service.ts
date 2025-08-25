@@ -145,6 +145,12 @@ export class AuthService {
         });
     }
 
+    getUserFirstName(): Promise<string> {
+        return fetchUserAttributes().then((attributes) => {
+            return attributes['given_name'] || '';
+        });
+    }
+
     addUserId(userId: string): Promise<UpdateUserAttributeOutput> {
         const input: UpdateUserAttributeInput = {
             userAttribute: {

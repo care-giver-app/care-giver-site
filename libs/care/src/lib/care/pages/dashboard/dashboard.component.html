@@ -3,7 +3,6 @@
 
     <div class="care-receiver-header">
         <div class="care-receiver-info">
-            <img src="assets/heart-care-icon.png" alt="care logo" />
             <select class="receiver-select" [(ngModel)]="selectedReceiverId" (change)="onReceiverChange()">
                 <option *ngFor="let r of receivers" [value]="r.receiverId">
                     {{ r.firstName }} {{ r.lastName }}
@@ -11,10 +10,10 @@
             </select>
         </div>
         <div class="care-receiver-actions">
-            <button class="btn btn-primary" (click)="showAddReceiverModal = true" title="Add Care Receiver">
+            <button matButton="filled" (click)="showAddReceiverModal = true" title="Add Care Receiver">
                 Add Care Receiver
             </button>
-            <button class="btn btn-primary" (click)="showAddCareGiverModal = true" title="Add Additional Care Giver">
+            <button matButton="filled" (click)="showAddCareGiverModal = true" title="Add Additional Care Giver">
                 Add Additional Care Giver
             </button>
         </div>

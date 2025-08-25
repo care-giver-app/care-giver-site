@@ -1,7 +1,7 @@
 <div class="event-table-card">
     <div class="event-table-header">
         <h2 class="event-table-title">{{ configs[variant].tableTitle }}</h2>
-        <button mat-button color="primary" class="add-event-btn" type="button" (click)="onLogEvent()">Add Event</button>
+        <button matButton="filled" type="button" (click)="onLogEvent()">Add Event</button>
     </div>
 
     @if (configs[variant].hasFilter) {
@@ -87,7 +87,8 @@
     </table>
 
     @if (configs[variant].hasPaginator) {
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of events"></mat-paginator>
+    <mat-paginator class="paginator" [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page of events"></mat-paginator>
     }
 </div>
 
