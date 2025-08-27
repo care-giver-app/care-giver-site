@@ -258,6 +258,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     this.timestampValue = this.getLocaleDateTime();
     this.dateValue = new Date(this.timestampValue)
     this.timeValue = new Date(this.timestampValue);
+    this.noteValue = undefined;
   }
 
   private getLocaleDateTime(): string {
@@ -265,6 +266,11 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     const offset = now.getTimezoneOffset();
     const localDate = new Date(now.getTime() - (offset * 60 * 1000));
     return localDate.toISOString().split('T')[0] + 'T' + now.toTimeString().slice(0, 5);
+  }
+
+  submitEventAndAddAnother() {
+    this.submitEvent();
+    this.openModal();
   }
 
   submitEvent() {
