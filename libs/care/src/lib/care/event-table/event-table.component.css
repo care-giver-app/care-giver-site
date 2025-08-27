@@ -165,6 +165,17 @@ tr.event-row:not(.expanded-event-row):active {
   color: black !important;
 }
 
+.modal-full-width {
+  width: 100%;
+  display: block;
+}
+
+.modal-full-width textarea {
+  min-height: 80px;
+  height: 100px;
+  resize: vertical;
+}
+
 /* Responsive: horizontal scroll on small screens */
 @media (max-width: 600px) {
   .event-table-card {

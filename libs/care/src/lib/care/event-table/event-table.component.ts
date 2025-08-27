@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventMetadata, Event, DataPoint, User, AlertType } from '@care-giver-site/models';
+import { EventMetadata, Event, DataPoint, EventRequest, AlertType } from '@care-giver-site/models';
 import { ReceiverService, UserService, AuthService, AlertService, EventService, ViewService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
@@ -24,6 +24,7 @@ interface RowEntry {
   loggedUser: string;
   readableTimestamp: string;
   eventId: string;
+  note?: string;
 }
 
 interface ComponentConfig {
@@ -84,6 +85,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   timestampValue = '';
   timeValue: Date | null = null;
   dateValue: Date | null = null;
+  noteValue?: string;
 
   selectedEventType = '';
   selectedEventMetadata?: EventMetadata;
@@ -136,6 +138,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       loggedUser: '',
       readableTimestamp: '',
       eventId: '',
+      note: undefined,
     }));
     this.dataSource.data = this.rows;
   }
@@ -182,6 +185,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
           loggedUser,
           readableTimestamp,
           eventId: event.eventId || '',
+          note: event.note,
         });
       }
 
@@ -205,10 +209,12 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
           this.rows[i].loggedUser = latestEvent.loggedUser;
           this.rows[i].readableTimestamp = latestEvent.readableTimestamp;
           this.rows[i].eventId = latestEvent.eventId;
+          this.rows[i].note = latestEvent.note;
         } else {
           this.rows[i].data = undefined;
           this.rows[i].loggedUser = '';
           this.rows[i].readableTimestamp = '';
+          this.rows[i].note = undefined;
         }
       }
       this.dataSource.data = this.rows;
@@ -227,6 +233,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
         loggedUser,
         readableTimestamp,
         eventId: latestEvent.eventId || '',
+        note: latestEvent.note,
       };
     }
     return undefined;
@@ -238,7 +245,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.selectedEventMetadata?.data) {
       this.openModal();
     } else {
-      this.addEvent(type, null, new Date().toISOString());
+      this.addEvent(type, new Date().toISOString());
     }
   }
   onLogEvent() { this.openModal(); }
@@ -251,6 +258,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     this.timestampValue = this.getLocaleDateTime();
     this.dateValue = new Date(this.timestampValue)
     this.timeValue = new Date(this.timestampValue);
+    this.noteValue = undefined;
   }
 
   private getLocaleDateTime(): string {
@@ -258,6 +266,11 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     const offset = now.getTimezoneOffset();
     const localDate = new Date(now.getTime() - (offset * 60 * 1000));
     return localDate.toISOString().split('T')[0] + 'T' + now.toTimeString().slice(0, 5);
+  }
+
+  submitEventAndAddAnother() {
+    this.submitEvent();
+    this.openModal();
   }
 
   submitEvent() {
@@ -268,11 +281,11 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     } else {
       timestamp = new Date().toISOString();
     }
-    this.addEvent(this.selectedEventType, this.inputData, timestamp);
+    this.addEvent(this.selectedEventType, timestamp, this.inputData, this.noteValue);
     this.closeModal();
   }
 
-  private async addEvent(type: string, datavalue: string | null, timestamp: string) {
+  private async addEvent(type: string, timestamp: string, datavalue?: string, note?: string) {
     let data: DataPoint[] = [];
     if (datavalue) {
       this.getMetadata(type);
@@ -286,13 +299,17 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
         this.alertService.show('No receiver selected. Please select a receiver before adding an event.', AlertType.Failure);
         return;
       }
-      const observable = await this.receiverService.addEvent(
-        this.receiverService.currentReceiverId,
-        this.currentUserId,
-        type,
-        data,
-        timestamp
-      );
+
+      const req: EventRequest = {
+        receiverId: this.receiverService.currentReceiverId,
+        userId: this.currentUserId,
+        timestamp: timestamp,
+        type: type,
+        data: data,
+        note: note,
+      };
+
+      const observable = await this.receiverService.addEvent(req);
 
       observable.subscribe({
         next: () => {
