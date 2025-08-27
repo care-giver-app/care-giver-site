@@ -10,6 +10,9 @@
         <div><strong>{{ data.name }}:</strong> {{ data.value }} {{ dataUnit }}
         </div>
         }
+        @if (event.note) {
+        <div><strong>Note:</strong> {{ event.note }}</div>
+        }
     </div>
     <div modal-footer>
         <button matButton="filled" class="danger-button modal-button" (click)="deleteEvent()">Delete</button>
@@ -26,6 +29,9 @@
         @if (data) {
         <div><strong>{{ data.name }}:</strong> {{ data.value }} {{ dataUnit }}
         </div>
+        }
+        @if (event.note) {
+        <div><strong>Note:</strong> {{ event.note }}</div>
         }
     </div>
     <div modal-footer>

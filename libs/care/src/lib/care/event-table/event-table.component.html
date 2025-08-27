@@ -69,6 +69,11 @@
                                 row.meta.data.unit : '')) : '' }}
                             </span>
                             }
+                            @if (row.note) {
+                            <span class="event-description-entry">
+                                <mat-icon>event_note</mat-icon> {{ row.note }}
+                            </span>
+                            }
                         </div>
                         <button mat-icon-button class="delete-btn" title="Delete Latest Event"
                             (click)="onDeleteEvent(row.eventId || '')">
@@ -94,7 +99,7 @@
 
 <care-modal [show]="showModal" [header]="'Add Event'" (close)="closeModal()">
     <div modal-body>
-        <mat-form-field>
+        <mat-form-field class="modal-full-width">
             <mat-label>Type</mat-label>
             <mat-select id="eventTypeSelect" [(ngModel)]="selectedEventType" (ngModelChange)="getMetadata($event)"
                 class="form-control">
@@ -103,30 +108,33 @@
                 }
             </mat-select>
         </mat-form-field>
-        <div class="modal-row">
-            <mat-form-field>
-                <mat-label>Date</mat-label>
-                <input matInput [matDatepicker]="datePicker" [(ngModel)]="dateValue" placeholder="MM/DD/YYYY"
-                    class="form-control" />
-                <mat-hint>MM/DD/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
-                <mat-datepicker #datePicker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Pick a time</mat-label>
-                <input matInput [matTimepicker]="timePicker" [(ngModel)]="timeValue" placeholder="HH:MM"
-                    class="form-control" />
-                <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
-                <mat-timepicker #timePicker />
-            </mat-form-field>
-        </div>
+        <mat-form-field class="modal-full-width">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="datePicker" [(ngModel)]="dateValue" placeholder="MM/DD/YYYY"
+                class="form-control" />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="modal-full-width">
+            <mat-label>Pick a time</mat-label>
+            <input matInput [matTimepicker]="timePicker" [(ngModel)]="timeValue" placeholder="HH:MM"
+                class="form-control" />
+            <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
+            <mat-timepicker #timePicker />
+        </mat-form-field>
         @if (selectedEventMetadata && selectedEventMetadata.data) {
-        <mat-form-field>
+        <mat-form-field class="modal-full-width">
             <mat-label>{{ selectedEventMetadata.data.name }}</mat-label>
             <input matInput id="dataInput" [(ngModel)]="inputData" type="number"
                 placeholder="Enter {{ selectedEventMetadata.data.name }}" class="form-control" />
         </mat-form-field>
         }
+        <mat-form-field class="modal-full-width">
+            <mat-label>Optional Note</mat-label>
+            <textarea matInput id="dataInput" [(ngModel)]="noteValue" placeholder="Enter an optional note"
+                class="form-control" maxlength="200" rows="4"></textarea>
+        </mat-form-field>
     </div>
     <div modal-footer>
         <button matButton="filled" class="modal-button" (click)="submitEvent()">Add Event</button>

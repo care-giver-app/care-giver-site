@@ -24,4 +24,14 @@ export interface Event {
     timestamp: string;
     type: string;
     data: DataPoint[];
+    note?: string;
+}
+
+export interface EventRequest {
+    receiverId: string;
+    userId: string;
+    timestamp: string;
+    type: string;
+    data?: DataPoint[];
+    note?: string;
 }
