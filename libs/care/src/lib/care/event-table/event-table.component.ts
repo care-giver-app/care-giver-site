@@ -248,7 +248,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
   onLogEvent() { this.openModal(); }
-  closeModal() { this.resetModalState(); this.showModal = false; }
+  closeModal() { this.resetModalState(); this.showModal = false; this.selectedEventTypes = []; }
   openModal() { this.resetModalState(); this.showModal = true; }
   getMetadata(type: string): EventMetadata | undefined { return this.eventTypes.find(event => event.type === type); }
 
