@@ -101,8 +101,8 @@
     <div modal-body>
         <mat-form-field class="modal-full-width">
             <mat-label>Type</mat-label>
-            <mat-select id="eventTypeSelect" [(ngModel)]="selectedEventType" (ngModelChange)="getMetadata($event)"
-                class="form-control">
+            <mat-select multiple id="eventTypeSelect" [(ngModel)]="selectedEventTypes"
+                (ngModelChange)="getMetadata($event)" class="form-control">
                 @for (type of eventTypes; track type) {
                 <mat-option [value]="type.type">{{ type.type }}</mat-option>
                 }
@@ -123,12 +123,15 @@
             <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
             <mat-timepicker #timePicker />
         </mat-form-field>
-        @if (selectedEventMetadata && selectedEventMetadata.data) {
+        @for (type of selectedEventTypes; track type) {
+        @let meta = getMetadata(type);
+        @if (meta && meta.data) {
         <mat-form-field class="modal-full-width">
-            <mat-label>{{ selectedEventMetadata.data.name }}</mat-label>
-            <input matInput id="dataInput" [(ngModel)]="inputData" type="number"
-                placeholder="Enter {{ selectedEventMetadata.data.name }}" class="form-control" />
+            <mat-label>{{ meta.data.name }}</mat-label>
+            <input matInput id="dataInput" [(ngModel)]="inputData[type]" type="number"
+                placeholder="Enter {{ meta.data.name }}" class="form-control" />
         </mat-form-field>
+        }
         }
         <mat-form-field class="modal-full-width">
             <mat-label>Optional Note</mat-label>
@@ -137,8 +140,13 @@
         </mat-form-field>
     </div>
     <div modal-footer>
-        <button matButton="filled" class="modal-button" (click)="submitEvent()">Add Event</button>
-        <button matButton="filled" class="modal-button" (click)="submitEventAndAddAnother()">Add Another</button>
+        <button matButton="filled" class="modal-button" (click)="submitEvent()">
+            @if (selectedEventTypes.length > 1) {
+            Add Events
+            } @else {
+            Add Event
+            }
+        </button>
         <button matButton="filled" class="secondary-button modal-button" (click)="closeModal()">Cancel</button>
     </div>
 </care-modal>
