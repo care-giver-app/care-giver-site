@@ -81,14 +81,13 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   // Modal state
   showModal = false;
-  inputData = '';
+  inputData: { [eventType: string]: any } = {};
   timestampValue = '';
   timeValue: Date | null = null;
   dateValue: Date | null = null;
   noteValue?: string;
 
-  selectedEventType = '';
-  selectedEventMetadata?: EventMetadata;
+  selectedEventTypes: string[] = [];
 
   columnsToDisplay: string[] = ['event', 'lastLogged'];
   columnsToDisplayWithActions = [...this.columnsToDisplay, 'actions'];
@@ -240,9 +239,9 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   onQuickLogEvent(type: string) {
-    this.selectedEventType = type;
-    this.getMetadata(type);
-    if (this.selectedEventMetadata?.data) {
+    this.selectedEventTypes = [type];
+    const metadata = this.getMetadata(type);
+    if (metadata?.data) {
       this.openModal();
     } else {
       this.addEvent(type, new Date().toISOString());
@@ -251,10 +250,10 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   onLogEvent() { this.openModal(); }
   closeModal() { this.resetModalState(); this.showModal = false; }
   openModal() { this.resetModalState(); this.showModal = true; }
-  getMetadata(type: string) { this.selectedEventMetadata = this.eventTypes.find(event => event.type === type); }
+  getMetadata(type: string): EventMetadata | undefined { return this.eventTypes.find(event => event.type === type); }
 
   private resetModalState() {
-    this.inputData = '';
+    this.inputData = {};
     this.timestampValue = this.getLocaleDateTime();
     this.dateValue = new Date(this.timestampValue)
     this.timeValue = new Date(this.timestampValue);
@@ -268,11 +267,6 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     return localDate.toISOString().split('T')[0] + 'T' + now.toTimeString().slice(0, 5);
   }
 
-  submitEventAndAddAnother() {
-    this.submitEvent();
-    this.openModal();
-  }
-
   submitEvent() {
     let timestamp = '';
     if (this.dateValue && this.timeValue) {
@@ -281,16 +275,18 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     } else {
       timestamp = new Date().toISOString();
     }
-    this.addEvent(this.selectedEventType, timestamp, this.inputData, this.noteValue);
+    for (const type of this.selectedEventTypes) {
+      this.addEvent(type, timestamp, this.inputData[type], this.noteValue);
+    }
     this.closeModal();
   }
 
   private async addEvent(type: string, timestamp: string, datavalue?: string, note?: string) {
     let data: DataPoint[] = [];
     if (datavalue) {
-      this.getMetadata(type);
-      if (this.selectedEventMetadata?.data) {
-        data = [{ name: this.selectedEventMetadata.data.name, value: datavalue }];
+      const metadata = this.getMetadata(type);
+      if (metadata?.data) {
+        data = [{ name: metadata.data.name, value: datavalue }];
       }
     }
 
