@@ -5,7 +5,7 @@ import { EventTableComponent } from '../../event-table/event-table.component';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
 import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
-import { AlertType, Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
+import { AlertType, Event, EventMetadata, Receiver, User, Relationships } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
 import { ChartComponent } from '../../chart/chart.component';
 
@@ -66,15 +66,12 @@ export class StatsComponent implements OnInit {
   fetchReceivers(receiverId?: string) {
     this.authService.getCurrentUserId().then((userId) => {
       this.userId = userId;
-      this.userService.getUserData(this.userId, true).then((user: User | undefined) => {
-        if (user) {
-          this.user = user;
+      this.userService.getUserRelationships(this.userId).then((relationships: Relationships | undefined) => {
+        if (relationships) {
+          const receiverIds = relationships.relationships.map(r => r.receiverId);
           this.receiverService.getReceivers(
             this.userId,
-            [
-              ...(this.user?.primaryCareReceivers ?? []),
-              ...(this.user?.additionalCareReceivers ?? [])
-            ]
+            receiverIds
           ).then((receivers: Receiver[]) => {
             this.receivers = receivers;
             if (this.receivers.length) {
