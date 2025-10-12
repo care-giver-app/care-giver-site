@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Observable, firstValueFrom } from 'rxjs';
-import { User } from '@care-giver-site/models'
+import { User, Relationships } from '@care-giver-site/models'
 
 interface CreateUserResponse {
     userId: string;
@@ -27,6 +27,21 @@ export class UserService {
         private http: HttpClient,
         private authService: AuthService,
     ) { }
+
+    async getUserRelationships(userId: string): Promise<Relationships | undefined> {
+        const token = await this.authService.getBearerToken();
+        const headers: HttpHeaders = new HttpHeaders({
+            'Authorization': token,
+        });
+        try {
+            return await firstValueFrom(
+                this.http.get<Relationships>(`${this.userPath}relationships/${encodeURIComponent(userId)}`, { headers })
+            );
+        } catch (err) {
+            console.error('Error fetching user relationships:', err);
+            return undefined;
+        }
+    }
 
     async getUserData(userId: string, forceRefresh: boolean = false): Promise<User | undefined> {
         const cacheKey = `userCache_${userId}`;

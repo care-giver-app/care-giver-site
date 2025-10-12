@@ -3,6 +3,15 @@ export interface User {
     email: string;
     firstName: string;
     lastName: string;
-    primaryCareReceivers: string[];
-    additionalCareReceivers: string[];
+}
+
+export interface Relationship {
+    userId: string;
+    receiverId: string;
+    primaryCareGiver: boolean;
+    emailNotifications: boolean;
+}
+
+export interface Relationships {
+    relationships: Relationship[];
 }

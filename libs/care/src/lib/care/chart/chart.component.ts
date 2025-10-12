@@ -5,12 +5,13 @@ import { ChartConfiguration } from 'chart.js';
 import { Event, EventMetadata } from '@care-giver-site/models';
 import { FormsModule } from '@angular/forms';
 import { EventTypes, EventService } from '@care-giver-site/services';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDatepickerModule, MatDateRangePicker } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core'
 import { TimeseriesScatterChartComponent } from './scatter/scatter.component';
 import { LineChartComponent } from './line/line.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'care-chart',
@@ -23,7 +24,8 @@ import { LineChartComponent } from './line/line.component';
     MatInputModule,
     MatNativeDateModule,
     TimeseriesScatterChartComponent,
-    LineChartComponent
+    LineChartComponent,
+    MatButtonModule
   ],
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.css',
@@ -108,7 +110,6 @@ export class ChartComponent implements OnChanges {
 
   private eventToDataPoint(e: Event, colorObj: { primary: string; secondary: string }) {
     const date = new Date(e.timestamp);
-    console.log(date)
     return {
       x: date.getTime(),
       y: Number(e.data?.[0]?.value ?? 0),

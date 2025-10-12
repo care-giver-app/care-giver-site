@@ -5,17 +5,18 @@ import { EventTableComponent } from '../../event-table/event-table.component';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
 import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
-import { AlertType, Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
+import { AlertType, Event, EventMetadata, Receiver, User, Relationships } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
 import { ChartComponent } from '../../chart/chart.component';
+import { ReceiverSelectionComponent } from '../../receiver-selection/receiver-selection.component';
 
 @Component({
   selector: 'lib-stats',
-  imports: [CommonModule, NavbarComponent, FormsModule, EventTableComponent, AlertComponent, EventModalComponent, ChartComponent],
+  imports: [CommonModule, NavbarComponent, FormsModule, EventTableComponent, AlertComponent, EventModalComponent, ChartComponent, ReceiverSelectionComponent],
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.css',
 })
-export class StatsComponent implements OnInit {
+export class StatsComponent {
   private receiverService = inject(ReceiverService);
   private authService = inject(AuthService);
   private userService = inject(UserService)
@@ -25,7 +26,6 @@ export class StatsComponent implements OnInit {
 
   events: Event[] = [];
   receivers: Receiver[] = [];
-  selectedReceiverId: string = '';
   userId: string = '';
   user: User | undefined = undefined;
 
@@ -41,81 +41,24 @@ export class StatsComponent implements OnInit {
 
   weightMetaData: EventMetadata = EventTypes.find(e => e.type === 'Weight')!
 
-  ngOnInit() {
-    this.fetchReceivers();
-  }
-
   onReceiverChange() {
-    this.receiverService.currentReceiverId = this.selectedReceiverId;
     this.getLatestEvents()
   }
 
   async getLatestEvents() {
-    const observable = await this.receiverService.getReceiverEvents(this.selectedReceiverId, this.userId);
-    observable.subscribe((data: Event[]) => {
-      this.events = data;
-    });
-  }
+    if (!this.receiverService.currentReceiverId) {
+      return;
+    }
 
-  signOut() {
-    this.authService.signOutUser().then(() => {
-      window.location.reload();
-    })
-  }
-
-  fetchReceivers(receiverId?: string) {
-    this.authService.getCurrentUserId().then((userId) => {
+    this.authService.getCurrentUserId().then(async (userId) => {
       this.userId = userId;
-      this.userService.getUserData(this.userId, true).then((user: User | undefined) => {
-        if (user) {
-          this.user = user;
-          this.receiverService.getReceivers(
-            this.userId,
-            [
-              ...(this.user?.primaryCareReceivers ?? []),
-              ...(this.user?.additionalCareReceivers ?? [])
-            ]
-          ).then((receivers: Receiver[]) => {
-            this.receivers = receivers;
-            if (this.receivers.length) {
-              if (receiverId) {
-                this.selectedReceiverId = receiverId
-                this.receiverService.currentReceiverId = this.selectedReceiverId;
-              } else {
-                this.selectedReceiverId = this.receivers[0].receiverId;
-                this.receiverService.currentReceiverId = this.selectedReceiverId;
-              }
-              this.getLatestEvents()
-            }
-          })
-        }
-      })
+      if (this.receiverService.currentReceiverId && this.userId) {
+        const observable = await this.receiverService.getReceiverEvents(this.receiverService.currentReceiverId, this.userId);
+        observable.subscribe((data: Event[]) => {
+          this.events = data;
+        });
+      }
     });
-  }
-
-  submitAddReceiver() {
-    this.userService.addCareReceiver(this.userId, this.newReceiver.firstName, this.newReceiver.lastName).then((resp) => {
-      if (resp) {
-        this.alertService.show('Care Receiver added successfully', AlertType.Success);
-        this.fetchReceivers(resp.receiverId);
-      } else {
-        this.alertService.show('Error adding care receiver. Please try again later.', AlertType.Failure);
-      }
-      this.showAddReceiverModal = false;
-      this.newReceiver = { firstName: '', lastName: '' };
-    })
-  }
-
-  submitAddCareGiver() {
-    this.userService.addCareGiver(this.userId, this.selectedReceiverId, this.additionalCareGiverEmail).then((resp) => {
-      if (resp) {
-        this.alertService.show('Care Giver added successfully', AlertType.Success);
-      } else {
-        this.alertService.show('Error adding care giver. Please try again later.', AlertType.Failure);
-      }
-      this.showAddCareGiverModal = false;
-      this.additionalCareGiverEmail = '';
-    })
   }
 
   handleDeleteEvent(event: Event) {
@@ -125,7 +68,6 @@ export class StatsComponent implements OnInit {
   }
 
   handleViewEvent(event: Event) {
-    console.log(this.eventAction);
     this.selectedEvent = event;
     this.eventAction = 'view';
     this.showEventModal = true;
