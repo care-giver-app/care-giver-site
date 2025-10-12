@@ -34,7 +34,7 @@
 }
 
 :host ::ng-deep table,
-paginator {
+.paginator {
   background-color: #fff;
 }
 
