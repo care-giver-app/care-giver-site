@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter, ViewChild, AfterViewInit, computed, model, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventMetadata, Event, DataPoint, EventRequest, AlertType } from '@care-giver-site/models';
 import { ReceiverService, UserService, AuthService, AlertService, EventService, ViewService } from '@care-giver-site/services';
@@ -10,13 +10,13 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTimepickerModule } from '@angular/material/timepicker';
-
-
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 interface RowEntry {
   meta: EventMetadata;
@@ -52,7 +52,8 @@ interface ComponentConfig {
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTimepickerModule
+    MatTimepickerModule,
+    MatAutocompleteModule
   ],
   templateUrl: './event-table.component.html',
   styleUrl: './event-table.component.css',
@@ -68,7 +69,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   rows: RowEntry[] = [];
   dataSource: MatTableDataSource<RowEntry> = new MatTableDataSource(this.rows);
-  filterTypes: string[] = [];
+  filteredTypes: string[] = [];
 
   private receiverService = inject(ReceiverService);
   private userService = inject(UserService);
@@ -143,13 +144,16 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   initAllActivity() {
-    this.filterTypes = this.eventTypes.map(meta => meta.type);
+    //this.filteredTypes = this.eventTypes.map(meta => meta.type);
   }
 
-  onFilterChange(selected: string[]) {
-    this.filterTypes = selected;
-    const filteredRows = this.rows.filter(row => this.filterTypes.includes(row.meta.type));
-    this.dataSource.data = filteredRows;
+  onFilterChange() {
+    if (this.filteredTypes.length) {
+      const filteredRows = this.rows.filter(row => this.filteredTypes.includes(row.meta.type));
+      this.dataSource.data = filteredRows;
+    } else {
+      this.dataSource.data = this.rows;
+    }
   }
 
   ngAfterViewInit() {
@@ -191,8 +195,8 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       this.rows = newRows;
       this.dataSource.data = this.rows;
 
-      if (this.configs[this.variant].hasFilter) {
-        const filteredRows = this.rows.filter(row => this.filterTypes.includes(row.meta.type));
+      if (this.configs[this.variant].hasFilter && this.filteredTypes.length) {
+        const filteredRows = this.rows.filter(row => this.filteredTypes.includes(row.meta.type));
         this.dataSource.data = filteredRows;
       }
     }
@@ -255,9 +259,14 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   private resetModalState() {
     this.inputData = {};
     this.timestampValue = this.getLocaleDateTime();
-    this.dateValue = new Date(this.timestampValue)
-    this.timeValue = new Date(this.timestampValue);
+    this.dateValue = new Date(this.timestampValue);
+    this.timeValue = this.roundToNearestMinutes(new Date(), 10);
     this.noteValue = undefined;
+  }
+
+  private roundToNearestMinutes(date: Date, interval: number): Date {
+    const ms = 1000 * 60 * interval;
+    return new Date(Math.round(date.getTime() / ms) * ms);
   }
 
   private getLocaleDateTime(): string {
@@ -326,6 +335,53 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     if (event) {
       this.eventToDelete.emit(event);
     }
+  }
+
+
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  readonly currentType = model('');
+  get filteredAvailableTypes(): string[] {
+    const input = this.currentType().toLowerCase();
+    return this.availableTypes.filter(type =>
+      type.toLowerCase().includes(input)
+    );
+  }
+
+  get availableTypes(): string[] {
+    return this.eventTypes
+      .map(e => e.type)
+      .filter(type => !this.filteredTypes.includes(type));
+  }
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    if (value && !this.filteredTypes.includes(value)) {
+      this.filteredTypes.push(value);
+      this.onFilterChange();
+    }
+
+    this.currentType.set('');
+  }
+
+  remove(type: string): void {
+    const index = this.filteredTypes.indexOf(type);
+    if (index >= 0) {
+      this.filteredTypes.splice(index, 1);
+      this.onFilterChange();
+    }
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    const value = event.option.viewValue;
+
+    if (value && !this.filteredTypes.includes(value)) {
+      this.filteredTypes.push(value);
+      this.onFilterChange();
+    }
+
+    this.currentType?.set?.('');
+    event.option.deselect?.();
   }
 }
 

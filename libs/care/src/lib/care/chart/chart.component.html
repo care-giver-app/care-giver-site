@@ -11,7 +11,12 @@
         </mat-date-range-input>
         <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker (dateChange)="onDateRangeChange()"></mat-date-range-picker>
+        <mat-date-range-picker #picker (dateChange)="onDateRangeChange()">
+            <mat-date-range-picker-actions>
+                <button matButton matDateRangePickerCancel>Cancel</button>
+                <button matButton="elevated" matDateRangePickerApply>Apply</button>
+            </mat-date-range-picker-actions>
+        </mat-date-range-picker>
     </mat-form-field>
 
     <ng-container [ngSwitch]="chartType">

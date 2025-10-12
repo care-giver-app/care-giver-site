@@ -15,6 +15,10 @@ export class ReceiverService {
         private http: HttpClient,
         private authService: AuthService,
     ) {
+        const storedReceiverId = localStorage.getItem('currentReceiverId');
+        if (storedReceiverId) {
+            this.currentReceiverId = storedReceiverId;
+        }
     }
 
     async getReceivers(userId: string, receiverIds: string[]): Promise<Receiver[]> {
@@ -22,6 +26,11 @@ export class ReceiverService {
             this.getReceiver(id, userId).then(obs => firstValueFrom(obs))
         );
         return Promise.all(receiverPromises);
+    }
+
+    setCurrentReceiver(receiverId: string) {
+        this.currentReceiverId = receiverId;
+        localStorage.setItem('currentReceiverId', receiverId);
     }
 
     getReceiver(receiverId: string, userId: string): Promise<Observable<Receiver>> {

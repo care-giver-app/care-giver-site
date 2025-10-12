@@ -1,7 +1,8 @@
 <div class="care-body">
     <care-navbar></care-navbar>
+    <care-receiver-selection (receiverChange)="onReceiverChange()"></care-receiver-selection>
 
-    <div class="care-receiver-header">
+    <!-- <div class="care-receiver-header">
         <div class="care-receiver-info">
             <select class="receiver-select" [(ngModel)]="selectedReceiverId" (change)="onReceiverChange()">
                 <option *ngFor="let r of receivers" [value]="r.receiverId">
@@ -17,7 +18,7 @@
                 Add Additional Care Giver
             </button>
         </div>
-    </div>
+    </div> -->
 
     <care-event-table [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"
         (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
@@ -26,45 +27,6 @@
     <care-calendar [events]="events" (eventToDelete)="handleDeleteEvent($event)"
         (eventToView)="handleViewEvent($event)"></care-calendar>
 </div>
-
-<care-modal [show]="showAddReceiverModal" header="Add Care Receiver" (close)="showAddReceiverModal = false">
-    <div modal-body>
-        <form (ngSubmit)="submitAddReceiver()" #addReceiverForm="ngForm">
-            <mat-form-field>
-                <mat-label>First Name</mat-label>
-                <input matInput [(ngModel)]="newReceiver.firstName" name="firstName" required class="form-control">
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Last Name</mat-label>
-                <input matInput [(ngModel)]="newReceiver.lastName" name="lastName" required class="form-control">
-            </mat-form-field>
-        </form>
-    </div>
-    <div modal-footer>
-        <button matButton="filled" class="modal-button" (click)="submitAddReceiver()">Add</button>
-        <button matButton="filled" class="secondary-button modal-button"
-            (click)="showAddReceiverModal = false">Cancel</button>
-    </div>
-</care-modal>
-
-<care-modal [show]="showAddCareGiverModal" header="Add Additional Care Giver" (close)="showAddCareGiverModal = false">
-    <div modal-body>
-        <form (ngSubmit)="submitAddCareGiver()" #addCareGiverForm="ngForm">
-            <mat-form-field>
-                <mat-label>Email</mat-label>
-                <input matInput [(ngModel)]="additionalCareGiverEmail" name="careGiverEmail" required
-                    class="form-control">
-            </mat-form-field>
-        </form>
-    </div>
-    <div modal-footer>
-        <button matButton="filled" class="modal-button" (click)="submitAddCareGiver()">Add</button>
-        <button matButton="filled" class="secondary-button modal-button"
-            (click)="showAddCareGiverModal = false">Cancel</button>
-    </div>
-</care-modal>
-
 
 @if (selectedEvent){
 <care-event-modal [event]="selectedEvent" [(eventAction)]="eventAction" [(showModal)]="showEventModal"

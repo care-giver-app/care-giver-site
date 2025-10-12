@@ -6,11 +6,27 @@
 
     @if (configs[variant].hasFilter) {
     <div>
-        <mat-chip-listbox multiple [(ngModel)]="filterTypes" (ngModelChange)="onFilterChange($event)">
-            @for (type of eventTypes; track type) {
-            <mat-chip-option [value]="type.type">{{ type.type }}</mat-chip-option>
-            }
-        </mat-chip-listbox>
+        <mat-form-field class="filter-chip-list">
+            <mat-label>Filter Event Types</mat-label>
+            <mat-chip-grid #chipGrid aria-label="Event type selection">
+                @for (type of filteredTypes; track type) {
+                <mat-chip-row (removed)="remove(type)">
+                    {{type}}
+                    <button matChipRemove [attr.aria-label]="'remove ' + type">
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip-row>
+                }
+            </mat-chip-grid>
+            <input name="currentType" placeholder="Event Type..." #typeInput [(ngModel)]="currentType"
+                [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event); typeInput.value = ''">
+                @for (type of filteredAvailableTypes; track type) {
+                <mat-option [value]="type">{{type}}</mat-option>
+                }
+            </mat-autocomplete>
+        </mat-form-field>
     </div>
     }
 
@@ -19,9 +35,14 @@
         <!-- Event Column -->
         <ng-container matColumnDef="event">
             <th mat-header-cell *matHeaderCellDef>Event</th>
-            <td mat-cell *matCellDef="let row">
-                <img class="event-icon" [src]="row.meta.icon" title="{{ row.meta.type }}" alt="{{ row.meta.type }}">
-                <span class="event-name">{{ row.meta.type }}</span>
+            <td mat-cell *matCellDef="let row" class="event-cell-with-note-indicator">
+                @if (row.note) {
+                <mat-icon class="note-indicator-icon-absolute" title="Has note">event_note</mat-icon>
+                }
+                <span class="event-main-cell">
+                    <img class="event-icon" [src]="row.meta.icon" title="{{ row.meta.type }}" alt="{{ row.meta.type }}">
+                    <span class="event-name">{{ row.meta.type }}</span>
+                </span>
             </td>
         </ng-container>
 
@@ -118,14 +139,15 @@
                 class="form-control" />
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>
+            <mat-datepicker #datePicker>
+            </mat-datepicker>
         </mat-form-field>
         <mat-form-field class="modal-full-width">
-            <mat-label>Pick a time</mat-label>
+            <mat-label>Time</mat-label>
             <input matInput [matTimepicker]="timePicker" [(ngModel)]="timeValue" placeholder="HH:MM"
                 class="form-control" />
             <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
-            <mat-timepicker #timePicker />
+            <mat-timepicker #timePicker interval="10min"></mat-timepicker>
         </mat-form-field>
         @for (type of selectedEventTypes; track type) {
         @let meta = getMetadata(type);

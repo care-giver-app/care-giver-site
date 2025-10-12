@@ -34,7 +34,7 @@
 }
 
 :host ::ng-deep table,
-.paginator {
+paginator {
   background-color: #fff;
 }
 
@@ -79,14 +79,6 @@ tr.event-detail-row {
 
 tr.event-row {
   cursor: pointer;
-}
-
-tr.event-row:not(.expanded-event-row):hover {
-  background: whitesmoke;
-}
-
-tr.event-row:not(.expanded-event-row):active {
-  background: #efefef;
 }
 
 .event-row td {
@@ -151,6 +143,13 @@ tr.event-row:not(.expanded-event-row):active {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  word-break: break-word;
+  flex-wrap: nowrap;
+}
+
+.event-description-entry mat-icon {
+  flex-shrink: 0;
 }
 
 .action-buttons {
@@ -176,6 +175,32 @@ tr.event-row:not(.expanded-event-row):active {
   resize: vertical;
 }
 
+.filter-chip-list {
+  width: 100%;
+  max-width: 100%;
+}
+
+.note-indicator-icon {
+  font-size: 1rem;
+  color: #bdbdbd;
+  align-self: flex-start;
+  margin-right: -0.25rem;
+}
+
+.event-cell-with-note-indicator {
+  position: relative;
+}
+
+.note-indicator-icon-absolute {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  font-size: 0.75rem;
+  color: #bdbdbd;
+  z-index: 1;
+  pointer-events: none;
+}
+
 /* Responsive: horizontal scroll on small screens */
 @media (max-width: 600px) {
   .event-table-card {
@@ -196,4 +221,10 @@ tr.event-row:not(.expanded-event-row):active {
     width: 24px;
     height: 24px;
   }
+}
+
+.event-main-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
