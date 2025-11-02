@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { ChartDataset, Point } from 'chart.js';
+import { ChartComponent as ChartInterface } from '../chart.interface';
 
 @Component({
   selector: 'care-timeseries-scatter-chart',
@@ -14,10 +15,10 @@ import { ChartDataset, Point } from 'chart.js';
   templateUrl: './scatter.component.html',
   styleUrl: './scatter.component.css',
 })
-export class TimeseriesScatterChartComponent implements OnInit, OnChanges {
+export class TimeseriesScatterChartComponent implements OnInit, OnChanges, ChartInterface {
   @Input() datasets!: ChartDataset<'scatter', (number | Point | null)[]>[];
-  @Input() startDate!: string;
-  @Input() endDate!: string;
+  @Input() startDate!: Date;
+  @Input() endDate!: Date;
   @Input() fontSize: number = 12;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
@@ -34,11 +35,9 @@ export class TimeseriesScatterChartComponent implements OnInit, OnChanges {
             const time = TimeseriesScatterChartComponent.getTimeInAMPM(context.parsed.y);
             return `${day} at ${time}`;
           }
-        }
+        },
       },
     },
-    responsive: true,
-    maintainAspectRatio: true,
     aspectRatio: 1,
   };
 
@@ -46,18 +45,18 @@ export class TimeseriesScatterChartComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.updateChartData();
-    this.chart?.update();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['datasets'] || changes['startDate'] || changes['endDate'] ||
-      changes['fontSize']) {
-      this.updateChartData();
-    }
-  }
-
-  onDateRangeChange() {
+  ngOnChanges(_changes: SimpleChanges) {
     this.updateChartData();
+  }
+
+  getCanvas(): HTMLCanvasElement | null {
+    return this.chart?.chart?.canvas ?? null;
+  }
+
+  update(): void {
+    this.chart?.update();
   }
 
   private updateChartData() {

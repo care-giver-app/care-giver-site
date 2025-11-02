@@ -1,6 +1,11 @@
 <div class="chart-container">
-    <div class="chart-title">
-        <h2>{{ chartTitle }}</h2>
+    <div class="chart-header">
+        <div class="chart-title">
+            <h2>{{ chartTitle }}</h2>
+        </div>
+        <button matIconButton (click)="downloadChart()" class="download-button" aria-label="Download chart">
+            <mat-icon>download</mat-icon>
+        </button>
     </div>
 
     <mat-form-field>
