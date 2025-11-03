@@ -40,7 +40,8 @@ export class LineChartComponent implements OnInit, OnChanges, ChartInterface {
         }
       },
     },
-    aspectRatio: 1,
+    maintainAspectRatio: false,
+    responsive: true,
   };
 
   constructor() { }

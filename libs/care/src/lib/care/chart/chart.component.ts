@@ -13,6 +13,7 @@ import { LineChartComponent } from './line/line.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ChartComponent as ChartInterface } from './chart.interface';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'care-chart',
@@ -27,7 +28,8 @@ import { MatIconModule } from '@angular/material/icon';
     TimeseriesScatterChartComponent,
     LineChartComponent,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: './chart.component.html',
   styleUrl: './chart.component.css',
@@ -46,6 +48,8 @@ export class ChartComponent implements OnChanges {
 
   @ViewChild(LineChartComponent) lineChart?: LineChartComponent;
   @ViewChild(TimeseriesScatterChartComponent) scatterChart?: TimeseriesScatterChartComponent;
+  @ViewChild('menuTrigger') menuTrigger?: MatMenuTrigger;
+
 
   scatterChartDatasets: ChartConfiguration<'scatter'>['data']['datasets'] = [];
   lineChartDatasets: ChartConfiguration<'line'>['data']['datasets'] = [];
@@ -59,8 +63,17 @@ export class ChartComponent implements OnChanges {
     this.updateChartData();
   }
 
-  onDateRangeChange() {
+  applyDateRange() {
     this.updateChartData();
+    this.menuTrigger?.closeMenu();
+  }
+
+  setDateRange(days: number) {
+    this.endDate = new Date();
+    this.startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    this.updateChartData();
+    console.log(this.menuTrigger)
+    this.menuTrigger?.closeMenu();
   }
 
   downloadChart() {
@@ -119,7 +132,7 @@ export class ChartComponent implements OnChanges {
     }
   }
 
-  private updateChartData() {
+  updateChartData() {
     switch (this.chartType) {
       case 'line':
         this.lineChartDatasets = this.buildDatasets();

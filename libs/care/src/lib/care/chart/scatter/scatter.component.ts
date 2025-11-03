@@ -38,7 +38,8 @@ export class TimeseriesScatterChartComponent implements OnInit, OnChanges, Chart
         },
       },
     },
-    aspectRatio: 1,
+    maintainAspectRatio: false,
+    responsive: true,
   };
 
   constructor() { }

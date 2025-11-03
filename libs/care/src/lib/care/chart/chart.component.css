@@ -27,10 +27,29 @@
     font-weight: 600;
 }
 
+.header-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
 .download-button {
     flex-shrink: 0;
 }
 
+.date-menu-content {
+    padding: 0.5rem;
+}
+
+.quick-select-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.quick-select-buttons button {
+    justify-content: flex-start;
+}
 
 @media (max-width: 600px) {
     .chart-container {
