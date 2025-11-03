@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { ChartDataset, Point } from 'chart.js';
+import { ChartComponent as ChartInterface } from '../chart.interface';
 
 @Component({
   selector: 'care-line-chart',
@@ -15,10 +16,10 @@ import { ChartDataset, Point } from 'chart.js';
   styleUrl: './line.component.css',
 })
 
-export class LineChartComponent implements OnInit, OnChanges {
+export class LineChartComponent implements OnInit, OnChanges, ChartInterface {
   @Input() datasets!: ChartDataset<'line', (number | Point | null)[]>[];
-  @Input() startDate!: string;
-  @Input() endDate!: string;
+  @Input() startDate!: Date;
+  @Input() endDate!: Date;
   @Input() fontSize: number = 12;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
@@ -39,9 +40,8 @@ export class LineChartComponent implements OnInit, OnChanges {
         }
       },
     },
+    maintainAspectRatio: false,
     responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 1,
   };
 
   constructor() { }
@@ -50,15 +50,16 @@ export class LineChartComponent implements OnInit, OnChanges {
     this.updateChartData();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['datasets'] || changes['startDate'] || changes['endDate'] ||
-      changes['fontSize']) {
-      this.updateChartData();
-    }
+  ngOnChanges(_changes: SimpleChanges) {
+    this.updateChartData();
   }
 
-  onDateRangeChange() {
-    this.updateChartData();
+  getCanvas(): HTMLCanvasElement | null {
+    return this.chart?.chart?.canvas ?? null;
+  }
+
+  update(): void {
+    this.chart?.update();
   }
 
   private updateChartData() {
