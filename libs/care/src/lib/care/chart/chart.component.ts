@@ -72,7 +72,6 @@ export class ChartComponent implements OnChanges {
     this.endDate = new Date();
     this.startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
     this.updateChartData();
-    console.log(this.menuTrigger)
     this.menuTrigger?.closeMenu();
   }
 
