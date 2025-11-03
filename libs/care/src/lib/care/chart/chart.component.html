@@ -24,7 +24,7 @@
                     <input matEndDate [(ngModel)]="endDate" placeholder="End date">
                 </mat-date-range-input>
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker (closed)="updateChartData()">
+                <mat-date-range-picker #picker>
                     <mat-date-range-picker-actions>
                         <button matButton matDateRangePickerCancel>Cancel</button>
                         <button matButton="elevated" (click)="applyDateRange()" matDateRangePickerApply>Apply</button>
@@ -34,8 +34,8 @@
 
             <div class="quick-select-buttons">
                 <button mat-button (click)="setDateRange(30)">Last 30 days</button>
-                <button mat-button (click)="setDateRange(90)">Last 3 months</button>
-                <button mat-button (click)="setDateRange(180)">Last 6 months</button>
+                <button mat-button (click)="setDateRange(90)">Last 90 days</button>
+                <button mat-button (click)="setDateRange(180)">Last 180 days</button>
             </div>
         </div>
     </mat-menu>
