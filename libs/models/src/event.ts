@@ -7,8 +7,11 @@ export interface EventMetadata {
     color: {
         primary: string;
         secondary: string;
-        secondaryText: string;
     };
+    graph?: {
+        type: 'line' | 'scatter';
+        title: string;
+    }
     icon: string;
 }
 

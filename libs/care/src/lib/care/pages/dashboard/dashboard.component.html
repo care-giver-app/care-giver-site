@@ -2,12 +2,21 @@
     <care-navbar></care-navbar>
     <care-receiver-selection (receiverChange)="onReceiverChange()"></care-receiver-selection>
 
+
+    @if (showSpinner) {
+    <mat-progress-spinner
+        class="spinner"
+        mode="indeterminate">
+    </mat-progress-spinner>
+    }
+    @else {
     <care-event-table [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"
         (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
 
 
     <care-calendar [events]="events" (eventToDelete)="handleDeleteEvent($event)"
         (eventToView)="handleViewEvent($event)"></care-calendar>
+    }
 </div>
 
 @if (selectedEvent){

@@ -1,8 +1,13 @@
 <div class="receiver-selection-container">
+    @if (isLoading){
+        <div class="current-receiver-button skeleton-button"></div>
+    }
+    @else {
     <button class="current-receiver-button" matMiniFab aria-label="Current receiver"
         [matMenuTriggerFor]="currentReceiverMenu" title="Current Care Receiver">
         <strong> {{ getInitials() }} </strong>
     </button>
+    }
     <mat-menu #currentReceiverMenu="matMenu">
         <button mat-menu-item (click)="showAddCareGiverModal = true">Add Additional Care Giver</button>
     </mat-menu>

@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { EventTableComponent } from '../../event-table/event-table.component';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
-import { ReceiverService, EventTypes, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
-import { AlertType, Event, EventMetadata, Receiver, User, Relationships } from '@care-giver-site/models';
+import { ReceiverService, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
+import { Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
 import { ChartComponent } from '../../chart/chart.component';
 import { ReceiverSelectionComponent } from '../../receiver-selection/receiver-selection.component';
@@ -16,13 +16,10 @@ import { ReceiverSelectionComponent } from '../../receiver-selection/receiver-se
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.css',
 })
-export class StatsComponent {
+export class StatsComponent implements OnInit {
   private receiverService = inject(ReceiverService);
   private authService = inject(AuthService);
-  private userService = inject(UserService)
   private eventService = inject(EventService);
-  private alertService = inject(AlertService);
-  eventTypes: EventMetadata[] = EventTypes;
 
   events: Event[] = [];
   receivers: Receiver[] = [];
@@ -39,7 +36,15 @@ export class StatsComponent {
   selectedEvent: Event | null = null;
   eventAction: 'create' | 'update' | 'delete' | 'view' = 'view';
 
-  weightMetaData: EventMetadata = EventTypes.find(e => e.type === 'Weight')!
+  eventTypes: EventMetadata[] = [];
+  eventTypesWithGraphs: EventMetadata[] = [];
+
+  ngOnInit() {
+    this.eventService.eventConfigs$.subscribe(configs => {
+      this.eventTypes = configs;
+      this.eventTypesWithGraphs = this.eventTypes.filter(e => e.graph);
+    });
+  }
 
   onReceiverChange() {
     this.getLatestEvents()

@@ -4,9 +4,12 @@
 
     <care-event-table [variant]="'all_events'" [events]="events" [eventTypes]="eventTypes"
         (newEvent)="getLatestEvents()" (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
-    <care-chart [events]="events" [chartType]="'scatter'" [chartTitle]="'Event Scatter Chart'"></care-chart>
-    <care-chart [events]="events" [chartType]="'line'" [eventTypes]="[weightMetaData]"
-        [chartTitle]="'Weight By Time'"></care-chart>
+    <care-chart [events]="events" [eventTypes]="eventTypes" [chartType]="'scatter'" [chartTitle]="'Event Scatter Chart'"></care-chart>
+    
+    @for (eventType of eventTypesWithGraphs; track eventType.type) {
+        <care-chart [events]="events" [chartType]="eventType.graph!.type" [eventTypes]="[eventType]"
+            [chartTitle]="eventType.graph!.title"></care-chart>
+    }
 
 </div>
 
