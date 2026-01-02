@@ -50,10 +50,16 @@ export class CareCalendarComponent implements OnChanges {
       this.calendarEvents = []
 
       for (const event of this.events) {
+        const eventColor = this.eventService.getEventColor(event.type);
+
         this.calendarEvents.push({
           start: new Date(event.timestamp),
           title: event.type,
-          color: this.eventService.getEventColor(event.type),
+          color: {
+            primary: eventColor.primary,
+            secondary: eventColor.secondary,
+            secondaryText: eventColor.primary,
+          },
           id: event.eventId,
         });
       }
