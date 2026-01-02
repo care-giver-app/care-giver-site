@@ -1,90 +1,81 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventMetadata, Event, User } from '@care-giver-site/models';
 import { UserService } from '../user/user.service';
-
-export const EventTypes: EventMetadata[] = [
-    {
-        type: 'Medication',
-        color: {
-            primary: '#9b59b6',
-            secondary: '#e1bee7',
-            secondaryText: '#9b59b6',
-        },
-        icon: 'assets/medication-icon.png'
-    },
-    {
-        type: 'Bowel Movement',
-        color: {
-            primary: '#8B4513',
-            secondary: '#bcaaa4',
-            secondaryText: '#8B4513',
-        },
-        icon: 'assets/bowel-movement-icon.png'
-    },
-    {
-        type: 'Shower',
-        color: {
-            primary: '#1e90ff',
-            secondary: '#D1E8FF',
-            secondaryText: '#1e90ff',
-        },
-        icon: 'assets/shower-icon.png'
-    },
-    {
-        type: 'Urination',
-        color: {
-            primary: '#d4ac0d',
-            secondary: '#FFF8DC',
-            secondaryText: '#d4ac0d',
-        },
-        icon: 'assets/urination-icon.png'
-    },
-    {
-        type: 'Weight',
-        data: {
-            name: "Weight",
-            unit: "lbs"
-        },
-        color: {
-            primary: '#27ae60',
-            secondary: '#d4efdf',
-            secondaryText: '#27ae60',
-        },
-        icon: 'assets/weight-icon.png'
-    }
-];
+import { AuthService } from '../auth/auth.service';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { tap, filter } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class EventService {
-    constructor() { }
+    private readonly EVENT_CONFIGS_CACHE_KEY = 'event_configs_cache'
 
-    getEventColor(type: string): { primary: string, secondary: string, secondaryText: string } {
-        const eventType = EventTypes.find(event => event.type === type);
+    private eventConfigsSubject = new BehaviorSubject<EventMetadata[]>([]);
+    public eventConfigs$ = this.eventConfigsSubject.asObservable().pipe(
+        filter(configs => configs.length > 0)
+    );
+
+    constructor(
+        private http: HttpClient,
+        private authService: AuthService,
+    ) { 
+        this.getEventMetaData().then(obs => {
+        obs.subscribe(resp => {
+            this.eventConfigsSubject.next(resp);
+        });
+        })
+    }
+
+    getEventConfigs(): EventMetadata[] {
+        return this.eventConfigsSubject.value;
+    }
+
+    private getEventMetaData(): Promise<Observable<EventMetadata[]>> {
+        const cachedData = sessionStorage.getItem(this.EVENT_CONFIGS_CACHE_KEY);
+        if (cachedData) {
+            return Promise.resolve(of(JSON.parse(cachedData)))
+        }
+
+        return this.authService.getBearerToken().then((token) => {
+            const headers: HttpHeaders = new HttpHeaders({
+                'Authorization': token,
+            });
+            console.log("Retrieved bearer token... Calling get event meta data")
+            const url = `/events/configs/`;
+            return this.http.get<EventMetadata[]>(url, { headers: headers }).pipe(
+                tap(data => {
+                    sessionStorage.setItem(this.EVENT_CONFIGS_CACHE_KEY, JSON.stringify(data));
+                })
+            );
+        });
+    }
+
+    getEventColor(type: string): { primary: string, secondary: string } {
+        const eventType = this.eventConfigsSubject.value.find(event => event.type === type);
         if (eventType) {
             return eventType.color;
         } else {
             return {
                 primary: '#ad2121',
                 secondary: '#FAE3E3',
-                secondaryText: '#ad2121',
             };
         }
     }
 
     hasData(event: Event): boolean {
-        const eventType = EventTypes.find(e => e.type === event.type);
+        const eventType = this.eventConfigsSubject.value.find(e => e.type === event.type);
         return !!(eventType && eventType.data && event.data && event.data.length > 0);
     }
 
     getDataUnit(event: Event): string | undefined {
-        const eventType = EventTypes.find(e => e.type === event.type);
+        const eventType = this.eventConfigsSubject.value.find(e => e.type === event.type);
         return eventType && eventType.data ? eventType.data.unit : undefined;
     }
 
     getDataName(event: Event): string | undefined {
-        const eventType = EventTypes.find(e => e.type === event.type);
+        const eventType = this.eventConfigsSubject.value.find(e => e.type === event.type);
         return eventType && eventType.data ? eventType.data.name : undefined;
     }
 

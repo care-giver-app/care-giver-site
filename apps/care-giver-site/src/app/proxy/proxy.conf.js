@@ -17,6 +17,7 @@ const proxyConfig = [
             "/receiver",
             "/user",
             "/event",
+            "/events/configs",
         ],
         target: caretosherUrl,
         secure: false,

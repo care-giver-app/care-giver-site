@@ -32,6 +32,7 @@ export class ReceiverSelectionComponent implements OnInit {
 
   showAddReceiverModal = false;
   showAddCareGiverModal = false;
+  isLoading = true;
 
   newReceiver = { firstName: '', lastName: '' };
   additionalCareGiverEmail = '';
@@ -59,6 +60,7 @@ export class ReceiverSelectionComponent implements OnInit {
             } else if (this.receivers.length) {
               this.selectReceiver(this.receivers[0].receiverId);
             }
+            this.isLoading = false;
           })
         }
       })

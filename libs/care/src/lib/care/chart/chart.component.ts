@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChartConfiguration } from 'chart.js';
 import { Event, EventMetadata } from '@care-giver-site/models';
 import { FormsModule } from '@angular/forms';
-import { EventTypes, EventService } from '@care-giver-site/services';
+import { EventService } from '@care-giver-site/services';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -36,7 +36,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 })
 export class ChartComponent implements OnChanges {
   @Input() events: Event[] = [];
-  @Input() eventTypes: EventMetadata[] = EventTypes;
+  @Input() eventTypes: EventMetadata[] = [];
   @Input() chartType: 'line' | 'scatter' = 'line';
   @Input() chartTitle: string = 'Event Chart';
 
