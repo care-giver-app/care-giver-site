@@ -1,13 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Receiver } from '@care-giver-site/models'
-import { AuthService } from '@care-giver-site/services'
+import { AuthService } from '@care-giver-site/services';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button'
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'care-navbar',
+  selector: 'lib-care-navbar',
   imports: [CommonModule, MatMenuModule, MatButtonModule, MatIconModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
@@ -15,8 +14,8 @@ import { MatIconModule } from '@angular/material/icon';
 export class NavbarComponent {
   private authService = inject(AuthService);
 
-  showDropdown: boolean = false;
-  userName: string = "";
+  showDropdown = false;
+  userName = '';
 
   constructor() {
     this.getUserFirstName();
@@ -35,6 +34,6 @@ export class NavbarComponent {
   signOut() {
     this.authService.signOutUser().then(() => {
       window.location.reload();
-    })
+    });
   }
 }

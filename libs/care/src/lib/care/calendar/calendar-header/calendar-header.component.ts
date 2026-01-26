@@ -1,32 +1,35 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import {
-    CalendarView,
-    CalendarModule,
-} from 'angular-calendar';
+import { CalendarView, CalendarModule } from 'angular-calendar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 @Component({
-    selector: 'care-calendar-header',
-    templateUrl: './calendar-header.component.html',
-    styleUrl: './calendar-header.component.css',
-    imports: [CalendarModule, MatButtonToggleModule, MatIconModule, MatButtonModule],
+  selector: 'lib-care-calendar-header',
+  templateUrl: './calendar-header.component.html',
+  styleUrl: './calendar-header.component.css',
+  imports: [
+    CalendarModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
 })
 export class CalendarHeaderComponent {
-    @Input() view!: CalendarView;
+  @Input() view!: CalendarView;
 
-    @Input() viewDate!: Date;
+  @Input() viewDate!: Date;
 
-    @Input() locale: string = 'en';
+  @Input() locale = 'en';
 
-    @Output() viewChange = new EventEmitter<CalendarView>();
+  @Output() viewChange = new EventEmitter<CalendarView>();
 
-    @Output() viewDateChange = new EventEmitter<Date>();
+  @Output() viewDateChange = new EventEmitter<Date>();
 
-    CalendarView = CalendarView;
+  CalendarView = CalendarView;
 
-    onToggleView(event: any) {
-        this.viewChange.emit(event.value);
-    }
+  onToggleView(event: MatButtonToggleChange) {
+    this.viewChange.emit(event.value);
+  }
 }

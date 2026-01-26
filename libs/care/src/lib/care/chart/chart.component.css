@@ -1,68 +1,68 @@
 .chart-container {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    margin: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin: 2rem;
 }
 
 .chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .chart {
-    width: 100%;
-    max-height: 50vh;
+  width: 100%;
+  max-height: 50vh;
 }
 
 .chart-title {
-    flex: 1;
+  flex: 1;
 }
 
 .chart-title h2 {
-    margin: 0;
-    font-weight: 600;
+  margin: 0;
+  font-weight: 600;
 }
 
 .header-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .download-button {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .date-menu-content {
-    padding: 0.5rem;
+  padding: 0.5rem;
 }
 
 .quick-select-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .quick-select-buttons button {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }
 
 @media (max-width: 600px) {
-    .chart-container {
-        padding: 1rem;
-        margin: 0.5rem;
-    }
+  .chart-container {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
 
-    .chart-header {
-        flex-direction: row;
-        gap: 0.5rem;
-    }
+  .chart-header {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
 
-    .chart-title h2 {
-        font-size: 1.25rem;
-    }
+  .chart-title h2 {
+    font-size: 1.25rem;
+  }
 }

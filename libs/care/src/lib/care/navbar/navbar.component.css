@@ -1,35 +1,35 @@
 .navbar {
-    position: sticky;
-    top: 0;
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    z-index: 100;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 100;
 }
 
 .navbar-content {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .navbar-logo {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-logo img {
-    height: 70px;
+  height: 70px;
 }
 
 .navbar-links {
-    display: flex;
-    align-items: center;
-    margin-left: 0.25rem;
+  display: flex;
+  align-items: center;
+  margin-left: 0.25rem;
 }
 
 .navbar-user {
-    margin-left: auto;
-    padding-right: 1rem;
-    position: relative;
+  margin-left: auto;
+  padding-right: 1rem;
+  position: relative;
 }

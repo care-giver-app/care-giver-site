@@ -1,27 +1,35 @@
 <div class="care-body">
-    <care-navbar></care-navbar>
-    <care-receiver-selection (receiverChange)="onReceiverChange()"></care-receiver-selection>
+  <lib-care-navbar></lib-care-navbar>
+  <lib-care-receiver-selection
+    (receiverChange)="onReceiverChange()"
+  ></lib-care-receiver-selection>
 
+  @if (showSpinner) {
+  <mat-progress-spinner class="spinner" mode="indeterminate">
+  </mat-progress-spinner>
+  } @else {
+  <lib-care-event-table
+    [events]="events"
+    [eventTypes]="eventTypes"
+    (newEvent)="getLatestEvents()"
+    (eventToDelete)="handleDeleteEvent($event)"
+  ></lib-care-event-table>
 
-    @if (showSpinner) {
-    <mat-progress-spinner
-        class="spinner"
-        mode="indeterminate">
-    </mat-progress-spinner>
-    }
-    @else {
-    <care-event-table [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"
-        (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
-
-
-    <care-calendar [events]="events" (eventToDelete)="handleDeleteEvent($event)"
-        (eventToView)="handleViewEvent($event)"></care-calendar>
-    }
+  <lib-care-calendar
+    [events]="events"
+    (eventToDelete)="handleDeleteEvent($event)"
+    (eventToView)="handleViewEvent($event)"
+  ></lib-care-calendar>
+  }
 </div>
 
 @if (selectedEvent){
-<care-event-modal [event]="selectedEvent" [(eventAction)]="eventAction" [(showModal)]="showEventModal"
-    (eventChange)="getLatestEvents()"></care-event-modal>
+<lib-care-event-modal
+  [event]="selectedEvent"
+  [(eventAction)]="eventAction"
+  [(showModal)]="showEventModal"
+  (eventChange)="getLatestEvents()"
+></lib-care-event-modal>
 }
 
-<care-alert></care-alert>
+<lib-care-alert></lib-care-alert>
