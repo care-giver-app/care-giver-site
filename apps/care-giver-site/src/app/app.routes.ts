@@ -19,5 +19,11 @@ export const appRoutes: Routes = [
         path: 'auth',
         loadComponent: () =>
             import('@care-giver-site/auth').then((m) => m.AuthComponent),
+    },
+    {
+        path: 'submit-feedback',
+        canActivate: [AuthGuard],
+        loadComponent: () =>
+            import('@care-giver-site/care').then((m) => m.FeedbackComponent),
     }
 ];
