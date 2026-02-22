@@ -1,0 +1,27 @@
+.mobile-download-container {
+  max-width: 600px;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.mobile-download-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.app-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 20%;
+  margin-bottom: 1rem;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+
+  transition: transform 0.3s ease-in-out;
+}
+
+.app-icon:hover {
+  transform: scale(1.1);
+}

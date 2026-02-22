@@ -25,5 +25,10 @@ export const appRoutes: Routes = [
         canActivate: [AuthGuard],
         loadComponent: () =>
             import('@care-giver-site/care').then((m) => m.FeedbackComponent),
+    },
+    {
+        path: 'mobile-download',
+        loadComponent: () =>
+            import('@care-giver-site/care').then((m) => m.MobileDownloadComponent),
     }
 ];

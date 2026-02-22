@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>caregiverappios.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>buildNumber</key>
+			<string>1</string>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>07FB004ADCF309BE5EFC7BBA9AAF5A8E8D9B8DF6</string>
+				<key>dateExpires</key>
+				<string>2/21/27</string>
+				<key>type</key>
+				<string>Cloud Managed Apple Distribution</string>
+			</dict>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>57ZN77UM3Z.caretosher.caregiverappios</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>57ZN77UM3Z</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>caregiverappios.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>4bad648d-02f8-4c7f-abc9-33b5b18c7ce6</string>
+				<key>dateExpires</key>
+				<string>2/21/27</string>
+				<key>name</key>
+				<string>iOS Team Ad Hoc Provisioning Profile: caretosher.caregiverappios</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>57ZN77UM3Z</string>
+				<key>name</key>
+				<string>TREVOR EDWARD WILLIAMS</string>
+			</dict>
+			<key>versionNumber</key>
+			<string>1.0</string>
+		</dict>
+	</array>
+</dict>
+</plist>
