@@ -1,4 +1,14 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import {
@@ -9,17 +19,20 @@ import {
 } from 'angular-calendar';
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
 import { Event } from '@care-giver-site/models';
-import { ReceiverService, EventService, UserService } from '@care-giver-site/services';
-
+import {
+  ReceiverService,
+  EventService,
+  UserService,
+} from '@care-giver-site/services';
 
 @Component({
-  selector: 'care-calendar',
+  selector: 'lib-care-calendar',
   imports: [CommonModule, CalendarModule, CalendarHeaderComponent],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CareCalendarComponent implements OnChanges {
+export class CareCalendarComponent implements OnChanges, OnInit {
   @Input() events!: Event[];
   @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() eventToView: EventEmitter<Event> = new EventEmitter<Event>();
@@ -47,7 +60,7 @@ export class CareCalendarComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['events'] && changes['events'].currentValue) {
-      this.calendarEvents = []
+      this.calendarEvents = [];
 
       for (const event of this.events) {
         const eventColor = this.eventService.getEventColor(event.type);
@@ -88,10 +101,10 @@ export class CareCalendarComponent implements OnChanges {
   }
 
   showEvent(event: CalendarEvent) {
-    const foundEvent = this.events.find(e => e.eventId === event.id)
+    const foundEvent = this.events.find((e) => e.eventId === event.id);
     if (foundEvent) {
       this.selectedEvent = foundEvent;
-      this.eventToView.emit(this.selectedEvent)
+      this.eventToView.emit(this.selectedEvent);
     }
   }
 
@@ -106,5 +119,4 @@ export class CareCalendarComponent implements OnChanges {
       this.closeEventModal();
     }
   }
-
 }

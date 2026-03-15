@@ -1,21 +1,40 @@
 <div class="care-body">
-    <care-navbar></care-navbar>
-    <care-receiver-selection (receiverChange)="onReceiverChange()"></care-receiver-selection>
+  <lib-care-navbar></lib-care-navbar>
+  <lib-care-receiver-selection
+    (receiverChange)="onReceiverChange()"
+  ></lib-care-receiver-selection>
 
-    <care-event-table [variant]="'all_events'" [events]="events" [eventTypes]="eventTypes"
-        (newEvent)="getLatestEvents()" (eventToDelete)="handleDeleteEvent($event)"></care-event-table>
-    <care-chart [events]="events" [eventTypes]="eventTypes" [chartType]="'scatter'" [chartTitle]="'Event Scatter Chart'"></care-chart>
-    
-    @for (eventType of eventTypesWithGraphs; track eventType.type) {
-        <care-chart [events]="events" [chartType]="eventType.graph!.type" [eventTypes]="[eventType]"
-            [chartTitle]="eventType.graph!.title"></care-chart>
-    }
+  <lib-care-event-table
+    [variant]="'all_events'"
+    [events]="events"
+    [eventTypes]="eventTypes"
+    (newEvent)="getLatestEvents()"
+    (eventToDelete)="handleDeleteEvent($event)"
+  ></lib-care-event-table>
+  <lib-care-chart
+    [events]="events"
+    [eventTypes]="eventTypes"
+    [chartType]="'scatter'"
+    [chartTitle]="'Event Scatter Chart'"
+  ></lib-care-chart>
 
+  @for (eventType of eventTypesWithGraphs; track eventType.type) {
+  <lib-care-chart
+    [events]="events"
+    [chartType]="eventType.graph!.type"
+    [eventTypes]="[eventType]"
+    [chartTitle]="eventType.graph!.title"
+  ></lib-care-chart>
+  }
 </div>
 
 @if (selectedEvent){
-<care-event-modal [event]="selectedEvent" [(eventAction)]="eventAction" [(showModal)]="showEventModal"
-    (eventChange)="getLatestEvents()"></care-event-modal>
+<lib-care-event-modal
+  [event]="selectedEvent"
+  [(eventAction)]="eventAction"
+  [(showModal)]="showEventModal"
+  (eventChange)="getLatestEvents()"
+></lib-care-event-modal>
 }
 
-<care-alert></care-alert>
+<lib-care-alert></lib-care-alert>

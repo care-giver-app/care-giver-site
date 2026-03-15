@@ -4,7 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { EventTableComponent } from '../../event-table/event-table.component';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
-import { ReceiverService, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
+import {
+  ReceiverService,
+  AuthService,
+  EventService,
+} from '@care-giver-site/services';
 import { Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
 import { ChartComponent } from '../../chart/chart.component';
@@ -12,7 +16,16 @@ import { ReceiverSelectionComponent } from '../../receiver-selection/receiver-se
 
 @Component({
   selector: 'lib-stats',
-  imports: [CommonModule, NavbarComponent, FormsModule, EventTableComponent, AlertComponent, EventModalComponent, ChartComponent, ReceiverSelectionComponent],
+  imports: [
+    CommonModule,
+    NavbarComponent,
+    FormsModule,
+    EventTableComponent,
+    AlertComponent,
+    EventModalComponent,
+    ChartComponent,
+    ReceiverSelectionComponent,
+  ],
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.css',
 })
@@ -23,12 +36,12 @@ export class StatsComponent implements OnInit {
 
   events: Event[] = [];
   receivers: Receiver[] = [];
-  userId: string = '';
+  userId = '';
   user: User | undefined = undefined;
 
   showAddReceiverModal = false;
   showAddCareGiverModal = false;
-  showEventModal = false
+  showEventModal = false;
 
   newReceiver = { firstName: '', lastName: '' };
   additionalCareGiverEmail = '';
@@ -40,14 +53,14 @@ export class StatsComponent implements OnInit {
   eventTypesWithGraphs: EventMetadata[] = [];
 
   ngOnInit() {
-    this.eventService.eventConfigs$.subscribe(configs => {
+    this.eventService.eventConfigs$.subscribe((configs) => {
       this.eventTypes = configs;
-      this.eventTypesWithGraphs = this.eventTypes.filter(e => e.graph);
+      this.eventTypesWithGraphs = this.eventTypes.filter((e) => e.graph);
     });
   }
 
   onReceiverChange() {
-    this.getLatestEvents()
+    this.getLatestEvents();
   }
 
   async getLatestEvents() {
@@ -58,7 +71,10 @@ export class StatsComponent implements OnInit {
     this.authService.getCurrentUserId().then(async (userId) => {
       this.userId = userId;
       if (this.receiverService.currentReceiverId && this.userId) {
-        const observable = await this.receiverService.getReceiverEvents(this.receiverService.currentReceiverId, this.userId);
+        const observable = await this.receiverService.getReceiverEvents(
+          this.receiverService.currentReceiverId,
+          this.userId
+        );
         observable.subscribe((data: Event[]) => {
           this.events = data;
         });
@@ -77,5 +93,4 @@ export class StatsComponent implements OnInit {
     this.eventAction = 'view';
     this.showEventModal = true;
   }
-
 }

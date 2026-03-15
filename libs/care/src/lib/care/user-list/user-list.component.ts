@@ -30,7 +30,7 @@ import { ModalComponent } from '../modal/modal.component';
   templateUrl: './receiver-selection.component.html',
   styleUrl: './receiver-selection.component.css',
 })
-export class ReceiverSelectionComponent implements OnInit {
+export class UserListComponent implements OnInit {
   @Output() receiverChange = new EventEmitter<void>();
 
   private receiverService = inject(ReceiverService);

@@ -1,13 +1,20 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { AmplifyAuthenticatorModule, AuthenticatorService } from '@aws-amplify/ui-angular';
+import {
+  AmplifyAuthenticatorModule,
+  AuthenticatorService,
+} from '@aws-amplify/ui-angular';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, UserService } from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
-import { SignInAction, SignUpCodeAction, SignUpAction } from '@care-giver-site/models'
+import {
+  SignInAction,
+  SignUpCodeAction,
+  SignUpAction,
+} from '@care-giver-site/models';
 
-const CONFIRM_SIGN_UP = 'CONFIRM_SIGN_UP'
-const DONE = 'DONE'
+const CONFIRM_SIGN_UP = 'CONFIRM_SIGN_UP';
+const DONE = 'DONE';
 
 @Component({
   selector: 'lib-auth',
@@ -22,25 +29,27 @@ export class AuthComponent {
   showCodeVerification = false;
   activeTab: 'signIn' | 'signUp' = 'signIn';
 
-  userId: string = '';
-  signUpEmail: string = '';
+  userId = '';
+  signUpEmail = '';
 
-  signInError: string = '';
-  signUpError: string = '';
-  signUpCodeError: string = '';
+  signInError = '';
+  signUpError = '';
+  signUpCodeError = '';
 
-  signUpCodeMessage: string = '';
+  signUpCodeMessage = '';
 
   passwordsDoNotMatch = false;
 
-
-  private router = new Router()
-  constructor(public authenticator: AuthenticatorService, private ref: ChangeDetectorRef) {
+  private router = new Router();
+  constructor(
+    public authenticator: AuthenticatorService,
+    private ref: ChangeDetectorRef
+  ) {
     this.authService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.routeToHome();
       }
-    })
+    });
   }
 
   routeToHome() {
@@ -53,14 +62,15 @@ export class AuthComponent {
 
   signIn(form: any) {
     const { email, password } = form.value;
-    this.authService.signInUser(email, password)
+    this.authService
+      .signInUser(email, password)
       .then((action: SignInAction) => {
         if (action.errorMessage) {
           this.signInError = action.errorMessage;
         } else if (action.output) {
           this.handleSignInNextStep(action.output.nextStep.signInStep, email);
         }
-      })
+      });
   }
 
   handleSignInNextStep(nextStep: string, email: string) {
@@ -71,7 +81,7 @@ export class AuthComponent {
             this.runFirstTimeSignInExperience();
           }
           this.routeToHome();
-        })
+        });
         break;
       case CONFIRM_SIGN_UP:
         this.showCodeVerification = true;
@@ -83,35 +93,39 @@ export class AuthComponent {
 
   runFirstTimeSignInExperience() {
     this.authService.getSignUpInformation().then((signUpInfo) => {
-      this.userService.createUser(
-        signUpInfo.firstName,
-        signUpInfo.lastName,
-        signUpInfo.email
-      ).subscribe((resp) => {
-        this.authService.addUserId(resp.userId).then(() => {
-          this.authService.firstTimeSignInComplete()
-        })
-      })
-    })
+      this.userService
+        .createUser(signUpInfo.firstName, signUpInfo.lastName, signUpInfo.email)
+        .subscribe((resp) => {
+          this.authService.addUserId(resp.userId).then(() => {
+            this.authService.firstTimeSignInComplete();
+          });
+        });
+    });
   }
 
   signUp(form: any) {
-    const { firstName, lastName, email, password, confirmPassword } = form.value;
+    const { firstName, lastName, email, password, confirmPassword } =
+      form.value;
     this.passwordsDoNotMatch = password !== confirmPassword;
 
     if (form.invalid || this.passwordsDoNotMatch) {
-      this.signUpError = "Please fill out all required fields correctly.";
+      this.signUpError = 'Please fill out all required fields correctly.';
       return;
     }
 
-    this.authService.signUpUser(email, password, firstName, lastName).then((action: SignUpAction) => {
-      if (action.errorMessage) {
-        this.signUpError = action.errorMessage;
-      } else if (action.output) {
-        this.handleSignUpNextStep(action.output.nextStep.signUpStep, action.output.userId || '', email)
-      }
-    })
-
+    this.authService
+      .signUpUser(email, password, firstName, lastName)
+      .then((action: SignUpAction) => {
+        if (action.errorMessage) {
+          this.signUpError = action.errorMessage;
+        } else if (action.output) {
+          this.handleSignUpNextStep(
+            action.output.nextStep.signUpStep,
+            action.output.userId || '',
+            email
+          );
+        }
+      });
   }
 
   handleSignUpNextStep(nextStep: string, userAuthId: string, email: string) {
@@ -131,13 +145,15 @@ export class AuthComponent {
     this.signUpCodeMessage = '';
     const { code } = form.value;
 
-    this.authService.confirmSignUpUser(this.userId, code).then((action: SignUpCodeAction) => {
-      if (action.errorMessage) {
-        this.signUpCodeError = action.errorMessage
-      } else if (action.output) {
-        this.handleSignUpCodeNextStep(action.output.nextStep.signUpStep)
-      }
-    })
+    this.authService
+      .confirmSignUpUser(this.userId, code)
+      .then((action: SignUpCodeAction) => {
+        if (action.errorMessage) {
+          this.signUpCodeError = action.errorMessage;
+        } else if (action.output) {
+          this.handleSignUpCodeNextStep(action.output.nextStep.signUpStep);
+        }
+      });
   }
 
   handleSignUpCodeNextStep(nextStep: string) {
@@ -146,9 +162,8 @@ export class AuthComponent {
         this.showCodeVerification = true;
         break;
       case DONE:
-
         this.showCodeVerification = false;
-        this.setActiveTab('signIn')
+        this.setActiveTab('signIn');
         break;
     }
   }
@@ -157,8 +172,8 @@ export class AuthComponent {
     this.authService.resendSignUpCode(this.signUpEmail).then((response) => {
       this.showCodeVerification = true;
       this.signUpCodeError = '';
-      this.signUpCodeMessage = 'A new verification code has been sent to your email.';
-    })
+      this.signUpCodeMessage =
+        'A new verification code has been sent to your email.';
+    });
   }
-
 }

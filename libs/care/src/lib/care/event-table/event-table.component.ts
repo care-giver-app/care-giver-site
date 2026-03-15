@@ -1,7 +1,32 @@
-import { Component, OnInit, OnChanges, Input, SimpleChanges, inject, Output, EventEmitter, ViewChild, AfterViewInit, computed, model, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  Input,
+  SimpleChanges,
+  inject,
+  Output,
+  EventEmitter,
+  ViewChild,
+  AfterViewInit,
+  model,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventMetadata, Event, DataPoint, EventRequest, AlertType } from '@care-giver-site/models';
-import { ReceiverService, UserService, AuthService, AlertService, EventService, ViewService } from '@care-giver-site/services';
+import {
+  EventMetadata,
+  Event,
+  DataPoint,
+  EventRequest,
+  AlertType,
+} from '@care-giver-site/models';
+import {
+  ReceiverService,
+  UserService,
+  AuthService,
+  AlertService,
+  EventService,
+  ViewService,
+} from '@care-giver-site/services';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,11 +41,14 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 
 interface RowEntry {
   meta: EventMetadata;
-  data?: DataPoint
+  data?: DataPoint;
   loggedUser: string;
   readableTimestamp: string;
   eventId: string;
@@ -37,7 +65,7 @@ interface ComponentConfig {
 }
 
 @Component({
-  selector: 'care-event-table',
+  selector: 'lib-care-event-table',
   imports: [
     CommonModule,
     FormsModule,
@@ -53,14 +81,14 @@ interface ComponentConfig {
     MatDatepickerModule,
     MatNativeDateModule,
     MatTimepickerModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
   ],
   templateUrl: './event-table.component.html',
   styleUrl: './event-table.component.css',
 })
 export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() variant: 'recent_activity' | 'all_events' = 'recent_activity';
-  @Input() eventTypes!: EventMetadata[]
+  @Input() eventTypes!: EventMetadata[];
   @Input() events!: Event[];
   @Output() newEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
@@ -78,11 +106,11 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   private eventService = inject(EventService);
   private viewService = inject(ViewService);
 
-  currentUserId: string = '';
+  currentUserId = '';
 
   // Modal state
   showModal = false;
-  inputData: { [eventType: string]: any } = {};
+  inputData: { [eventType: string]: string | undefined } = {};
   timestampValue = '';
   timeValue: Date | null = null;
   dateValue: Date | null = null;
@@ -132,7 +160,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   initRecentActivity() {
-    this.rows = this.eventTypes.map(meta => ({
+    this.rows = this.eventTypes.map((meta) => ({
       meta: meta,
       data: undefined,
       loggedUser: '',
@@ -149,7 +177,9 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   onFilterChange() {
     if (this.filteredTypes.length) {
-      const filteredRows = this.rows.filter(row => this.filteredTypes.includes(row.meta.type));
+      const filteredRows = this.rows.filter((row) =>
+        this.filteredTypes.includes(row.meta.type)
+      );
       this.dataSource.data = filteredRows;
     } else {
       this.dataSource.data = this.rows;
@@ -177,10 +207,22 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   private async updateRowsWithAllEvents(changes: SimpleChanges) {
     if (changes['events']) {
       const newRows: RowEntry[] = [];
-      this.events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      this.events.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
       for (const event of this.events) {
-        const metadata = this.eventTypes.find(meta => meta.type === event.type)!
-        const readableTimestamp = this.isMobile ? this.eventService.getCalendarTimestamp(event) : this.eventService.getReadableTimestamp(event);
+        const metadata = this.eventTypes.find(
+          (meta) => meta.type === event.type
+        );
+
+        if (!metadata) {
+          continue;
+        }
+
+        const readableTimestamp = this.isMobile
+          ? this.eventService.getCalendarTimestamp(event)
+          : this.eventService.getReadableTimestamp(event);
         const loggedUser = await this.userService.getLoggedUser(event.userId);
         newRows.push({
           meta: metadata,
@@ -196,7 +238,9 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       this.dataSource.data = this.rows;
 
       if (this.configs[this.variant].hasFilter && this.filteredTypes.length) {
-        const filteredRows = this.rows.filter(row => this.filteredTypes.includes(row.meta.type));
+        const filteredRows = this.rows.filter((row) =>
+          this.filteredTypes.includes(row.meta.type)
+        );
         this.dataSource.data = filteredRows;
       }
     }
@@ -224,12 +268,18 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  private async getLatestEvent(meta: EventMetadata): Promise<RowEntry | undefined> {
+  private async getLatestEvent(
+    meta: EventMetadata
+  ): Promise<RowEntry | undefined> {
     const events = this.receiverService.getEventsOfType(this.events, meta.type);
     if (events.length > 0) {
       const latestEvent = events[0];
-      const readableTimestamp = this.isMobile ? this.eventService.getCalendarTimestamp(latestEvent) : this.eventService.getReadableTimestamp(latestEvent);
-      const loggedUser = await this.userService.getLoggedUser(latestEvent.userId);
+      const readableTimestamp = this.isMobile
+        ? this.eventService.getCalendarTimestamp(latestEvent)
+        : this.eventService.getReadableTimestamp(latestEvent);
+      const loggedUser = await this.userService.getLoggedUser(
+        latestEvent.userId
+      );
       return {
         meta: meta,
         data: latestEvent.data ? latestEvent.data[0] : undefined,
@@ -251,10 +301,21 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       this.addEvent(type, new Date().toISOString());
     }
   }
-  onLogEvent() { this.openModal(); }
-  closeModal() { this.resetModalState(); this.showModal = false; this.selectedEventTypes = []; }
-  openModal() { this.resetModalState(); this.showModal = true; }
-  getMetadata(type: string): EventMetadata | undefined { return this.eventTypes.find(event => event.type === type); }
+  onLogEvent() {
+    this.openModal();
+  }
+  closeModal() {
+    this.resetModalState();
+    this.showModal = false;
+    this.selectedEventTypes = [];
+  }
+  openModal() {
+    this.resetModalState();
+    this.showModal = true;
+  }
+  getMetadata(type: string): EventMetadata | undefined {
+    return this.eventTypes.find((event) => event.type === type);
+  }
 
   private resetModalState() {
     this.inputData = {};
@@ -272,14 +333,23 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   private getLocaleDateTime(): string {
     const now = new Date();
     const offset = now.getTimezoneOffset();
-    const localDate = new Date(now.getTime() - (offset * 60 * 1000));
-    return localDate.toISOString().split('T')[0] + 'T' + now.toTimeString().slice(0, 5);
+    const localDate = new Date(now.getTime() - offset * 60 * 1000);
+    return (
+      localDate.toISOString().split('T')[0] +
+      'T' +
+      now.toTimeString().slice(0, 5)
+    );
   }
 
   submitEvent() {
     let timestamp = '';
     if (this.dateValue && this.timeValue) {
-      this.dateValue.setHours(this.timeValue.getHours(), this.timeValue.getMinutes(), 0, 0);
+      this.dateValue.setHours(
+        this.timeValue.getHours(),
+        this.timeValue.getMinutes(),
+        0,
+        0
+      );
       timestamp = this.dateValue.toISOString();
     } else {
       timestamp = new Date().toISOString();
@@ -290,7 +360,12 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     this.closeModal();
   }
 
-  private async addEvent(type: string, timestamp: string, datavalue?: string, note?: string) {
+  private async addEvent(
+    type: string,
+    timestamp: string,
+    datavalue?: string,
+    note?: string
+  ) {
     let data: DataPoint[] = [];
     if (datavalue) {
       const metadata = this.getMetadata(type);
@@ -301,7 +376,10 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     try {
       if (!this.receiverService.currentReceiverId) {
-        this.alertService.show('No receiver selected. Please select a receiver before adding an event.', AlertType.Failure);
+        this.alertService.show(
+          'No receiver selected. Please select a receiver before adding an event.',
+          AlertType.Failure
+        );
         return;
       }
 
@@ -319,38 +397,46 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       observable.subscribe({
         next: () => {
           this.newEvent.emit();
-          this.alertService.show(`${type} event added successfully`, AlertType.Success);
+          this.alertService.show(
+            `${type} event added successfully`,
+            AlertType.Success
+          );
         },
-        error: (err) => {
-          this.alertService.show(`Error adding event. Please try again later.`, AlertType.Failure);
+        error: () => {
+          this.alertService.show(
+            `Error adding event. Please try again later.`,
+            AlertType.Failure
+          );
         },
       });
-    } catch (error) {
-      this.alertService.show(`Error adding event. Please try again later.`, AlertType.Failure);
+    } catch {
+      this.alertService.show(
+        `Error adding event. Please try again later.`,
+        AlertType.Failure
+      );
     }
   }
 
   onDeleteEvent(eventId: string) {
-    const event = this.events.find(row => row.eventId === eventId);
+    const event = this.events.find((row) => row.eventId === eventId);
     if (event) {
       this.eventToDelete.emit(event);
     }
   }
 
-
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   readonly currentType = model('');
   get filteredAvailableTypes(): string[] {
     const input = this.currentType().toLowerCase();
-    return this.availableTypes.filter(type =>
+    return this.availableTypes.filter((type) =>
       type.toLowerCase().includes(input)
     );
   }
 
   get availableTypes(): string[] {
     return this.eventTypes
-      .map(e => e.type)
-      .filter(type => !this.filteredTypes.includes(type));
+      .map((e) => e.type)
+      .filter((type) => !this.filteredTypes.includes(type));
   }
 
   add(event: MatChipInputEvent): void {
@@ -384,5 +470,3 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
     event.option.deselect?.();
   }
 }
-
-

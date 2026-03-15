@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartConfiguration } from 'chart.js';
 import { Event, EventMetadata } from '@care-giver-site/models';
@@ -7,7 +7,7 @@ import { EventService } from '@care-giver-site/services';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core'
+import { MatNativeDateModule } from '@angular/material/core';
 import { TimeseriesScatterChartComponent } from './scatter/scatter.component';
 import { LineChartComponent } from './line/line.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,8 +15,15 @@ import { ChartComponent as ChartInterface } from './chart.interface';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 
+interface DataPoint {
+  x: number;
+  y: number;
+  pointBackgroundColor: string;
+  pointBorderColor: string;
+}
+
 @Component({
-  selector: 'care-chart',
+  selector: 'lib-care-chart',
   standalone: true,
   imports: [
     CommonModule,
@@ -38,18 +45,18 @@ export class ChartComponent implements OnChanges {
   @Input() events: Event[] = [];
   @Input() eventTypes: EventMetadata[] = [];
   @Input() chartType: 'line' | 'scatter' = 'line';
-  @Input() chartTitle: string = 'Event Chart';
+  @Input() chartTitle = 'Event Chart';
 
   startDate: Date;
   endDate: Date;
-  pointSize: number = 7;
+  pointSize = 7;
 
   private eventService = inject(EventService);
 
   @ViewChild(LineChartComponent) lineChart?: LineChartComponent;
-  @ViewChild(TimeseriesScatterChartComponent) scatterChart?: TimeseriesScatterChartComponent;
+  @ViewChild(TimeseriesScatterChartComponent)
+  scatterChart?: TimeseriesScatterChartComponent;
   @ViewChild('menuTrigger') menuTrigger?: MatMenuTrigger;
-
 
   scatterChartDatasets: ChartConfiguration<'scatter'>['data']['datasets'] = [];
   lineChartDatasets: ChartConfiguration<'line'>['data']['datasets'] = [];
@@ -59,7 +66,7 @@ export class ChartComponent implements OnChanges {
     this.startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   }
 
-  ngOnChanges(_changes: SimpleChanges) {
+  ngOnChanges() {
     this.updateChartData();
   }
 
@@ -87,7 +94,11 @@ export class ChartComponent implements OnChanges {
     try {
       const downloadCanvas = this.createDownloadCanvas(canvas);
       const dataUrl = downloadCanvas.toDataURL('image/png');
-      const fileName = `${this.chartTitle.toLowerCase().replace(/\s+/g, '-')}-${ChartComponent.getDateString(this.startDate)}-to-${ChartComponent.getDateString(this.endDate)}.png`;
+      const fileName = `${this.chartTitle
+        .toLowerCase()
+        .replace(/\s+/g, '-')}-${ChartComponent.getDateString(
+        this.startDate
+      )}-to-${ChartComponent.getDateString(this.endDate)}.png`;
 
       const link = document.createElement('a');
       link.href = dataUrl;
@@ -101,7 +112,9 @@ export class ChartComponent implements OnChanges {
     }
   }
 
-  private createDownloadCanvas(sourceCanvas: HTMLCanvasElement): HTMLCanvasElement {
+  private createDownloadCanvas(
+    sourceCanvas: HTMLCanvasElement
+  ): HTMLCanvasElement {
     const downloadCanvas = document.createElement('canvas');
     const ctx = downloadCanvas.getContext('2d');
 
@@ -144,15 +157,24 @@ export class ChartComponent implements OnChanges {
   }
 
   private buildDatasets() {
-    return this.buildDataset((e, colorObj) => this.eventToDataPoint(e, colorObj), true);
+    return this.buildDataset(
+      (e, colorObj) => this.eventToDataPoint(e, colorObj),
+      true
+    );
   }
 
   private buildTimeDatasets() {
-    return this.buildDataset((e, colorObj) => this.eventToTimePoint(e, colorObj), false);
+    return this.buildDataset(
+      (e, colorObj) => this.eventToTimePoint(e, colorObj),
+      false
+    );
   }
 
   private buildDataset(
-    mappingFn: (e: Event, colorObj: { primary: string; secondary: string }) => any,
+    mappingFn: (
+      e: Event,
+      colorObj: { primary: string; secondary: string }
+    ) => DataPoint,
     shouldSort: boolean
   ) {
     const eventsByType = this.events.reduce((acc, event) => {
@@ -163,10 +185,10 @@ export class ChartComponent implements OnChanges {
       return acc;
     }, {} as Record<string, Event[]>);
 
-    return this.eventTypes.map(eventType => {
+    return this.eventTypes.map((eventType) => {
       const colorObj = this.eventService.getEventColor(eventType.type);
       const eventsOfType = eventsByType[eventType.type] || [];
-      let points = eventsOfType.map(e => mappingFn(e, colorObj));
+      let points = eventsOfType.map((e) => mappingFn(e, colorObj));
 
       if (shouldSort) {
         points = points.sort((a, b) => a.x - b.x);
@@ -177,12 +199,15 @@ export class ChartComponent implements OnChanges {
         data: points,
         backgroundColor: colorObj.secondary,
         borderColor: colorObj.primary,
-        pointRadius: this.pointSize
+        pointRadius: this.pointSize,
       };
     });
   }
 
-  private eventToDataPoint(e: Event, colorObj: { primary: string; secondary: string }) {
+  private eventToDataPoint(
+    e: Event,
+    colorObj: { primary: string; secondary: string }
+  ) {
     const date = new Date(e.timestamp);
     return {
       x: date.getTime(),
@@ -192,7 +217,10 @@ export class ChartComponent implements OnChanges {
     };
   }
 
-  private eventToTimePoint(e: Event, colorObj: { primary: string; secondary: string }) {
+  private eventToTimePoint(
+    e: Event,
+    colorObj: { primary: string; secondary: string }
+  ) {
     const date = new Date(e.timestamp);
     const hours = date.getHours() + date.getMinutes() / 60;
     const day = new Date(e.timestamp).setHours(0, 0, 0, 0);

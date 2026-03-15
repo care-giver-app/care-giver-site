@@ -15,11 +15,11 @@ Amplify.configure({
     Cognito: {
       userPoolId: process.env['USER_POOL_ID'],
       userPoolClientId: process.env['USER_POOL_CLIENT_ID'],
-      identityPoolId: "",
+      identityPoolId: '',
       loginWith: {
         email: true,
       },
-      signUpVerificationMethod: "code",
+      signUpVerificationMethod: 'code',
       userAttributes: {
         email: {
           required: true,
@@ -41,7 +41,7 @@ Amplify.configure({
       },
     },
   },
-})
+});
 
 @Component({
   imports: [RouterModule],

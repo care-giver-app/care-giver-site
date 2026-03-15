@@ -1,0 +1,45 @@
+<div class="care-body">
+  <lib-care-navbar></lib-care-navbar>
+  <lib-care-receiver-selection
+    (receiverChange)="onReceiverChange()"
+  ></lib-care-receiver-selection>
+</div>
+
+<lib-care-modal
+  [show]="showAddCareGiverModal"
+  header="Add Additional Care Giver"
+  (close)="showAddCareGiverModal = false"
+>
+  <div modal-body>
+    <form (ngSubmit)="submitAddCareGiver()" #addCareGiverForm="ngForm">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          [(ngModel)]="additionalCareGiverEmail"
+          name="careGiverEmail"
+          required
+          class="form-control"
+        />
+      </mat-form-field>
+    </form>
+  </div>
+  <div modal-footer>
+    <button
+      matButton="filled"
+      class="modal-button"
+      (click)="submitAddCareGiver()"
+    >
+      Add
+    </button>
+    <button
+      matButton="filled"
+      class="secondary-button modal-button"
+      (click)="showAddCareGiverModal = false"
+    >
+      Cancel
+    </button>
+  </div>
+</lib-care-modal>
+
+<lib-care-alert></lib-care-alert>

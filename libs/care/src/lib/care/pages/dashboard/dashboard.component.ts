@@ -5,7 +5,11 @@ import { CareCalendarComponent } from '../../calendar/calendar.component';
 import { EventTableComponent } from '../../event-table/event-table.component';
 import { NavbarComponent } from '../../navbar/navbar.component';
 import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
-import { ReceiverService, EventService, AuthService } from '@care-giver-site/services'
+import {
+  ReceiverService,
+  EventService,
+  AuthService,
+} from '@care-giver-site/services';
 import { Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,23 +45,23 @@ export class DashboardComponent implements OnInit {
 
   events: Event[] = [];
   receivers: Receiver[] = [];
-  userId: string = '';
+  userId = '';
   user: User | undefined = undefined;
 
-  showEventModal = false
-  showSpinner = true
+  showEventModal = false;
+  showSpinner = true;
 
   selectedEvent: Event | null = null;
   eventAction: 'create' | 'update' | 'delete' | 'view' = 'view';
 
   ngOnInit() {
-    this.eventService.eventConfigs$.subscribe(configs => {
+    this.eventService.eventConfigs$.subscribe((configs) => {
       this.eventTypes = configs;
     });
   }
 
   onReceiverChange() {
-    this.getLatestEvents()
+    this.getLatestEvents();
   }
 
   async getLatestEvents() {
@@ -68,7 +72,10 @@ export class DashboardComponent implements OnInit {
     this.authService.getCurrentUserId().then(async (userId) => {
       this.userId = userId;
       if (this.receiverService.currentReceiverId && this.userId) {
-        const observable = await this.receiverService.getReceiverEvents(this.receiverService.currentReceiverId, this.userId);
+        const observable = await this.receiverService.getReceiverEvents(
+          this.receiverService.currentReceiverId,
+          this.userId
+        );
         observable.subscribe((data: Event[]) => {
           this.events = data;
           this.showSpinner = false;
@@ -80,7 +87,7 @@ export class DashboardComponent implements OnInit {
   signOut() {
     this.authService.signOutUser().then(() => {
       window.location.reload();
-    })
+    });
   }
 
   handleDeleteEvent(event: Event) {
@@ -94,5 +101,4 @@ export class DashboardComponent implements OnInit {
     this.eventAction = 'view';
     this.showEventModal = true;
   }
-
 }
