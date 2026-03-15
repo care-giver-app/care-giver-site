@@ -11,13 +11,19 @@ if (process.env.ENV === 'prod') {
 }
 
 const proxyConfig = [
-  {
-    context: ['/receiver', '/user', '/event', '/events/configs'],
-    target: caretosherUrl,
-    secure: false,
-    changeOrigin: true,
-    logLevel: 'debug',
-  },
+    {
+        context: [
+            "/receiver",
+            "/user",
+            "/event",
+            "/events/configs",
+            "/feedback",
+        ],
+        target: caretosherUrl,
+        secure: false,
+        changeOrigin: true,
+        logLevel: "debug"
+    }
 ];
 
 module.exports = proxyConfig;

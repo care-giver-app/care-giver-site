@@ -4,3 +4,4 @@ export * from './lib/auth/auth.service';
 export * from './lib/user/user.service';
 export * from './lib/alert/alert.service';
 export * from './lib/view/view.service';
+export * from './lib/feedback/feedback.service';

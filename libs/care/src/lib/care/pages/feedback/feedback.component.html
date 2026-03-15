@@ -1,0 +1,31 @@
+<div class="care-body">
+    <care-navbar></care-navbar>
+<div class="feedback-container">
+  <h1 class="feedback-title">Send Us Your Feedback</h1>
+
+  <form class="feedback-form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="message" class="form-label">Your Message</label>
+      <textarea
+        id="message"
+        name="message"
+        class="form-textarea"
+        [(ngModel)]="message"
+        placeholder="Share your thoughts, suggestions, or report an issue..."
+        [disabled]="isSubmitting"
+        required
+      ></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="submit-button"
+      [disabled]="isSubmitting || !message.trim()"
+    >
+      {{ isSubmitting ? 'Submitting...' : 'Submit Feedback' }}
+    </button>
+  </form>
+</div>
+
+
+<care-alert></care-alert>
