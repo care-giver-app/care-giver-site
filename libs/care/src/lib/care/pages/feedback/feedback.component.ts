@@ -26,37 +26,54 @@ import { AlertType } from 'libs/models/src/alert';
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.css'],
 })
-export class FeedbackComponent{
+export class FeedbackComponent {
   message = '';
   isSubmitting = false;
   successMessage = '';
   errorMessage = '';
 
-  constructor(private alertService: AlertService, private feedbackService: FeedbackService) {}
+  constructor(
+    private alertService: AlertService,
+    private feedbackService: FeedbackService
+  ) {}
 
   async onSubmit(): Promise<void> {
     if (!this.message.trim()) {
-      this.alertService.show('Please enter a message before submitting.', AlertType.Failure);
+      this.alertService.show(
+        'Please enter a message before submitting.',
+        AlertType.Failure
+      );
       return;
     }
 
     this.isSubmitting = true;
 
     try {
-      const observable = await this.feedbackService.submitFeedback(this.message);
+      const observable = await this.feedbackService.submitFeedback(
+        this.message
+      );
       observable.subscribe({
         next: (_response) => {
           this.message = '';
-          this.alertService.show('Thank you for your feedback!', AlertType.Success);
+          this.alertService.show(
+            'Thank you for your feedback!',
+            AlertType.Success
+          );
           this.isSubmitting = false;
-      },
+        },
         error: (_error) => {
-          this.alertService.show('Failed to submit feedback. Please try again.', AlertType.Failure);
+          this.alertService.show(
+            'Failed to submit feedback. Please try again.',
+            AlertType.Failure
+          );
           this.isSubmitting = false;
-        }
+        },
       });
     } catch (error) {
-      this.alertService.show('An unexpected error occurred. Please try again.', AlertType.Failure);
+      this.alertService.show(
+        'An unexpected error occurred. Please try again.',
+        AlertType.Failure
+      );
     }
   }
 }
