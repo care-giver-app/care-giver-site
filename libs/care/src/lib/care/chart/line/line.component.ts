@@ -21,6 +21,7 @@ export class LineChartComponent implements OnInit, OnChanges, ChartInterface {
   @Input() startDate!: Date;
   @Input() endDate!: Date;
   @Input() fontSize = 12;
+  @Input() unit?: string;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
@@ -32,7 +33,7 @@ export class LineChartComponent implements OnInit, OnChanges, ChartInterface {
           label: context => {
             const day = new Date(context.parsed.x).toLocaleDateString();
             const val = context.parsed.y;
-            return `${day}: ${val} lbs`;
+            return `${day}: ${val} ${this.unit ?? ''}`;
           },
           title: context => {
             return ``;
@@ -81,7 +82,7 @@ export class LineChartComponent implements OnInit, OnChanges, ChartInterface {
     };
     this.chartOptions!.scales['y'] = {
       ticks: {
-        callback: value => `${value} lbs`,
+        callback: value => `${value} ${this.unit ?? ''}`,
         font: { size: this.fontSize }
       }
     };
