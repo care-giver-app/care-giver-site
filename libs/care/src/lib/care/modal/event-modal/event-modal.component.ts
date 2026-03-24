@@ -20,9 +20,9 @@ export class EventModalComponent implements OnChanges {
     @Output() showModalChange = new EventEmitter<boolean>();
     @Output() eventChange = new EventEmitter<void>();
 
-    eventType: string = '';
-    loggedUser: string = '';
-    readableTimestamp: string = '';
+    eventType = '';
+    loggedUser = '';
+    readableTimestamp = '';
     data: DataPoint | undefined = undefined;
     dataUnit: string | undefined = undefined;
 

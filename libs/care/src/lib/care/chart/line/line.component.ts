@@ -20,7 +20,7 @@ export class LineChartComponent implements OnInit, OnChanges, ChartInterface {
   @Input() datasets!: ChartDataset<'line', (number | Point | null)[]>[];
   @Input() startDate!: Date;
   @Input() endDate!: Date;
-  @Input() fontSize: number = 12;
+  @Input() fontSize = 12;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 

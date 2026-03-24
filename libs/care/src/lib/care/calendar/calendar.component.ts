@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import {
@@ -19,7 +19,7 @@ import { ReceiverService, EventService, UserService } from '@care-giver-site/ser
   styleUrl: './calendar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CareCalendarComponent implements OnChanges {
+export class CareCalendarComponent implements OnChanges, OnInit {
   @Input() events!: Event[];
   @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() eventToView: EventEmitter<Event> = new EventEmitter<Event>();

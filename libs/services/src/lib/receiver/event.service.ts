@@ -126,7 +126,7 @@ export class EventService {
             }
         }
 
-        let dayOfWeekString: string = "";
+        let dayOfWeekString = "";
         if (!isOverAWeekAgo) {
             dayOfWeekString = date.toLocaleDateString([], dateOfWeekOptions);
         }

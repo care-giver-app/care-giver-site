@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AlertType } from 'libs/models/src/alert';
+import { AlertType } from '@care-giver-site/models';
 
 @Component({
   selector: 'lib-feedback',
