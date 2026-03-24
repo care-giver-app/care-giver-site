@@ -1,50 +1,80 @@
 <div class="chart-container">
-    <div class="chart-header">
-        <div class="chart-title">
-            <h2>{{ chartTitle }}</h2>
-        </div>
-        <div class="header-actions">
-            <button mat-icon-button [matMenuTriggerFor]="dateMenu" #menuTrigger="matMenuTrigger"
-                aria-label="Select date range">
-                <mat-icon>date_range</mat-icon>
-            </button>
-
-            <button mat-icon-button (click)="downloadChart()" class="download-button" aria-label="Download chart">
-                <mat-icon>download</mat-icon>
-            </button>
-        </div>
+  <div class="chart-header">
+    <div class="chart-title">
+      <h2>{{ chartTitle }}</h2>
     </div>
+    <div class="header-actions">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="dateMenu"
+        #menuTrigger="matMenuTrigger"
+        aria-label="Select date range"
+      >
+        <mat-icon>date_range</mat-icon>
+      </button>
 
-    <mat-menu #dateMenu="matMenu" class="date-range-menu">
-        <div class="date-menu-content" (click)="$event.stopPropagation()">
-            <mat-form-field appearance="outline">
-                <mat-label>Select date range</mat-label>
-                <mat-date-range-input [rangePicker]="picker">
-                    <input matStartDate [(ngModel)]="startDate" placeholder="Start date">
-                    <input matEndDate [(ngModel)]="endDate" placeholder="End date">
-                </mat-date-range-input>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker>
-                    <mat-date-range-picker-actions>
-                        <button matButton matDateRangePickerCancel>Cancel</button>
-                        <button matButton="elevated" (click)="applyDateRange()" matDateRangePickerApply>Apply</button>
-                    </mat-date-range-picker-actions>
-                </mat-date-range-picker>
-            </mat-form-field>
+      <button
+        mat-icon-button
+        (click)="downloadChart()"
+        class="download-button"
+        aria-label="Download chart"
+      >
+        <mat-icon>download</mat-icon>
+      </button>
+    </div>
+  </div>
 
-            <div class="quick-select-buttons">
-                <button mat-button (click)="setDateRange(30)">Last 30 days</button>
-                <button mat-button (click)="setDateRange(90)">Last 90 days</button>
-                <button mat-button (click)="setDateRange(180)">Last 180 days</button>
-            </div>
-        </div>
-    </mat-menu>
+  <mat-menu #dateMenu="matMenu" class="date-range-menu">
+    <div class="date-menu-content" (click)="$event.stopPropagation()">
+      <mat-form-field appearance="outline">
+        <mat-label>Select date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input
+            matStartDate
+            [(ngModel)]="startDate"
+            placeholder="Start date"
+          />
+          <input matEndDate [(ngModel)]="endDate" placeholder="End date" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #picker>
+          <mat-date-range-picker-actions>
+            <button matButton matDateRangePickerCancel>Cancel</button>
+            <button
+              matButton="elevated"
+              (click)="applyDateRange()"
+              matDateRangePickerApply
+            >
+              Apply
+            </button>
+          </mat-date-range-picker-actions>
+        </mat-date-range-picker>
+      </mat-form-field>
 
-    <ng-container [ngSwitch]="chartType">
-        <care-timeseries-scatter-chart *ngSwitchCase="'scatter'" [startDate]="startDate" [endDate]="endDate"
-            [datasets]="scatterChartDatasets"></care-timeseries-scatter-chart>
+      <div class="quick-select-buttons">
+        <button mat-button (click)="setDateRange(30)">Last 30 days</button>
+        <button mat-button (click)="setDateRange(90)">Last 90 days</button>
+        <button mat-button (click)="setDateRange(180)">Last 180 days</button>
+      </div>
+    </div>
+  </mat-menu>
 
-        <care-line-chart *ngSwitchCase="'line'" [startDate]="startDate" [endDate]="endDate"
-            [datasets]="lineChartDatasets"></care-line-chart>
-    </ng-container>
+  <ng-container [ngSwitch]="chartType">
+    <care-timeseries-scatter-chart
+      *ngSwitchCase="'scatter'"
+      [startDate]="startDate"
+      [endDate]="endDate"
+      [datasets]="scatterChartDatasets"
+    ></care-timeseries-scatter-chart>
+
+    <care-line-chart
+      *ngSwitchCase="'line'"
+      [startDate]="startDate"
+      [endDate]="endDate"
+      [datasets]="lineChartDatasets"
+    ></care-line-chart>
+  </ng-container>
 </div>

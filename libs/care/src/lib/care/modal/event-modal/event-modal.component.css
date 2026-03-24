@@ -1,13 +1,13 @@
 .modal-button {
-    margin: 0.5rem;
+  margin: 0.5rem;
 }
 
 .secondary-button {
-    background-color: #d3d3d3 !important;
-    color: black !important;
+  background-color: #d3d3d3 !important;
+  color: black !important;
 }
 
 .danger-button {
-    background-color: #cf3429 !important;
-    color: white !important;
+  background-color: #cf3429 !important;
+  color: white !important;
 }

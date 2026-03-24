@@ -1,116 +1,116 @@
 .auth-container {
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #cecaca;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #cecaca;
 }
 
 .auth-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-    padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    max-width: 400px;
-    margin: 0 auto;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .tabs {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .tabs button {
-    flex: 1;
-    padding: 0.75rem;
-    border: none;
-    background-color: #f1f1f1;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #333;
-    transition: background-color 0.3s ease;
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  transition: background-color 0.3s ease;
 }
 
 .tabs button.active {
-    background-color: #007bff;
-    color: white;
+  background-color: #007bff;
+  color: white;
 }
 
 .tabs button:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 .tab-content {
-    width: 100%;
+  width: 100%;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
-    margin-bottom: 0.5rem;
-    font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 input {
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 button {
-    padding: 0.75rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .error-message {
-    background-color: #fdecea;
-    color: #b71c1c;
-    border: 1px solid #f5c6cb;
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(183, 28, 28, 0.08);
+  background-color: #fdecea;
+  color: #b71c1c;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(183, 28, 28, 0.08);
 }
 
 .info-message {
-    background-color: #e8f4fd;
-    color: #0c5460;
-    border: 1px solid #b8daff;
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(183, 28, 28, 0.08);
+  background-color: #e8f4fd;
+  color: #0c5460;
+  border: 1px solid #b8daff;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(183, 28, 28, 0.08);
 }
 
 .resend-code-text {
-    text-align: center;
-    margin-top: 1rem;
+  text-align: center;
+  margin-top: 1rem;
 }

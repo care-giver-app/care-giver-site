@@ -1,16 +1,30 @@
 <div class="calendar-container">
-    <care-calendar-header [(view)]="view" [(viewDate)]="viewDate">
-    </care-calendar-header>
+  <care-calendar-header [(view)]="view" [(viewDate)]="viewDate">
+  </care-calendar-header>
 
-    <div [ngSwitch]="view">
-        <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="calendarEvents"
-            (dayClicked)="changeDay($event.day.date)" (eventClicked)="showEvent($event.event)">
-        </mwl-calendar-month-view>
-        <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="calendarEvents"
-            (dayHeaderClicked)="changeDay($event.day.date)" (eventClicked)="showEvent($event.event)">
-        </mwl-calendar-week-view>
-        <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="calendarEvents"
-            (eventClicked)="showEvent($event.event)">
-        </mwl-calendar-day-view>
-    </div>
+  <div [ngSwitch]="view">
+    <mwl-calendar-month-view
+      *ngSwitchCase="'month'"
+      [viewDate]="viewDate"
+      [events]="calendarEvents"
+      (dayClicked)="changeDay($event.day.date)"
+      (eventClicked)="showEvent($event.event)"
+    >
+    </mwl-calendar-month-view>
+    <mwl-calendar-week-view
+      *ngSwitchCase="'week'"
+      [viewDate]="viewDate"
+      [events]="calendarEvents"
+      (dayHeaderClicked)="changeDay($event.day.date)"
+      (eventClicked)="showEvent($event.event)"
+    >
+    </mwl-calendar-week-view>
+    <mwl-calendar-day-view
+      *ngSwitchCase="'day'"
+      [viewDate]="viewDate"
+      [events]="calendarEvents"
+      (eventClicked)="showEvent($event.event)"
+    >
+    </mwl-calendar-day-view>
+  </div>
 </div>
