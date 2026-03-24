@@ -39,6 +39,7 @@ export class ChartComponent implements OnChanges {
   @Input() eventTypes: EventMetadata[] = [];
   @Input() chartType: 'line' | 'scatter' = 'line';
   @Input() chartTitle = 'Event Chart';
+  @Input() unit?: string;
 
   startDate: Date;
   endDate: Date;
