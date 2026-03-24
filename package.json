@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "format": "prettier --write '**/*.{js,md,json,html,css}'",
+    "format:check": "prettier --check '**/*.{js,md,json,html,css}'",
+    "lint": "nx run-many -t lint",
+    "lint:fix": "nx run-many -t lint --fix"
+  },
   "workspaces": [
     "apps/*",
     "libs/*"

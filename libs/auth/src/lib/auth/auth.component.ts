@@ -22,14 +22,14 @@ export class AuthComponent {
   showCodeVerification = false;
   activeTab: 'signIn' | 'signUp' = 'signIn';
 
-  userId: string = '';
-  signUpEmail: string = '';
+  userId = '';
+  signUpEmail = '';
 
-  signInError: string = '';
-  signUpError: string = '';
-  signUpCodeError: string = '';
+  signInError = '';
+  signUpError = '';
+  signUpCodeError = '';
 
-  signUpCodeMessage: string = '';
+  signUpCodeMessage = '';
 
   passwordsDoNotMatch = false;
 

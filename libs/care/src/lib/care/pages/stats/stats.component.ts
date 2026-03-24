@@ -23,7 +23,7 @@ export class StatsComponent implements OnInit {
 
   events: Event[] = [];
   receivers: Receiver[] = [];
-  userId: string = '';
+  userId = '';
   user: User | undefined = undefined;
 
   showAddReceiverModal = false;

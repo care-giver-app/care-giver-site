@@ -27,8 +27,8 @@ export class ReceiverSelectionComponent implements OnInit {
 
   receiver: Receiver | undefined = undefined;
   receivers: Receiver[] = [];
-  selectedReceiverId: string = '';
-  userId: string = '';
+  selectedReceiverId = '';
+  userId = '';
 
   showAddReceiverModal = false;
   showAddCareGiverModal = false;

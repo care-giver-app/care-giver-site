@@ -1,30 +1,23 @@
-
 urls = {
-    caretosher: {
-        dev: "https://api-dev.caretosher.com",
-        prod: "https://api.caretosher.com"
-    }
-}
+  caretosher: {
+    dev: 'https://api-dev.caretosher.com',
+    prod: 'https://api.caretosher.com',
+  },
+};
 
 caretosherUrl = urls.caretosher.dev;
-if (process.env.ENV === "prod") {
-    caretosherUrl = urls.caretosher.prod;
+if (process.env.ENV === 'prod') {
+  caretosherUrl = urls.caretosher.prod;
 }
 
 const proxyConfig = [
-    {
-        context: [
-            "/receiver",
-            "/user",
-            "/event",
-            "/events/configs",
-            "/feedback",
-        ],
-        target: caretosherUrl,
-        secure: false,
-        changeOrigin: true,
-        logLevel: "debug"
-    }
+  {
+    context: ['/receiver', '/user', '/event', '/events/configs', '/feedback'],
+    target: caretosherUrl,
+    secure: false,
+    changeOrigin: true,
+    logLevel: 'debug',
+  },
 ];
 
-module.exports = proxyConfig
+module.exports = proxyConfig;

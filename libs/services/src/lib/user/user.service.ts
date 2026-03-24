@@ -43,7 +43,7 @@ export class UserService {
         }
     }
 
-    async getUserData(userId: string, forceRefresh: boolean = false): Promise<User | undefined> {
+    async getUserData(userId: string, forceRefresh = false): Promise<User | undefined> {
         const cacheKey = `userCache_${userId}`;
         const cached = localStorage.getItem(cacheKey);
         if (cached && !forceRefresh) {

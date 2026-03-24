@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import {
@@ -19,7 +19,7 @@ import { ReceiverService, EventService, UserService } from '@care-giver-site/ser
   styleUrl: './calendar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CareCalendarComponent implements OnChanges {
+export class CareCalendarComponent implements OnChanges, OnInit {
   @Input() events!: Event[];
   @Output() eventToDelete: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() eventToView: EventEmitter<Event> = new EventEmitter<Event>();
@@ -52,7 +52,7 @@ export class CareCalendarComponent implements OnChanges {
       for (const event of this.events) {
         const eventColor = this.eventService.getEventColor(event.type);
 
-        this.calendarEvents.push({
+        const calEvent: CalendarEvent = {
           start: new Date(event.timestamp),
           title: event.type,
           color: {
@@ -61,7 +61,17 @@ export class CareCalendarComponent implements OnChanges {
             secondaryText: eventColor.primary,
           },
           id: event.eventId,
-        });
+        }
+
+        const unit = this.eventService.getDataUnit(event);
+        if (unit === "Mins") {
+          const end = new Date(event.timestamp) 
+          const duration = parseInt(event.data[0].value)
+          end.setMinutes(end.getMinutes() + duration);
+          calEvent.end = end;
+        }
+
+        this.calendarEvents.push(calEvent);
       }
 
       this.refresh.next();

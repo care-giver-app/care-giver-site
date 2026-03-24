@@ -6,6 +6,13 @@ import { AuthService } from '../auth/auth.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, filter } from 'rxjs/operators';
 
+const TIME = {
+    second: 1000,
+    minute: 60 * 1000,
+    hour: 60 * 60 * 1000,
+    day: 24 * 60 * 60 * 1000,
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -34,19 +41,28 @@ export class EventService {
 
     private getEventMetaData(): Promise<Observable<EventMetadata[]>> {
         const cachedData = sessionStorage.getItem(this.EVENT_CONFIGS_CACHE_KEY);
-        if (cachedData) {
-            return Promise.resolve(of(JSON.parse(cachedData)))
+        if (cachedData && cachedData) {
+            const cacheObject = JSON.parse(cachedData);
+            const cacheAge = Date.now() - cacheObject.timestamp;
+            const maxCacheAge = 5 * TIME.second; 
+            if (cacheAge < maxCacheAge) {
+                return Promise.resolve(of(cacheObject.data));
+            }
         }
 
         return this.authService.getBearerToken().then((token) => {
             const headers: HttpHeaders = new HttpHeaders({
                 'Authorization': token,
             });
-            console.log("Retrieved bearer token... Calling get event meta data")
+
             const url = `/events/configs/`;
             return this.http.get<EventMetadata[]>(url, { headers: headers }).pipe(
                 tap(data => {
-                    sessionStorage.setItem(this.EVENT_CONFIGS_CACHE_KEY, JSON.stringify(data));
+                    const cacheObject = {
+                        data: data,
+                        timestamp: Date.now()
+                    }
+                    sessionStorage.setItem(this.EVENT_CONFIGS_CACHE_KEY, JSON.stringify(cacheObject));
                 })
             );
         });
@@ -110,7 +126,7 @@ export class EventService {
             }
         }
 
-        let dayOfWeekString: string = "";
+        let dayOfWeekString = "";
         if (!isOverAWeekAgo) {
             dayOfWeekString = date.toLocaleDateString([], dateOfWeekOptions);
         }

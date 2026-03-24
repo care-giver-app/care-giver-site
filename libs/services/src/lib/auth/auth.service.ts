@@ -33,8 +33,8 @@ export class AuthService {
     }
 
     async signInUser(email: string, password: string): Promise<SignInAction> {
-        var output: SignInOutput | undefined = undefined
-        var errorMessage: string | undefined = undefined
+        let output: SignInOutput | undefined = undefined
+        let errorMessage: string | undefined = undefined
         try {
             output = await signIn({
                 username: email,
@@ -55,8 +55,8 @@ export class AuthService {
     }
 
     async signUpUser(email: string, password: string, firstName: string, lastName: string): Promise<SignUpAction> {
-        var output: SignUpOutput | undefined = undefined
-        var errorMessage: string | undefined = undefined
+        let output: SignUpOutput | undefined = undefined
+        let errorMessage: string | undefined = undefined
         try {
             output = await signUp({
                 username: email,
@@ -84,8 +84,8 @@ export class AuthService {
     }
 
     async confirmSignUpUser(username: string, code: string): Promise<SignUpCodeAction> {
-        var output: ConfirmSignUpOutput | undefined = undefined
-        var errorMessage: string | undefined = undefined
+        let output: ConfirmSignUpOutput | undefined = undefined
+        let errorMessage: string | undefined = undefined
         try {
             output = await confirmSignUp({
                 username: username,

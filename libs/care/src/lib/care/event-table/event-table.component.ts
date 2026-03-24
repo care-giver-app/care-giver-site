@@ -78,7 +78,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   private eventService = inject(EventService);
   private viewService = inject(ViewService);
 
-  currentUserId: string = '';
+  currentUserId = '';
 
   // Modal state
   showModal = false;

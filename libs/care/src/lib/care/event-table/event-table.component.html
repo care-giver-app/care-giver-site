@@ -1,178 +1,270 @@
 <div class="event-table-card">
-    <div class="event-table-header">
-        <h2 class="event-table-title">{{ configs[variant].tableTitle }}</h2>
-        <button matButton="filled" type="button" (click)="onLogEvent()">Add Event</button>
-    </div>
+  <div class="event-table-header">
+    <h2 class="event-table-title">{{ configs[variant].tableTitle }}</h2>
+    <button matButton="filled" type="button" (click)="onLogEvent()">
+      Add Event
+    </button>
+  </div>
 
-    @if (configs[variant].hasFilter) {
-    <div>
-        <mat-form-field class="filter-chip-list">
-            <mat-label>Filter Event Types</mat-label>
-            <mat-chip-grid #chipGrid aria-label="Event type selection">
-                @for (type of filteredTypes; track type) {
-                <mat-chip-row (removed)="remove(type)">
-                    {{type}}
-                    <button matChipRemove [attr.aria-label]="'remove ' + type">
-                        <mat-icon>cancel</mat-icon>
-                    </button>
-                </mat-chip-row>
-                }
-            </mat-chip-grid>
-            <input name="currentType" placeholder="Event Type..." #typeInput [(ngModel)]="currentType"
-                [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" />
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event); typeInput.value = ''">
-                @for (type of filteredAvailableTypes; track type) {
-                <mat-option [value]="type">{{type}}</mat-option>
-                }
-            </mat-autocomplete>
-        </mat-form-field>
-    </div>
-    }
+  @if (configs[variant].hasFilter) {
+  <div>
+    <mat-form-field class="filter-chip-list">
+      <mat-label>Filter Event Types</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Event type selection">
+        @for (type of filteredTypes; track type) {
+        <mat-chip-row (removed)="remove(type)">
+          {{ type }}
+          <button matChipRemove [attr.aria-label]="'remove ' + type">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input
+        name="currentType"
+        placeholder="Event Type..."
+        #typeInput
+        [(ngModel)]="currentType"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event); typeInput.value = ''"
+      >
+        @for (type of filteredAvailableTypes; track type) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  }
 
-    <table mat-table class="event-table" [dataSource]="dataSource" multiTemplateDataRows>
+  <table
+    mat-table
+    class="event-table"
+    [dataSource]="dataSource"
+    multiTemplateDataRows
+  >
+    <!-- Event Column -->
+    <ng-container matColumnDef="event">
+      <th mat-header-cell *matHeaderCellDef>Event</th>
+      <td mat-cell *matCellDef="let row" class="event-cell-with-note-indicator">
+        @if (row.note) {
+        <mat-icon class="note-indicator-icon-absolute" title="Has note"
+          >event_note</mat-icon
+        >
+        }
+        <span class="event-main-cell">
+          <img
+            class="event-icon"
+            [src]="row.meta.icon"
+            title="{{ row.meta.type }}"
+            alt="{{ row.meta.type }}"
+          />
+          <span class="event-name">{{ row.meta.type }}</span>
+        </span>
+      </td>
+    </ng-container>
 
-        <!-- Event Column -->
-        <ng-container matColumnDef="event">
-            <th mat-header-cell *matHeaderCellDef>Event</th>
-            <td mat-cell *matCellDef="let row" class="event-cell-with-note-indicator">
-                @if (row.note) {
-                <mat-icon class="note-indicator-icon-absolute" title="Has note">event_note</mat-icon>
-                }
-                <span class="event-main-cell">
-                    <img class="event-icon" [src]="row.meta.icon" title="{{ row.meta.type }}" alt="{{ row.meta.type }}">
-                    <span class="event-name">{{ row.meta.type }}</span>
-                </span>
-            </td>
-        </ng-container>
+    <!-- Last Logged Column -->
+    <ng-container matColumnDef="lastLogged">
+      <th mat-header-cell *matHeaderCellDef>Logged</th>
+      <td mat-cell *matCellDef="let row">
+        {{ row.readableTimestamp || 'N/A' }}
+      </td>
+    </ng-container>
 
-        <!-- Last Logged Column -->
-        <ng-container matColumnDef="lastLogged">
-            <th mat-header-cell *matHeaderCellDef>Logged</th>
-            <td mat-cell *matCellDef="let row">
-                {{ row.readableTimestamp || 'N/A' }}
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+      <td mat-cell *matCellDef="let row">
+        <span class="action-buttons">
+          <button
+            matIconButton
+            aria-label="expand row"
+            (click)="toggle(row); $event.stopPropagation()"
+            class="event-toggle-button"
+            [class.event-toggle-button-expanded]="isExpanded(row)"
+          >
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          @if (configs[variant].hasQuickAdd) {
+          <button
+            mat-icon-button
+            class="log-now-btn"
+            title="Log Now"
+            (click)="onQuickLogEvent(row.meta.type); $event.stopPropagation()"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+          }
+        </span>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
-            <td mat-cell *matCellDef="let row">
-                <span class="action-buttons">
-                    <button matIconButton aria-label="expand row" (click)="toggle(row); $event.stopPropagation()"
-                        class="event-toggle-button" [class.event-toggle-button-expanded]="isExpanded(row)">
-                        <mat-icon>keyboard_arrow_down</mat-icon>
-                    </button>
-                    @if (configs[variant].hasQuickAdd) {
-                    <button mat-icon-button class="log-now-btn" title="Log Now"
-                        (click)="onQuickLogEvent(row.meta.type); $event.stopPropagation()">
-                        <mat-icon>add</mat-icon>
-                    </button>
-                    }
-                </span>
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <td
+        mat-cell
+        *matCellDef="let row"
+        [attr.colspan]="columnsToDisplayWithActions.length"
+      >
+        <div
+          class="event-detail-wrapper"
+          [class.event-detail-wrapper-expanded]="isExpanded(row)"
+        >
+          <div class="event-detail">
+            <div class="event-description">
+              <span class="event-description-entry">
+                <mat-icon>schedule</mat-icon> {{ row.readableTimestamp }}
+              </span>
+              <span class="event-description-entry">
+                <mat-icon>person</mat-icon> {{ row.loggedUser || 'N/A' }}
+              </span>
+              @if (row.data) {
+              <span class="event-description-entry">
+                <mat-icon>bar_chart</mat-icon>
+                {{
+                  row.data
+                    ? row.data.value +
+                      ' ' +
+                      (row.meta.data ? row.meta.data.unit : '')
+                    : ''
+                }}
+              </span>
+              } @if (row.note) {
+              <span class="event-description-entry">
+                <mat-icon>event_note</mat-icon> {{ row.note }}
+              </span>
+              }
+            </div>
+            <button
+              mat-icon-button
+              class="delete-btn"
+              title="Delete Latest Event"
+              (click)="onDeleteEvent(row.eventId || '')"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </td>
+    </ng-container>
 
-        <ng-container matColumnDef="expandedDetail">
-            <td mat-cell *matCellDef="let row" [attr.colspan]="columnsToDisplayWithActions.length">
-                <div class="event-detail-wrapper" [class.event-detail-wrapper-expanded]="isExpanded(row)">
-                    <div class="event-detail">
-                        <div class="event-description">
-                            <span class="event-description-entry">
-                                <mat-icon>schedule</mat-icon> {{ row.readableTimestamp }}
-                            </span>
-                            <span class="event-description-entry">
-                                <mat-icon>person</mat-icon> {{ row.loggedUser || 'N/A' }}
-                            </span>
-                            @if (row.data) {
-                            <span class="event-description-entry">
-                                <mat-icon>bar_chart</mat-icon> {{ row.data ? (row.data.value + ' ' + (row.meta.data
-                                ?
-                                row.meta.data.unit : '')) : '' }}
-                            </span>
-                            }
-                            @if (row.note) {
-                            <span class="event-description-entry">
-                                <mat-icon>event_note</mat-icon> {{ row.note }}
-                            </span>
-                            }
-                        </div>
-                        <button mat-icon-button class="delete-btn" title="Delete Latest Event"
-                            (click)="onDeleteEvent(row.eventId || '')">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </div>
-                </div>
-            </td>
-        </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithActions"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: columnsToDisplayWithActions"
+      class="event-row"
+      [class.expanded-event-row]="isExpanded(row)"
+      (click)="toggle(row)"
+    ></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['expandedDetail']"
+      class="event-detail-row"
+    ></tr>
+  </table>
 
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithActions"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithActions;" class="event-row"
-            [class.expanded-event-row]="isExpanded(row)" (click)="toggle(row)">
-        </tr>
-        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="event-detail-row"></tr>
-    </table>
-
-    @if (configs[variant].hasPaginator) {
-    <mat-paginator class="paginator" [pageSizeOptions]="[5, 10, 25, 100]"
-        aria-label="Select page of events"></mat-paginator>
-    }
+  @if (configs[variant].hasPaginator) {
+  <mat-paginator
+    class="paginator"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    aria-label="Select page of events"
+  ></mat-paginator>
+  }
 </div>
 
 <care-modal [show]="showModal" [header]="'Add Event'" (close)="closeModal()">
-    <div modal-body>
-        <mat-form-field class="modal-full-width">
-            <mat-label>Type</mat-label>
-            <mat-select multiple id="eventTypeSelect" [(ngModel)]="selectedEventTypes"
-                (ngModelChange)="getMetadata($event)" class="form-control">
-                @for (type of eventTypes; track type) {
-                <mat-option [value]="type.type">{{ type.type }}</mat-option>
-                }
-            </mat-select>
-            <mat-button mat-icon-button matSuffix aria-label="Clear" *ngIf="selectedEventTypes.length > 0"
-                (click)="selectedEventTypes = []">
-                <mat-icon>close</mat-icon>
-            </mat-button>
-        </mat-form-field>
-        <mat-form-field class="modal-full-width">
-            <mat-label>Date</mat-label>
-            <input matInput [matDatepicker]="datePicker" [(ngModel)]="dateValue" placeholder="MM/DD/YYYY"
-                class="form-control" />
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
-            <mat-datepicker #datePicker>
-            </mat-datepicker>
-        </mat-form-field>
-        <mat-form-field class="modal-full-width">
-            <mat-label>Time</mat-label>
-            <input matInput [matTimepicker]="timePicker" [(ngModel)]="timeValue" placeholder="HH:MM"
-                class="form-control" />
-            <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
-            <mat-timepicker #timePicker interval="10min"></mat-timepicker>
-        </mat-form-field>
-        @for (type of selectedEventTypes; track type) {
-        @let meta = getMetadata(type);
-        @if (meta && meta.data) {
-        <mat-form-field class="modal-full-width">
-            <mat-label>{{ meta.data.name }}</mat-label>
-            <input matInput id="dataInput" [(ngModel)]="inputData[type]" type="number"
-                placeholder="Enter {{ meta.data.name }}" class="form-control" />
-        </mat-form-field>
+  <div modal-body>
+    <mat-form-field class="modal-full-width">
+      <mat-label>Type</mat-label>
+      <mat-select
+        multiple
+        id="eventTypeSelect"
+        [(ngModel)]="selectedEventTypes"
+        (ngModelChange)="getMetadata($event)"
+        class="form-control"
+      >
+        @for (type of eventTypes; track type) {
+        <mat-option [value]="type.type">{{ type.type }}</mat-option>
         }
-        }
-        <mat-form-field class="modal-full-width">
-            <mat-label>Optional Note</mat-label>
-            <textarea matInput id="dataInput" [(ngModel)]="noteValue" placeholder="Enter an optional note"
-                class="form-control" maxlength="200" rows="4"></textarea>
-        </mat-form-field>
-    </div>
-    <div modal-footer>
-        <button matButton="filled" class="modal-button" (click)="submitEvent()">
-            @if (selectedEventTypes.length > 1) {
-            Add Events
-            } @else {
-            Add Event
-            }
-        </button>
-        <button matButton="filled" class="secondary-button modal-button" (click)="closeModal()">Cancel</button>
-    </div>
+      </mat-select>
+      <mat-button
+        mat-icon-button
+        matSuffix
+        aria-label="Clear"
+        *ngIf="selectedEventTypes.length > 0"
+        (click)="selectedEventTypes = []"
+      >
+        <mat-icon>close</mat-icon>
+      </mat-button>
+    </mat-form-field>
+    <mat-form-field class="modal-full-width">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        [(ngModel)]="dateValue"
+        placeholder="MM/DD/YYYY"
+        class="form-control"
+      />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="datePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datePicker> </mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="modal-full-width">
+      <mat-label>Time</mat-label>
+      <input
+        matInput
+        [matTimepicker]="timePicker"
+        [(ngModel)]="timeValue"
+        placeholder="HH:MM"
+        class="form-control"
+      />
+      <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
+      <mat-timepicker #timePicker interval="10min"></mat-timepicker>
+    </mat-form-field>
+    @for (type of selectedEventTypes; track type) { @let meta =
+    getMetadata(type); @if (meta && meta.data) {
+    <mat-form-field class="modal-full-width">
+      <mat-label>{{ meta.data.name }}</mat-label>
+      <input
+        matInput
+        id="dataInput"
+        [(ngModel)]="inputData[type]"
+        type="number"
+        placeholder="Enter {{ meta.data.name }} ({{ meta.data.unit }})"
+        class="form-control"
+      />
+    </mat-form-field>
+    } }
+    <mat-form-field class="modal-full-width">
+      <mat-label>Optional Note</mat-label>
+      <textarea
+        matInput
+        id="dataInput"
+        [(ngModel)]="noteValue"
+        placeholder="Enter an optional note"
+        class="form-control"
+        maxlength="200"
+        rows="4"
+      ></textarea>
+    </mat-form-field>
+  </div>
+  <div modal-footer>
+    <button matButton="filled" class="modal-button" (click)="submitEvent()">
+      @if (selectedEventTypes.length > 1) { Add Events } @else { Add Event }
+    </button>
+    <button
+      matButton="filled"
+      class="secondary-button modal-button"
+      (click)="closeModal()"
+    >
+      Cancel
+    </button>
+  </div>
 </care-modal>

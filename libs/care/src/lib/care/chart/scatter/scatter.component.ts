@@ -19,7 +19,7 @@ export class TimeseriesScatterChartComponent implements OnInit, OnChanges, Chart
   @Input() datasets!: ChartDataset<'scatter', (number | Point | null)[]>[];
   @Input() startDate!: Date;
   @Input() endDate!: Date;
-  @Input() fontSize: number = 12;
+  @Input() fontSize = 12;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 

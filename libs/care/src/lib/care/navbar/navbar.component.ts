@@ -15,8 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 export class NavbarComponent {
   private authService = inject(AuthService);
 
-  showDropdown: boolean = false;
-  userName: string = "";
+  showDropdown = false;
+  userName = "";
 
   constructor() {
     this.getUserFirstName();

@@ -38,11 +38,11 @@ export class ChartComponent implements OnChanges {
   @Input() events: Event[] = [];
   @Input() eventTypes: EventMetadata[] = [];
   @Input() chartType: 'line' | 'scatter' = 'line';
-  @Input() chartTitle: string = 'Event Chart';
+  @Input() chartTitle = 'Event Chart';
 
   startDate: Date;
   endDate: Date;
-  pointSize: number = 7;
+  pointSize = 7;
 
   private eventService = inject(EventService);
 
