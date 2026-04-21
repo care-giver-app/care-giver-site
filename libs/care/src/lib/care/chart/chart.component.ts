@@ -184,7 +184,7 @@ export class ChartComponent implements OnChanges {
   }
 
   private eventToDataPoint(e: Event, colorObj: { primary: string; secondary: string }) {
-    const date = new Date(e.timestamp);
+    const date = new Date(e.startTime);
     return {
       x: date.getTime(),
       y: Number(e.data?.[0]?.value ?? 0),
@@ -194,9 +194,9 @@ export class ChartComponent implements OnChanges {
   }
 
   private eventToTimePoint(e: Event, colorObj: { primary: string; secondary: string }) {
-    const date = new Date(e.timestamp);
+    const date = new Date(e.startTime);
     const hours = date.getHours() + date.getMinutes() / 60;
-    const day = new Date(e.timestamp).setHours(0, 0, 0, 0);
+    const day = new Date(e.startTime).setHours(0, 0, 0, 0);
     return {
       x: day,
       y: hours,

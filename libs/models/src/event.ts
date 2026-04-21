@@ -1,9 +1,18 @@
+export interface FieldConfig {
+    name: string;
+    label: string;
+    inputType: 'text' | 'textarea' | 'number' | 'date';
+    required: boolean;
+    placeholder: string;
+}
+
 export interface EventMetadata {
     type: string;
     data?: {
         name: string;
         unit: string;
-    }
+    };
+    fields?: FieldConfig[];
     color: {
         primary: string;
         secondary: string;
@@ -11,7 +20,7 @@ export interface EventMetadata {
     graph?: {
         type: 'line' | 'scatter';
         title: string;
-    }
+    };
     icon: string;
 }
 
@@ -24,7 +33,8 @@ export interface Event {
     receiverId: string;
     eventId: string;
     userId: string;
-    timestamp: string;
+    startTime: string;
+    endTime: string;
     type: string;
     data: DataPoint[];
     note?: string;
@@ -33,7 +43,8 @@ export interface Event {
 export interface EventRequest {
     receiverId: string;
     userId: string;
-    timestamp: string;
+    startTime: string;
+    endTime: string;
     type: string;
     data?: DataPoint[];
     note?: string;
