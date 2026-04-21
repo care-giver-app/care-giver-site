@@ -80,7 +80,8 @@ export class ReceiverService {
                 'Authorization': token,
             });
 
-            eventRequest.timestamp = formatRFC3339(eventRequest.timestamp);
+            eventRequest.startTime = formatRFC3339(eventRequest.startTime);
+            eventRequest.endTime = formatRFC3339(eventRequest.endTime);
 
             return this.http.post(`/event`, eventRequest, { headers: headers });
         })
@@ -101,6 +102,6 @@ export class ReceiverService {
     getEventsOfType(event: Event[], type: string): Event[] {
         return event
             .filter(e => e.type === type)
-            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+            .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
     }
 }

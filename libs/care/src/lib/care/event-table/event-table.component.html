@@ -121,16 +121,11 @@
               <span class="event-description-entry">
                 <mat-icon>person</mat-icon> {{ row.loggedUser || 'N/A' }}
               </span>
-              @if (row.data) {
+              @for (point of row.dataPoints; track point.name) {
               <span class="event-description-entry">
                 <mat-icon>bar_chart</mat-icon>
-                {{
-                  row.data
-                    ? row.data.value +
-                      ' ' +
-                      (row.meta.data ? row.meta.data.unit : '')
-                    : ''
-                }}
+                <strong>{{ getFieldLabel(row.meta.type, point.name) }}:</strong>
+                {{ point.value }}{{ getFieldUnit(row.meta.type, point.name) ? ' ' + getFieldUnit(row.meta.type, point.name) : '' }}
               </span>
               } @if (row.note) {
               <span class="event-description-entry">
@@ -183,7 +178,7 @@
         multiple
         id="eventTypeSelect"
         [(ngModel)]="selectedEventTypes"
-        (ngModelChange)="getMetadata($event)"
+        (ngModelChange)="onEventTypeChange($event)"
         class="form-control"
       >
         @for (type of eventTypes; track type) {
@@ -228,20 +223,56 @@
       <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
       <mat-timepicker #timePicker interval="10min"></mat-timepicker>
     </mat-form-field>
-    @for (type of selectedEventTypes; track type) { @let meta =
-    getMetadata(type); @if (meta && meta.data) {
-    <mat-form-field class="modal-full-width">
-      <mat-label>{{ meta.data.name }}</mat-label>
-      <input
-        matInput
-        id="dataInput"
-        [(ngModel)]="inputData[type]"
-        type="number"
-        placeholder="Enter {{ meta.data.name }} ({{ meta.data.unit }})"
-        class="form-control"
-      />
-    </mat-form-field>
-    } }
+    @for (type of selectedEventTypes; track type) {
+      @let fields = getMetadata(type)?.fields ?? [];
+      @let dataConfig = getDataConfig(type);
+      @if (fields.length > 0) {
+        @for (field of fields; track field.name) {
+          @switch (field.inputType) {
+            @case ('textarea') {
+              <mat-form-field class="modal-full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <textarea matInput
+                  [(ngModel)]="inputData[type][field.name]"
+                  [placeholder]="field.placeholder"
+                  [required]="field.required"
+                  rows="3">
+                </textarea>
+              </mat-form-field>
+            }
+            @case ('date') {
+              <mat-form-field class="modal-full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput [matDatepicker]="fieldDatePicker"
+                  [(ngModel)]="inputData[type][field.name]"
+                  [placeholder]="field.placeholder">
+                <mat-datepicker-toggle matIconSuffix [for]="fieldDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #fieldDatePicker></mat-datepicker>
+              </mat-form-field>
+            }
+            @default {
+              <mat-form-field class="modal-full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput
+                  [(ngModel)]="inputData[type][field.name]"
+                  [type]="field.inputType"
+                  [placeholder]="field.placeholder"
+                  [required]="field.required">
+              </mat-form-field>
+            }
+          }
+        }
+      } @else if (dataConfig) {
+        <mat-form-field class="modal-full-width">
+          <mat-label>{{ dataConfig.name }}</mat-label>
+          <input matInput
+            [(ngModel)]="inputData[type]['value']"
+            type="number"
+            placeholder="Enter {{ dataConfig.name }} ({{ dataConfig.unit }})"
+            class="form-control" />
+        </mat-form-field>
+      }
+    }
     <mat-form-field class="modal-full-width">
       <mat-label>Optional Note</mat-label>
       <textarea

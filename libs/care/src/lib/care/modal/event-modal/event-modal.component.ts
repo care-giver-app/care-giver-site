@@ -23,8 +23,7 @@ export class EventModalComponent implements OnChanges {
     eventType = '';
     loggedUser = '';
     readableTimestamp = '';
-    data: DataPoint | undefined = undefined;
-    dataUnit: string | undefined = undefined;
+    dataPoints: DataPoint[] = [];
 
     constructor(
         private eventService: EventService,
@@ -38,14 +37,21 @@ export class EventModalComponent implements OnChanges {
         if (changes['event'] && this.event) {
             this.eventType = this.event.type;
             this.userService.getLoggedUser(this.event.userId).then(user => {
-                this.loggedUser = user
-            })
+                this.loggedUser = user;
+            });
             this.readableTimestamp = this.eventService.getReadableTimestamp(this.event);
-            if (this.event.data && this.event.data.length > 0) {
-                this.data = this.event.data[0];
-                this.dataUnit = this.eventService.getDataUnit(this.event);
-            }
+            this.dataPoints = this.event.data ?? [];
         }
+    }
+
+    getFieldLabel(name: string): string {
+        const config = this.eventService.getEventConfigs().find(c => c.type === this.event.type);
+        return config?.fields?.find(f => f.name === name)?.label ?? name;
+    }
+
+    getFieldUnit(name: string): string {
+        const config = this.eventService.getEventConfigs().find(c => c.type === this.event.type);
+        return config?.data?.name === name ? (config.data.unit ?? '') : '';
     }
 
     closeModal() {

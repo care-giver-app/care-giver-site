@@ -96,11 +96,11 @@ export class EventService {
     }
 
     getReadableTimestamp(event: Event): string {
-        return this.formatEventTime(new Date(event.timestamp), true);
+        return this.formatEventTime(new Date(event.startTime), true);
     }
 
     getCalendarTimestamp(event: Event): string {
-        return this.formatEventTime(new Date(event.timestamp), false);
+        return this.formatEventTime(new Date(event.startTime), false);
     }
 
     private formatEventTime(date: Date, long: boolean): string {

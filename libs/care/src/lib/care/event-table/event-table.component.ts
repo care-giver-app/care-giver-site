@@ -20,7 +20,7 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/ma
 
 interface RowEntry {
   meta: EventMetadata;
-  data?: DataPoint
+  dataPoints: DataPoint[];
   loggedUser: string;
   readableTimestamp: string;
   eventId: string;
@@ -82,7 +82,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   // Modal state
   showModal = false;
-  inputData: { [eventType: string]: any } = {};
+  inputData: { [eventType: string]: { [fieldName: string]: string } } = {};
   timestampValue = '';
   timeValue: Date | null = null;
   dateValue: Date | null = null;
@@ -134,7 +134,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   initRecentActivity() {
     this.rows = this.eventTypes.map(meta => ({
       meta: meta,
-      data: undefined,
+      dataPoints: [],
       loggedUser: '',
       readableTimestamp: '',
       eventId: '',
@@ -177,14 +177,14 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   private async updateRowsWithAllEvents(changes: SimpleChanges) {
     if (changes['events']) {
       const newRows: RowEntry[] = [];
-      this.events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      this.events.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
       for (const event of this.events) {
         const metadata = this.eventTypes.find(meta => meta.type === event.type)!
         const readableTimestamp = this.isMobile ? this.eventService.getCalendarTimestamp(event) : this.eventService.getReadableTimestamp(event);
         const loggedUser = await this.userService.getLoggedUser(event.userId);
         newRows.push({
           meta: metadata,
-          data: event.data ? event.data[0] : undefined,
+          dataPoints: event.data ?? [],
           loggedUser,
           readableTimestamp,
           eventId: event.eventId || '',
@@ -208,13 +208,13 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
         const meta = this.eventTypes[i];
         const latestEvent = await this.getLatestEvent(meta);
         if (latestEvent) {
-          this.rows[i].data = latestEvent.data;
+          this.rows[i].dataPoints = latestEvent.dataPoints;
           this.rows[i].loggedUser = latestEvent.loggedUser;
           this.rows[i].readableTimestamp = latestEvent.readableTimestamp;
           this.rows[i].eventId = latestEvent.eventId;
           this.rows[i].note = latestEvent.note;
         } else {
-          this.rows[i].data = undefined;
+          this.rows[i].dataPoints = [];
           this.rows[i].loggedUser = '';
           this.rows[i].readableTimestamp = '';
           this.rows[i].note = undefined;
@@ -232,7 +232,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       const loggedUser = await this.userService.getLoggedUser(latestEvent.userId);
       return {
         meta: meta,
-        data: latestEvent.data ? latestEvent.data[0] : undefined,
+        dataPoints: latestEvent.data ?? [],
         loggedUser,
         readableTimestamp,
         eventId: latestEvent.eventId || '',
@@ -245,7 +245,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   onQuickLogEvent(type: string) {
     this.selectedEventTypes = [type];
     const metadata = this.getMetadata(type);
-    if (metadata?.data) {
+    if (metadata?.data || (metadata?.fields && metadata.fields.length > 0)) {
       this.openModal();
     } else {
       this.addEvent(type, new Date().toISOString());
@@ -255,9 +255,36 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   closeModal() { this.resetModalState(); this.showModal = false; this.selectedEventTypes = []; }
   openModal() { this.resetModalState(); this.showModal = true; }
   getMetadata(type: string): EventMetadata | undefined { return this.eventTypes.find(event => event.type === type); }
+  getDataConfig(type: string): { name: string; unit: string } | undefined { return this.getMetadata(type)?.data; }
+  getFieldLabel(type: string, name: string): string {
+    const meta = this.getMetadata(type);
+    return meta?.fields?.find(f => f.name === name)?.label ?? name;
+  }
+  getFieldUnit(type: string, name: string): string {
+    const meta = this.getMetadata(type);
+    return meta?.data?.name === name ? (meta.data.unit ?? '') : '';
+  }
+
+  onEventTypeChange(types: string[]) {
+    this.selectedEventTypes = types;
+    for (const type of types) {
+      if (!this.inputData[type]) {
+        this.inputData[type] = {};
+      }
+    }
+  }
+
+  private buildDataPoints(fieldValues: { [key: string]: string }): DataPoint[] {
+    return Object.entries(fieldValues)
+      .filter(([, v]) => v?.trim())
+      .map(([name, value]) => ({ name, value }));
+  }
 
   private resetModalState() {
     this.inputData = {};
+    for (const type of this.selectedEventTypes) {
+      this.inputData[type] = {};
+    }
     this.timestampValue = this.getLocaleDateTime();
     this.dateValue = new Date(this.timestampValue);
     this.timeValue = this.roundToNearestMinutes(new Date(), 10);
@@ -277,27 +304,32 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   submitEvent() {
-    let timestamp = '';
+    let startTime = '';
     if (this.dateValue && this.timeValue) {
       this.dateValue.setHours(this.timeValue.getHours(), this.timeValue.getMinutes(), 0, 0);
-      timestamp = this.dateValue.toISOString();
+      startTime = this.dateValue.toISOString();
     } else {
-      timestamp = new Date().toISOString();
+      startTime = new Date().toISOString();
     }
     for (const type of this.selectedEventTypes) {
-      this.addEvent(type, timestamp, this.inputData[type], this.noteValue);
+      this.addEvent(type, startTime, this.inputData[type] ?? {}, this.noteValue);
     }
     this.closeModal();
   }
 
-  private async addEvent(type: string, timestamp: string, datavalue?: string, note?: string) {
+  private async addEvent(type: string, startTime: string, fieldValues: { [key: string]: string } = {}, note?: string) {
     let data: DataPoint[] = [];
-    if (datavalue) {
-      const metadata = this.getMetadata(type);
-      if (metadata?.data) {
-        data = [{ name: metadata.data.name, value: datavalue }];
-      }
+    const metadata = this.getMetadata(type);
+    if (metadata?.fields && metadata.fields.length > 0) {
+      data = this.buildDataPoints(fieldValues);
+    } else if (metadata?.data && fieldValues['value']) {
+      data = [{ name: metadata.data.name, value: fieldValues['value'] }];
     }
+
+    const durationMins = metadata?.data?.unit === 'Mins' && fieldValues['value']
+      ? parseFloat(fieldValues['value'])
+      : 30;
+    const endTime = new Date(new Date(startTime).getTime() + durationMins * 60 * 1000).toISOString();
 
     try {
       if (!this.receiverService.currentReceiverId) {
@@ -308,7 +340,8 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       const req: EventRequest = {
         receiverId: this.receiverService.currentReceiverId,
         userId: this.currentUserId,
-        timestamp: timestamp,
+        startTime: startTime,
+        endTime: endTime,
         type: type,
         data: data,
         note: note,
