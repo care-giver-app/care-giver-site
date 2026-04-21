@@ -282,6 +282,9 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   private resetModalState() {
     this.inputData = {};
+    for (const type of this.selectedEventTypes) {
+      this.inputData[type] = {};
+    }
     this.timestampValue = this.getLocaleDateTime();
     this.dateValue = new Date(this.timestampValue);
     this.timeValue = this.roundToNearestMinutes(new Date(), 10);
