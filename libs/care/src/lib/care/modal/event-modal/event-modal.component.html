@@ -9,9 +9,9 @@
     <div><strong>Event:</strong> {{ eventType }}</div>
     <div><strong>Logged By:</strong> {{ loggedUser }}</div>
     <div><strong>Timestamp:</strong> {{ readableTimestamp }}</div>
-    @if (data) {
+    @for (point of dataPoints; track point.name) {
     <div>
-      <strong>{{ data.name }}:</strong> {{ data.value }} {{ dataUnit }}
+      <strong>{{ getFieldLabel(point.name) }}:</strong> {{ point.value }}{{ getFieldUnit(point.name) ? ' ' + getFieldUnit(point.name) : '' }}
     </div>
     } @if (event.note) {
     <div><strong>Note:</strong> {{ event.note }}</div>
@@ -40,9 +40,9 @@
     <div><strong>Event:</strong> {{ eventType }}</div>
     <div><strong>Logged By:</strong> {{ loggedUser }}</div>
     <div><strong>Timestamp:</strong> {{ readableTimestamp }}</div>
-    @if (data) {
+    @for (point of dataPoints; track point.name) {
     <div>
-      <strong>{{ data.name }}:</strong> {{ data.value }} {{ dataUnit }}
+      <strong>{{ getFieldLabel(point.name) }}:</strong> {{ point.value }}{{ getFieldUnit(point.name) ? ' ' + getFieldUnit(point.name) : '' }}
     </div>
     } @if (event.note) {
     <div><strong>Note:</strong> {{ event.note }}</div>

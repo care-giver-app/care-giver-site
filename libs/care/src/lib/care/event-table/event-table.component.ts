@@ -20,7 +20,7 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/ma
 
 interface RowEntry {
   meta: EventMetadata;
-  data?: DataPoint
+  dataPoints: DataPoint[];
   loggedUser: string;
   readableTimestamp: string;
   eventId: string;
@@ -134,7 +134,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   initRecentActivity() {
     this.rows = this.eventTypes.map(meta => ({
       meta: meta,
-      data: undefined,
+      dataPoints: [],
       loggedUser: '',
       readableTimestamp: '',
       eventId: '',
@@ -184,7 +184,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
         const loggedUser = await this.userService.getLoggedUser(event.userId);
         newRows.push({
           meta: metadata,
-          data: event.data ? event.data[0] : undefined,
+          dataPoints: event.data ?? [],
           loggedUser,
           readableTimestamp,
           eventId: event.eventId || '',
@@ -208,13 +208,13 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
         const meta = this.eventTypes[i];
         const latestEvent = await this.getLatestEvent(meta);
         if (latestEvent) {
-          this.rows[i].data = latestEvent.data;
+          this.rows[i].dataPoints = latestEvent.dataPoints;
           this.rows[i].loggedUser = latestEvent.loggedUser;
           this.rows[i].readableTimestamp = latestEvent.readableTimestamp;
           this.rows[i].eventId = latestEvent.eventId;
           this.rows[i].note = latestEvent.note;
         } else {
-          this.rows[i].data = undefined;
+          this.rows[i].dataPoints = [];
           this.rows[i].loggedUser = '';
           this.rows[i].readableTimestamp = '';
           this.rows[i].note = undefined;
@@ -232,7 +232,7 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       const loggedUser = await this.userService.getLoggedUser(latestEvent.userId);
       return {
         meta: meta,
-        data: latestEvent.data ? latestEvent.data[0] : undefined,
+        dataPoints: latestEvent.data ?? [],
         loggedUser,
         readableTimestamp,
         eventId: latestEvent.eventId || '',
@@ -256,6 +256,14 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
   openModal() { this.resetModalState(); this.showModal = true; }
   getMetadata(type: string): EventMetadata | undefined { return this.eventTypes.find(event => event.type === type); }
   getDataConfig(type: string): { name: string; unit: string } | undefined { return this.getMetadata(type)?.data; }
+  getFieldLabel(type: string, name: string): string {
+    const meta = this.getMetadata(type);
+    return meta?.fields?.find(f => f.name === name)?.label ?? name;
+  }
+  getFieldUnit(type: string, name: string): string {
+    const meta = this.getMetadata(type);
+    return meta?.data?.name === name ? (meta.data.unit ?? '') : '';
+  }
 
   onEventTypeChange(types: string[]) {
     this.selectedEventTypes = types;

@@ -121,16 +121,11 @@
               <span class="event-description-entry">
                 <mat-icon>person</mat-icon> {{ row.loggedUser || 'N/A' }}
               </span>
-              @if (row.data) {
+              @for (point of row.dataPoints; track point.name) {
               <span class="event-description-entry">
                 <mat-icon>bar_chart</mat-icon>
-                {{
-                  row.data
-                    ? row.data.value +
-                      ' ' +
-                      (row.meta.data ? row.meta.data.unit : '')
-                    : ''
-                }}
+                <strong>{{ getFieldLabel(row.meta.type, point.name) }}:</strong>
+                {{ point.value }}{{ getFieldUnit(row.meta.type, point.name) ? ' ' + getFieldUnit(row.meta.type, point.name) : '' }}
               </span>
               } @if (row.note) {
               <span class="event-description-entry">
