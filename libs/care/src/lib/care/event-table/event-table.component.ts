@@ -326,7 +326,10 @@ export class EventTableComponent implements OnInit, OnChanges, AfterViewInit {
       data = [{ name: metadata.data.name, value: fieldValues['value'] }];
     }
 
-    const endTime = new Date(new Date(startTime).getTime() + 30 * 60 * 1000).toISOString();
+    const durationMins = metadata?.data?.unit === 'Mins' && fieldValues['value']
+      ? parseFloat(fieldValues['value'])
+      : 30;
+    const endTime = new Date(new Date(startTime).getTime() + durationMins * 60 * 1000).toISOString();
 
     try {
       if (!this.receiverService.currentReceiverId) {
