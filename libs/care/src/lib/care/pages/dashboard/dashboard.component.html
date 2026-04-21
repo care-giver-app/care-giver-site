@@ -8,12 +8,9 @@
   <mat-progress-spinner class="spinner" mode="indeterminate">
   </mat-progress-spinner>
   } @else {
-  <care-event-table
-    [events]="events"
-    [eventTypes]="eventTypes"
-    (newEvent)="getLatestEvents()"
-    (eventToDelete)="handleDeleteEvent($event)"
-  ></care-event-table>
+  <care-upcoming-events [events]="events" [eventTypes]="eventTypes"></care-upcoming-events>
+  <care-status-monitor [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"></care-status-monitor>
+  <care-quick-log [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"></care-quick-log>
 
   <care-calendar
     [events]="events"

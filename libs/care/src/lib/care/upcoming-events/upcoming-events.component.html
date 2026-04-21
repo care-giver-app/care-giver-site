@@ -1,0 +1,21 @@
+@if (rows.length > 0) {
+<div class="upcoming-card">
+  <h2 class="upcoming-title">Upcoming Events</h2>
+  <ul class="upcoming-list">
+    @for (row of rows; track row.event.eventId) {
+    <li class="upcoming-row">
+      <span class="icon-badge" [style.background]="row.meta.color.primary" [style.box-shadow]="'0 0 0 3px ' + row.meta.color.secondary">
+        <img class="event-icon" [src]="row.meta.icon" [alt]="row.meta.type" />
+      </span>
+      <span class="row-info">
+        <span class="event-name">{{ row.meta.type }}</span>
+        <span class="event-date">{{ row.dateLabel }}</span>
+        @if (getDataSummary(row.event)) {
+        <span class="event-data">{{ getDataSummary(row.event) }}</span>
+        }
+      </span>
+    </li>
+    }
+  </ul>
+</div>
+}
