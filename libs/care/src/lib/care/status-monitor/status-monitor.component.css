@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
 /* Card container */
 .status-monitor-card {
   background: #fff;
@@ -5,6 +10,7 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 16px;
+  box-sizing: border-box;
 }
 
 .status-monitor-title {
@@ -45,8 +51,6 @@
 .status-monitor-row:hover,
 .status-monitor-row:focus-visible {
   background: #f5f5f5;
-  padding-left: 6px;
-  padding-right: 6px;
 }
 
 /* Icon badge */
@@ -64,6 +68,7 @@
   width: 20px;
   height: 20px;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 /* Row info */
@@ -112,23 +117,51 @@
   background: #b71c1c;
 }
 
-/* Modal form fields */
-.modal-full-width {
-  width: 100%;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.modal-full-width textarea {
-  min-height: 72px;
-  resize: vertical;
-}
-
 .modal-button {
   margin: 0.5rem;
 }
 
-.secondary-button {
-  background-color: #d3d3d3 !important;
-  color: #000 !important;
+/* Detail modal */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
 }
+
+.detail-row:last-of-type {
+  border-bottom: none;
+}
+
+.detail-row--note .detail-value {
+  white-space: pre-wrap;
+}
+
+.detail-label {
+  font-size: 0.82rem;
+  color: #757575;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  color: #212121;
+  text-align: right;
+}
+
+.status-summary {
+  margin-top: 14px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-summary--green  { background: #e8f5e9; color: #2e7d32; }
+.status-summary--yellow { background: #fff8e1; color: #f57f17; }
+.status-summary--red    { background: #ffebee; color: #c62828; }
+.status-summary--critical { background: #b71c1c; color: #fff; }
