@@ -30,6 +30,10 @@ const baseEvent: Event = {
 describe('DailyTimelineComponent', () => {
   let component: DailyTimelineComponent;
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DailyTimelineComponent],
@@ -87,7 +91,7 @@ describe('DailyTimelineComponent', () => {
 
     it('returns weekday + date for older dates', () => {
       // April 1, 2026 is a Wednesday
-      const old = new Date('2026-04-01T12:00:00Z');
+      const old = new Date(2026, 3, 1, 12, 0, 0); // April 1, 2026 at local noon
       expect(component.formatDateLabel(old)).toMatch(/^Wednesday/);
     });
   });

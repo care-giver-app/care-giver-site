@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReceiverService, EventService, AuthService } from '@care-giver-site/services';
 import { Event, EventMetadata } from '@care-giver-site/models';
@@ -20,6 +21,7 @@ export class DailyTimelineComponent implements OnInit {
   private receiverService = inject(ReceiverService);
   private eventService = inject(EventService);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
   selectedDate = new Date();
   rows: TimelineRow[] = [];
@@ -28,11 +30,14 @@ export class DailyTimelineComponent implements OnInit {
 
   private cache = new Map<string, Event[]>();
   private userId = '';
+  private loadSeq = 0;
 
   ngOnInit() {
-    this.eventService.eventConfigs$.subscribe(configs => {
-      this.eventTypes = configs;
-    });
+    this.eventService.eventConfigs$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(configs => {
+        this.eventTypes = configs;
+      });
     this.authService.getCurrentUserId().then(id => {
       this.userId = id;
       this.loadDate(this.selectedDate);
@@ -69,19 +74,18 @@ export class DailyTimelineComponent implements OnInit {
   }
 
   async loadDate(date: Date) {
-    const key = date.toISOString().slice(0, 10);
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     const cached = this.cache.get(key);
     if (cached) {
       this.rows = this.buildRows(cached);
       return;
     }
 
+    const seq = ++this.loadSeq;
     this.loading = true;
 
-    const start = new Date(date);
-    start.setUTCHours(0, 0, 0, 0);
-    const end = new Date(date);
-    end.setUTCHours(23, 59, 59, 999);
+    const start = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+    const end   = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
 
     if (!this.receiverService.currentReceiverId || !this.userId) {
       this.loading = false;
@@ -95,7 +99,8 @@ export class DailyTimelineComponent implements OnInit {
         start.toISOString(),
         end.toISOString(),
       );
-      obs.subscribe((events: Event[]) => {
+      obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((events: Event[]) => {
+        if (seq !== this.loadSeq) return;
         this.cache.set(key, events);
         this.rows = this.buildRows(events);
         this.loading = false;
