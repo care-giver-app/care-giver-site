@@ -2,8 +2,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CareCalendarComponent } from '../../calendar/calendar.component';
-import { EventTableComponent } from '../../event-table/event-table.component';
 import { NavbarComponent } from '../../navbar/navbar.component';
+import { UpcomingEventsComponent } from '../../upcoming-events/upcoming-events.component';
+import { StatusMonitorComponent } from '../../status-monitor/status-monitor.component';
+import { QuickLogComponent } from '../../quick-log/quick-log.component';
 import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
 import { ReceiverService, EventService, AuthService } from '@care-giver-site/services'
 import { Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
@@ -21,7 +23,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CareCalendarComponent,
     NavbarComponent,
     FormsModule,
-    EventTableComponent,
     AlertComponent,
     EventModalComponent,
     MatButtonModule,
@@ -29,6 +30,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatFormFieldModule,
     ReceiverSelectionComponent,
     MatProgressSpinnerModule,
+    UpcomingEventsComponent,
+    StatusMonitorComponent,
+    QuickLogComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',

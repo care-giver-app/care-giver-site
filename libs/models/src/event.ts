@@ -6,22 +6,41 @@ export interface FieldConfig {
     placeholder: string;
 }
 
+export interface AlertThresholds {
+    yellow: number;
+    red: number;
+    critical: number;
+}
+
+export interface MonitorConfig {
+    alertThresholds?: AlertThresholds;
+    showLastValue?: boolean;
+}
+
+export interface UpcomingConfig {
+    show: boolean;
+    lookAheadDays: number;
+}
+
 export interface EventMetadata {
     type: string;
+    icon: string;
+    color: {
+        primary: string;
+        secondary: string;
+    };
+    hasQuickAdd: boolean;
+    monitor?: MonitorConfig;
+    upcoming?: UpcomingConfig;
     data?: {
         name: string;
         unit: string;
     };
     fields?: FieldConfig[];
-    color: {
-        primary: string;
-        secondary: string;
-    };
     graph?: {
         type: 'line' | 'scatter';
         title: string;
     };
-    icon: string;
 }
 
 export interface DataPoint {

@@ -63,13 +63,16 @@ export class ReceiverService {
         });
     }
 
-    getReceiverEvents(receiverId: string, userId: string): Promise<Observable<Event[]>> {
+    getReceiverEvents(receiverId: string, userId: string, startTime?: string, endTime?: string): Promise<Observable<Event[]>> {
         return this.authService.getBearerToken().then((token) => {
             const headers: HttpHeaders = new HttpHeaders({
                 'Authorization': token,
             });
 
-            const url = `/events/${encodeURIComponent(receiverId)}?userId=${encodeURIComponent(userId)}`;
+            let url = `/events/${encodeURIComponent(receiverId)}?userId=${encodeURIComponent(userId)}`;
+            if (startTime && endTime) {
+                url += `&startTime=${encodeURIComponent(startTime)}&endTime=${encodeURIComponent(endTime)}`;
+            }
             return this.http.get<Event[]>(url, { headers: headers });
         })
     }

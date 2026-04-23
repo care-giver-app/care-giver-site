@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.quick-log-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.quick-log-title {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.quick-log-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+}
+
+.quick-log-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+  font-family: inherit;
+  outline: none;
+}
+
+.quick-log-btn:hover {
+  filter: brightness(0.9);
+  transform: translateY(-1px);
+}
+
+.quick-log-btn:active {
+  transform: translateY(0);
+  filter: brightness(0.8);
+}
+
+.quick-log-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.quick-log-label {
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 4px;
+  color: #333;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.modal-full-width {
+  width: 100%;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.modal-button {
+  margin-right: 8px;
+}
+
+.secondary-button {
+  background-color: #f5f5f5;
+  color: #333;
+}

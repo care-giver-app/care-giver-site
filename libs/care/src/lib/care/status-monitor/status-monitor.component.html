@@ -1,0 +1,57 @@
+<div class="status-monitor-card">
+  <h2 class="status-monitor-title">Status Monitor</h2>
+
+  @if (rows.length === 0) {
+    <p class="status-monitor-empty">No monitored event types with logged data.</p>
+  }
+
+  <ul class="status-monitor-list">
+    @for (row of rows; track row.meta.type) {
+      <li class="status-monitor-row" (click)="onRowClick(row)" role="button" tabindex="0"
+          (keydown.enter)="onRowClick(row)" (keydown.space)="onRowClick(row)">
+        <div class="icon-badge" [style.background]="row.meta.color.primary">
+          <img [src]="row.meta.icon" [alt]="row.meta.type" class="icon-badge-img" />
+        </div>
+        <div class="row-info">
+          <span class="row-type-name">{{ row.meta.type }}</span>
+          <span class="row-relative-time" [title]="row.absoluteTime">{{ row.relativeTime }}</span>
+        </div>
+        <div class="status-dot" [ngClass]="'status-dot--' + row.status"></div>
+      </li>
+    }
+  </ul>
+</div>
+
+<care-modal [show]="showModal" [header]="selectedRow?.meta?.type ?? ''" (close)="closeModal()">
+  <div modal-body>
+    @if (selectedRow) {
+      <div class="detail-row">
+        <span class="detail-label">Logged</span>
+        <span class="detail-value">{{ selectedRow.absoluteTime }}</span>
+      </div>
+
+      @if (selectedRow.lastEvent.data?.length) {
+        @for (point of selectedRow.lastEvent.data; track point.name) {
+          <div class="detail-row">
+            <span class="detail-label">{{ getFieldLabel(selectedRow.meta, point.name) }}</span>
+            <span class="detail-value">{{ point.value }}</span>
+          </div>
+        }
+      }
+
+      @if (selectedRow.lastEvent.note) {
+        <div class="detail-row detail-row--note">
+          <span class="detail-label">Note</span>
+          <span class="detail-value">{{ selectedRow.lastEvent.note }}</span>
+        </div>
+      }
+
+      <div class="status-summary" [ngClass]="'status-summary--' + selectedRow.status">
+        {{ selectedRow.relativeTime }} · {{ selectedRow.status | titlecase }}
+      </div>
+    }
+  </div>
+  <div modal-footer>
+    <button matButton="filled" class="modal-button" (click)="closeModal()">Close</button>
+  </div>
+</care-modal>

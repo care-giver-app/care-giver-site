@@ -1,5 +1,16 @@
 .care-body {
   width: 100%;
+  overflow-x: hidden;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
 }
 
 .spinner {
