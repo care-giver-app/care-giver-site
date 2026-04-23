@@ -1,10 +1,15 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
 .upcoming-card {
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   padding: 16px;
-  margin-bottom: 16px;
+  box-sizing: border-box;
 }
 
 .upcoming-title {

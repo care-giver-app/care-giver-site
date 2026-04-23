@@ -8,15 +8,17 @@
   <mat-progress-spinner class="spinner" mode="indeterminate">
   </mat-progress-spinner>
   } @else {
-  <care-upcoming-events [events]="events" [eventTypes]="eventTypes"></care-upcoming-events>
-  <care-status-monitor [events]="events" [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"></care-status-monitor>
-  <care-quick-log [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"></care-quick-log>
+  <div class="dashboard-content">
+    <care-upcoming-events [events]="events" [eventTypes]="eventTypes"></care-upcoming-events>
+    <care-quick-log [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"></care-quick-log>
+    <care-status-monitor [events]="events" [eventTypes]="eventTypes"></care-status-monitor>
 
-  <care-calendar
-    [events]="events"
-    (eventToDelete)="handleDeleteEvent($event)"
-    (eventToView)="handleViewEvent($event)"
-  ></care-calendar>
+    <care-calendar
+      [events]="events"
+      (eventToDelete)="handleDeleteEvent($event)"
+      (eventToView)="handleViewEvent($event)"
+    ></care-calendar>
+  </div>
   }
 </div>
 
