@@ -134,6 +134,10 @@
   padding-bottom: 14px;
 }
 
+.timeline-row:last-child .row-content {
+  padding-bottom: 0;
+}
+
 .row-main {
   display: flex;
   justify-content: space-between;

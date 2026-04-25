@@ -1,8 +1,8 @@
 <div class="timeline-card">
   <div class="timeline-header">
-    <button class="nav-btn" (click)="prevDay()">&#8249;</button>
+    <button class="nav-btn" (click)="prevDay()" aria-label="Previous day">&#8249;</button>
     <span class="date-label">{{ formatDateLabel(selectedDate) }}</span>
-    <button class="nav-btn" [class.disabled]="isToday()" [disabled]="isToday()" (click)="nextDay()">&#8250;</button>
+    <button class="nav-btn" [class.disabled]="isToday()" [disabled]="isToday()" aria-label="Next day" (click)="nextDay()">&#8250;</button>
   </div>
 
   @if (loading) {
@@ -34,7 +34,7 @@
       @for (row of rows; track row.event.eventId; let last = $last) {
         <div class="timeline-row">
           <div class="spine-col">
-            <div class="icon-badge" [style.background]="row.meta.color.primary">
+            <div class="icon-badge" [style.background-color]="row.meta.color.primary">
               <img class="event-icon" [src]="row.meta.icon" [alt]="row.meta.type" />
             </div>
             @if (!last) {
