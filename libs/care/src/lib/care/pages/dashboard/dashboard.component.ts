@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReceiverSelectionComponent } from '../../receiver-selection/receiver-selection.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DailyTimelineComponent } from '../../daily-timeline/daily-timeline.component';
 
 @Component({
   selector: 'lib-dashboard',
@@ -33,6 +34,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     UpcomingEventsComponent,
     StatusMonitorComponent,
     QuickLogComponent,
+    DailyTimelineComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
