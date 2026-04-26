@@ -10,6 +10,7 @@
         [matMenuTriggerFor]="currentReceiverMenu"
         aria-label="Receiver options"
         (click)="$event.stopPropagation()"
+        (touchend)="$event.stopPropagation()"
       >
         {{ getInitials() }}
       </button>
