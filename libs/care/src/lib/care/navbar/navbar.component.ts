@@ -1,9 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Receiver } from '@care-giver-site/models'
-import { AuthService } from '@care-giver-site/services'
+import { AuthService } from '@care-giver-site/services';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button'
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -13,28 +12,24 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-  private authService = inject(AuthService);
+  @Output() menuToggle = new EventEmitter<void>();
 
-  showDropdown = false;
-  userName = "";
+  private authService = inject(AuthService);
+  userName = '';
 
   constructor() {
-    this.getUserFirstName();
-  }
-
-  toggleDropdown() {
-    this.showDropdown = !this.showDropdown;
-  }
-
-  getUserFirstName() {
-    this.authService.getUserFirstName().then((firstName) => {
-      this.userName = firstName;
+    this.authService.getUserFirstName().then(name => {
+      this.userName = name;
     });
+  }
+
+  toggleMenu() {
+    this.menuToggle.emit();
   }
 
   signOut() {
     this.authService.signOutUser().then(() => {
       window.location.reload();
-    })
+    });
   }
 }
