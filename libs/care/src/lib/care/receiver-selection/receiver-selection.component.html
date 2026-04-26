@@ -1,45 +1,46 @@
-<div class="receiver-selection-container">
-  @if (isLoading){
-  <div class="current-receiver-button skeleton-button"></div>
+<div class="sidebar-receiver" [matMenuTriggerFor]="changeReceiverMenu">
+  @if (isLoading) {
+    <div class="receiver-skeleton"></div>
   } @else {
-  <button
-    class="current-receiver-button"
-    matMiniFab
-    aria-label="Current receiver"
-    [matMenuTriggerFor]="currentReceiverMenu"
-    title="Current Care Receiver"
-  >
-    <strong> {{ getInitials() }} </strong>
-  </button>
+    <div class="caring-for-label">Caring for</div>
+    <div class="receiver-row">
+      <button
+        class="receiver-initials"
+        matMiniFab
+        [matMenuTriggerFor]="currentReceiverMenu"
+        aria-label="Receiver options"
+        (click)="$event.stopPropagation()"
+      >
+        {{ getInitials() }}
+      </button>
+      <div class="receiver-info">
+        <div class="receiver-full-name">
+          {{ receiver?.firstName }} {{ receiver?.lastName }}
+        </div>
+        <div class="receiver-switch-hint">tap to switch</div>
+      </div>
+    </div>
   }
-  <mat-menu #currentReceiverMenu="matMenu">
-    <button mat-menu-item (click)="showAddCareGiverModal = true">
-      Add Additional Care Giver
-    </button>
-  </mat-menu>
-
-  <button
-    class="change-receiver-button"
-    matIconButton
-    aria-label="Change receiver"
-    [matMenuTriggerFor]="changeReceiverMenu"
-    title="Change Care Receiver"
-  >
-    <mat-icon>swap_horiz</mat-icon>
-  </button>
-  <mat-menu #changeReceiverMenu="matMenu">
-    @for (receiver of receivers; track receiver.receiverId) {
-    <button mat-menu-item (click)="selectReceiver(receiver.receiverId)">
-      <mat-icon>person</mat-icon>{{ receiver.firstName }}
-      {{ receiver.lastName }}
-    </button>
-    }
-    <button mat-menu-item (click)="showAddReceiverModal = true">
-      <mat-icon>add</mat-icon>New Receiver
-    </button>
-  </mat-menu>
 </div>
 
+<mat-menu #currentReceiverMenu="matMenu">
+  <button mat-menu-item (click)="showAddCareGiverModal = true">
+    Add Additional Care Giver
+  </button>
+</mat-menu>
+
+<mat-menu #changeReceiverMenu="matMenu">
+  @for (r of receivers; track r.receiverId) {
+    <button mat-menu-item (click)="selectReceiver(r.receiverId)">
+      <mat-icon>person</mat-icon>{{ r.firstName }} {{ r.lastName }}
+    </button>
+  }
+  <button mat-menu-item (click)="showAddReceiverModal = true">
+    <mat-icon>add</mat-icon>New Receiver
+  </button>
+</mat-menu>
+
+<!-- Add Receiver modal — unchanged -->
 <care-modal
   [show]="showAddReceiverModal"
   header="Add Care Receiver"
@@ -49,45 +50,21 @@
     <form (ngSubmit)="submitAddReceiver()" #addReceiverForm="ngForm">
       <mat-form-field>
         <mat-label>First Name</mat-label>
-        <input
-          matInput
-          [(ngModel)]="newReceiver.firstName"
-          name="firstName"
-          required
-          class="form-control"
-        />
+        <input matInput [(ngModel)]="newReceiver.firstName" name="firstName" required />
       </mat-form-field>
-
       <mat-form-field>
         <mat-label>Last Name</mat-label>
-        <input
-          matInput
-          [(ngModel)]="newReceiver.lastName"
-          name="lastName"
-          required
-          class="form-control"
-        />
+        <input matInput [(ngModel)]="newReceiver.lastName" name="lastName" required />
       </mat-form-field>
     </form>
   </div>
   <div modal-footer>
-    <button
-      matButton="filled"
-      class="modal-button"
-      (click)="submitAddReceiver()"
-    >
-      Add
-    </button>
-    <button
-      matButton="filled"
-      class="secondary-button modal-button"
-      (click)="showAddReceiverModal = false"
-    >
-      Cancel
-    </button>
+    <button matButton="filled" class="modal-button" (click)="submitAddReceiver()">Add</button>
+    <button matButton="filled" class="secondary-button modal-button" (click)="showAddReceiverModal = false">Cancel</button>
   </div>
 </care-modal>
 
+<!-- Add Care Giver modal — unchanged -->
 <care-modal
   [show]="showAddCareGiverModal"
   header="Add Additional Care Giver"
@@ -97,30 +74,12 @@
     <form (ngSubmit)="submitAddCareGiver()" #addCareGiverForm="ngForm">
       <mat-form-field>
         <mat-label>Email</mat-label>
-        <input
-          matInput
-          [(ngModel)]="additionalCareGiverEmail"
-          name="careGiverEmail"
-          required
-          class="form-control"
-        />
+        <input matInput [(ngModel)]="additionalCareGiverEmail" name="careGiverEmail" required />
       </mat-form-field>
     </form>
   </div>
   <div modal-footer>
-    <button
-      matButton="filled"
-      class="modal-button"
-      (click)="submitAddCareGiver()"
-    >
-      Add
-    </button>
-    <button
-      matButton="filled"
-      class="secondary-button modal-button"
-      (click)="showAddCareGiverModal = false"
-    >
-      Cancel
-    </button>
+    <button matButton="filled" class="modal-button" (click)="submitAddCareGiver()">Add</button>
+    <button matButton="filled" class="secondary-button modal-button" (click)="showAddCareGiverModal = false">Cancel</button>
   </div>
 </care-modal>
