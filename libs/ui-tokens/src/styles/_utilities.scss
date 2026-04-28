@@ -11,7 +11,7 @@
   background: var(--color-white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: 1.5rem;
+  padding: var(--space-lg);
   box-sizing: border-box;
 }
 
@@ -21,7 +21,7 @@
   color: var(--color-white);
   border: none;
   border-radius: var(--radius-sm);
-  padding: 0.5rem var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   cursor: pointer;
   font-weight: var(--font-weight-medium);
 }
@@ -30,21 +30,23 @@
   background-color: var(--color-primary-hover);
 }
 
+/* !important needed: overrides Angular Material matButton filled specificity */
 .btn-secondary {
-  background-color: #d3d3d3 !important;
-  color: #000 !important;
+  background-color: var(--color-bg-disabled) !important;
+  color: var(--color-text-primary) !important;
   border: none;
   border-radius: var(--radius-sm);
-  padding: 0.5rem var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   cursor: pointer;
 }
 
+/* !important needed: overrides Angular Material matButton filled specificity */
 .btn-danger {
   background-color: var(--color-error) !important;
   color: var(--color-white) !important;
   border: none;
   border-radius: var(--radius-sm);
-  padding: 0.5rem var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   cursor: pointer;
 }
 
