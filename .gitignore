@@ -57,3 +57,6 @@ amplifyconfiguration*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions.superpowers/
+
+.superpowers/
+.worktrees/
