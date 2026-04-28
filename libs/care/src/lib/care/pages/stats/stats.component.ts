@@ -1,37 +1,34 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { EventTableComponent } from '../../event-table/event-table.component';
-import { NavbarComponent } from '../../navbar/navbar.component';
 import { EventModalComponent } from '../../modal/event-modal/event-modal.component';
 import { ReceiverService, AuthService, UserService, AlertService, EventService } from '@care-giver-site/services'
 import { Event, EventMetadata, Receiver, User } from '@care-giver-site/models';
 import { AlertComponent } from '../../alert/alert.component';
 import { ChartComponent } from '../../chart/chart.component';
-import { ReceiverSelectionComponent } from '../../receiver-selection/receiver-selection.component';
 
 @Component({
   selector: 'lib-stats',
-  imports: [CommonModule, NavbarComponent, FormsModule, EventTableComponent, AlertComponent, EventModalComponent, ChartComponent, ReceiverSelectionComponent],
+  imports: [CommonModule, FormsModule, EventTableComponent, AlertComponent, EventModalComponent, ChartComponent],
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.css',
 })
-export class StatsComponent implements OnInit {
+export class StatsComponent implements OnInit, OnDestroy {
   private receiverService = inject(ReceiverService);
   private authService = inject(AuthService);
   private eventService = inject(EventService);
+
+  private destroy$ = new Subject<void>();
 
   events: Event[] = [];
   receivers: Receiver[] = [];
   userId = '';
   user: User | undefined = undefined;
 
-  showAddReceiverModal = false;
-  showAddCareGiverModal = false;
   showEventModal = false
-
-  newReceiver = { firstName: '', lastName: '' };
-  additionalCareGiverEmail = '';
 
   selectedEvent: Event | null = null;
   eventAction: 'create' | 'update' | 'delete' | 'view' = 'view';
@@ -44,10 +41,18 @@ export class StatsComponent implements OnInit {
       this.eventTypes = configs;
       this.eventTypesWithGraphs = this.eventTypes.filter(e => e.graph);
     });
-  }
 
-  onReceiverChange() {
-    this.getLatestEvents()
+    this.receiverService.receiverChanged$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.getLatestEvents());
+
+    this.receiverService.eventAdded$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.getLatestEvents());
+
+    if (this.receiverService.currentReceiverId) {
+      this.getLatestEvents();
+    }
   }
 
   async getLatestEvents() {
@@ -76,6 +81,11 @@ export class StatsComponent implements OnInit {
     this.selectedEvent = event;
     this.eventAction = 'view';
     this.showEventModal = true;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }
