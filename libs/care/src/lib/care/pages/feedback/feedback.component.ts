@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../../navbar/navbar.component';
 import { AlertComponent } from '../../alert/alert.component';
 import { AlertService, FeedbackService } from '@care-giver-site/services';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +14,6 @@ import { AlertType } from '@care-giver-site/models';
   standalone: true,
   imports: [
     CommonModule,
-    NavbarComponent,
     FormsModule,
     AlertComponent,
     MatButtonModule,
