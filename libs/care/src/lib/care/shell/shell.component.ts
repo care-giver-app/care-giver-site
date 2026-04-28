@@ -3,7 +3,6 @@ import { Component, ViewChild, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -24,7 +23,6 @@ import { EventMetadata } from '@care-giver-site/models';
     RouterLink,
     RouterLinkActive,
     MatSidenavModule,
-    MatListModule,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
@@ -78,7 +76,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   }
 
   onLogEventType(meta: EventMetadata) {
-    this.quickLog.onButtonClick(meta);
+    this.quickLog?.onButtonClick(meta);
   }
 
   onNewEvent() {
