@@ -1,16 +1,11 @@
 <div class="care-body">
-  <care-navbar></care-navbar>
-  <care-receiver-selection
-    (receiverChange)="onReceiverChange()"
-  ></care-receiver-selection>
-
   @if (showSpinner) {
   <mat-progress-spinner class="spinner" mode="indeterminate">
   </mat-progress-spinner>
   } @else {
   <div class="dashboard-content">
     <care-upcoming-events [events]="events" [eventTypes]="eventTypes"></care-upcoming-events>
-    <care-quick-log [eventTypes]="eventTypes" (newEvent)="getLatestEvents()"></care-quick-log>
+    <care-quick-log [eventTypes]="eventTypes" (newEvent)="onNewEvent()"></care-quick-log>
     <care-status-monitor [events]="events" [eventTypes]="eventTypes"></care-status-monitor>
     <care-daily-timeline></care-daily-timeline>
 
