@@ -68,3 +68,14 @@ export interface EventRequest {
     data?: DataPoint[];
     note?: string;
 }
+
+export interface UpdateEventRequest {
+    receiverId: string;
+    userId: string;
+    eventId: string;
+    startTime: string;
+    endTime: string;
+    type: string;
+    data?: DataPoint[];
+    note?: string;
+}

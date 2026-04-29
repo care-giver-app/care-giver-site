@@ -1,7 +1,7 @@
 // libs/services/src/lib/receiver/receiver.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Event, Receiver, EventRequest } from '@care-giver-site/models';
+import { Event, Receiver, EventRequest, UpdateEventRequest } from '@care-giver-site/models';
 import { AuthService } from '../auth/auth.service';
 import { Observable, firstValueFrom, Subject } from 'rxjs';
 import { formatRFC3339 } from 'date-fns';
@@ -94,6 +94,23 @@ export class ReceiverService {
             const headers: HttpHeaders = new HttpHeaders({ 'Authorization': token });
             const url = `/event/${encodeURIComponent(eventId)}?userId=${encodeURIComponent(userId)}&receiverId=${encodeURIComponent(receiverId)}`;
             return this.http.delete(url, { headers });
+        });
+    }
+
+    updateEvent(request: UpdateEventRequest): Promise<Observable<any>> {
+        return this.authService.getBearerToken().then((token) => {
+            const headers: HttpHeaders = new HttpHeaders({ 'Authorization': token });
+            const url = `/event/${encodeURIComponent(request.eventId)}`;
+            const body = {
+                receiverId: request.receiverId,
+                userId: request.userId,
+                startTime: formatRFC3339(request.startTime),
+                endTime: formatRFC3339(request.endTime),
+                type: request.type,
+                data: request.data,
+                note: request.note,
+            };
+            return this.http.put(url, body, { headers });
         });
     }
 
