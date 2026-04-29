@@ -8,11 +8,5 @@
       <img src="assets/caretosher-logo.png" alt="CareToSher" />
     </a>
     <div class="navbar-spacer"></div>
-    <button matIconButton [matMenuTriggerFor]="userMenu" aria-label="User menu">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item (click)="signOut()">Sign Out</button>
-    </mat-menu>
   </div>
 </nav>

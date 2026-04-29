@@ -38,7 +38,7 @@ export class StatusMonitorComponent implements OnInit, OnChanges {
     const result: MonitorRow[] = [];
 
     for (const meta of this.eventTypes) {
-      if (!meta.monitor?.alertThresholds) continue;
+      if (!meta.monitor?.alertThresholds && !meta.monitor?.showLastValue) continue;
 
       const eventsOfType = this.events.filter(e => e.type === meta.type);
       if (eventsOfType.length === 0) continue;
@@ -49,10 +49,10 @@ export class StatusMonitorComponent implements OnInit, OnChanges {
 
       const hours = (now - new Date(latest.startTime).getTime()) / 3600000;
       const t = meta.monitor.alertThresholds;
-      const status: StatusLevel = hours >= t.critical ? 'critical'
-        : hours >= t.red ? 'red'
-        : hours >= t.yellow ? 'yellow'
+      const status: StatusLevel = t
+        ? (hours >= t.critical ? 'critical' : hours >= t.red ? 'red' : hours >= t.yellow ? 'yellow' : 'green')
         : 'green';
+      const urgencyRatio = t ? hours / t.yellow : -1;
 
       result.push({
         meta,
@@ -62,7 +62,7 @@ export class StatusMonitorComponent implements OnInit, OnChanges {
           month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
         }),
         status,
-        urgencyRatio: hours / t.yellow,
+        urgencyRatio,
       });
     }
 

@@ -7,47 +7,57 @@
     [opened]="!isMobile"
     class="shell-sidenav"
   >
-    <div class="sidenav-header">
-      <img src="assets/caretosher-logo.png" alt="CareToSher" class="sidenav-logo" />
-    </div>
+    <div class="sidenav-inner">
+      <div class="sidenav-header">
+        <img src="assets/caretosher-logo.png" alt="CareToSher" class="sidenav-logo" />
+      </div>
 
-    <nav class="sidenav-nav">
-      <a
-        class="nav-item"
-        routerLink="/"
-        routerLinkActive="nav-item--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="onNavItemClick()"
-      >
-        <mat-icon class="nav-icon">dashboard</mat-icon>
-        <span class="nav-label">Dashboard</span>
-      </a>
+      <div class="sidenav-receiver">
+        <care-receiver-selection></care-receiver-selection>
+      </div>
 
-      <a
-        class="nav-item"
-        routerLink="/stats"
-        routerLinkActive="nav-item--active"
-        (click)="onNavItemClick()"
-      >
-        <mat-icon class="nav-icon">bar_chart</mat-icon>
-        <span class="nav-label">Stats</span>
-      </a>
+      <nav class="sidenav-nav">
+        <a
+          class="nav-item"
+          routerLink="/"
+          routerLinkActive="nav-item--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="onNavItemClick()"
+        >
+          <mat-icon class="nav-icon">dashboard</mat-icon>
+          <span class="nav-label">Dashboard</span>
+        </a>
 
-      <div class="nav-divider"></div>
+        <a
+          class="nav-item"
+          routerLink="/stats"
+          routerLinkActive="nav-item--active"
+          (click)="onNavItemClick()"
+        >
+          <mat-icon class="nav-icon">bar_chart</mat-icon>
+          <span class="nav-label">Stats</span>
+        </a>
 
-      <a
-        class="nav-item"
-        routerLink="/submit-feedback"
-        routerLinkActive="nav-item--active"
-        (click)="onNavItemClick()"
-      >
-        <mat-icon class="nav-icon">feedback</mat-icon>
-        <span class="nav-label">Feedback</span>
-      </a>
-    </nav>
+        <div class="nav-divider"></div>
 
-    <div class="sidenav-bottom">
-      <care-receiver-selection></care-receiver-selection>
+        <a
+          class="nav-item"
+          routerLink="/submit-feedback"
+          routerLinkActive="nav-item--active"
+          (click)="onNavItemClick()"
+        >
+          <mat-icon class="nav-icon">feedback</mat-icon>
+          <span class="nav-label">Feedback</span>
+        </a>
+      </nav>
+
+      <div class="sidenav-bottom">
+        <div class="nav-divider"></div>
+        <button class="nav-item sign-out-btn" (click)="signOut()">
+          <mat-icon class="nav-icon">logout</mat-icon>
+          <span class="nav-label">Sign Out</span>
+        </button>
+      </div>
     </div>
   </mat-sidenav>
 

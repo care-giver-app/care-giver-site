@@ -12,7 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ReceiverSelectionComponent } from '../receiver-selection/receiver-selection.component';
 import { QuickLogComponent } from '../quick-log/quick-log.component';
-import { EventService, ReceiverService } from '@care-giver-site/services';
+import { AuthService, EventService, ReceiverService } from '@care-giver-site/services';
 import { EventMetadata } from '@care-giver-site/models';
 
 @Component({
@@ -38,6 +38,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   @ViewChild(QuickLogComponent) quickLog!: QuickLogComponent;
 
   private breakpointObserver = inject(BreakpointObserver);
+  private authService = inject(AuthService);
   private eventService = inject(EventService);
   private receiverService = inject(ReceiverService);
   private destroy$ = new Subject<void>();
@@ -81,5 +82,9 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   onNewEvent() {
     this.receiverService.notifyEventAdded();
+  }
+
+  signOut() {
+    this.authService.signOutUser();
   }
 }

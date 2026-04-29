@@ -73,6 +73,12 @@ export class DailyTimelineComponent implements OnInit {
     return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   }
 
+  refresh() {
+    const key = `${this.selectedDate.getFullYear()}-${String(this.selectedDate.getMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getDate()).padStart(2, '0')}`;
+    this.cache.delete(key);
+    this.loadDate(this.selectedDate);
+  }
+
   async loadDate(date: Date) {
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     const cached = this.cache.get(key);

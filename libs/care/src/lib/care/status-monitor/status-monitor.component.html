@@ -15,8 +15,13 @@
         <div class="row-info">
           <span class="row-type-name">{{ row.meta.type }}</span>
           <span class="row-relative-time" [title]="row.absoluteTime">{{ row.relativeTime }}</span>
+          @if (row.meta.monitor?.showLastValue && row.lastEvent.data?.length) {
+            <span class="row-last-value">{{ row.lastEvent.data[0].value }} {{ row.meta.data?.unit }}</span>
+          }
         </div>
-        <div class="status-dot" [ngClass]="'status-dot--' + row.status"></div>
+        @if (row.meta.monitor?.alertThresholds) {
+          <div class="status-dot" [ngClass]="'status-dot--' + row.status"></div>
+        }
       </li>
     }
   </ul>

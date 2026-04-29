@@ -88,6 +88,13 @@
   margin-top: 2px;
 }
 
+.row-last-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #424242;
+  margin-top: 2px;
+}
+
 /* Status dot */
 .status-dot {
   width: 12px;

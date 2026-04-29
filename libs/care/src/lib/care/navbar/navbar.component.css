@@ -33,9 +33,13 @@
   flex: 1;
 }
 
-/* Hide hamburger on desktop — sidenav is always visible */
+/* Hide hamburger and logo on desktop — sidenav is always visible */
 @media (min-width: 768px) {
   .hamburger {
+    display: none;
+  }
+
+  .navbar-logo {
     display: none;
   }
 }

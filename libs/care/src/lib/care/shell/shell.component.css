@@ -12,17 +12,22 @@
   width: 160px;
   background: var(--color-brand-purple);
   border-right: none;
+}
+
+.sidenav-inner {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .sidenav-header {
-  padding: 12px 14px 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
 }
 
 .sidenav-logo {
-  height: 36px;
+  height: 64px;
 }
 
 .sidenav-nav {
@@ -76,8 +81,20 @@
   margin: 4px 0;
 }
 
+.sidenav-receiver {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .sidenav-bottom {
-  /* Receiver section anchored here */
+  margin-top: auto;
+}
+
+.sign-out-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
 }
 
 .shell-content {
@@ -85,6 +102,7 @@
   flex-direction: column;
   height: 100%;
   background: var(--color-bg-app);
+  overflow-x: clip;
 }
 
 .page-content {
