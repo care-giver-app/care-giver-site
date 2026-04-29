@@ -69,11 +69,3 @@
   100% { background-position: -200% 0; }
 }
 
-.secondary-button {
-  background-color: #d3d3d3 !important;
-  color: black !important;
-}
-
-.modal-button {
-  margin: 0.5rem;
-}

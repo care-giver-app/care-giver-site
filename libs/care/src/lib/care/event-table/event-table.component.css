@@ -51,10 +51,6 @@
   background: #ffebee;
 }
 
-.modal-button {
-  margin: 0.5rem;
-}
-
 :host ::ng-deep th,
 :host ::ng-deep .mat-header-cell {
   font-weight: bold;
@@ -152,11 +148,6 @@ tr.event-row {
   align-items: center;
   gap: 4px;
   justify-content: flex-end;
-}
-
-.secondary-button {
-  background-color: #d3d3d3 !important;
-  color: black !important;
 }
 
 .modal-full-width {
