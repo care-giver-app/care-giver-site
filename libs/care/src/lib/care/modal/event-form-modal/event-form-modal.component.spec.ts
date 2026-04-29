@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EventFormModalComponent } from './event-form-modal.component';
-import { ReceiverService } from '@care-giver-site/services';
-import { AuthService } from '@care-giver-site/services';
-import { AlertService } from '@care-giver-site/services';
+import { ReceiverService, AuthService, AlertService } from '@care-giver-site/services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-const mockReceiverService = { currentReceiverId: 'r1', addEvent: jest.fn() };
+const mockReceiverService = { currentReceiverId: 'r1', addEvent: jest.fn().mockResolvedValue({ subscribe: jest.fn() }) };
 const mockAuthService = { getCurrentUserId: jest.fn().mockResolvedValue('u1') };
 const mockAlertService = { show: jest.fn() };
 
@@ -46,13 +44,26 @@ describe('EventFormModalComponent', () => {
     expect(component.selectedEventTypes).toEqual(['Medication']);
   });
 
-  it('should emit showChange(false) and submitted when submitEvent is called', async () => {
+  it('should emit showChange(false) when submitEvent is called with no event types', async () => {
     const showChangeSpy = jest.spyOn(component.showChange, 'emit');
     const submittedSpy = jest.spyOn(component.submitted, 'emit');
     component.selectedEventTypes = [];
     await component.submitEvent();
     expect(showChangeSpy).toHaveBeenCalledWith(false);
+    expect(submittedSpy).not.toHaveBeenCalled();
+  });
+
+  it('should emit submitted and showChange(false) when submitEvent succeeds', async () => {
+    const showChangeSpy = jest.spyOn(component.showChange, 'emit');
+    const submittedSpy = jest.spyOn(component.submitted, 'emit');
+    component.eventTypes = [
+      { type: 'Medication', icon: '', color: { primary: '', secondary: '' }, hasQuickAdd: false },
+    ];
+    component.selectedEventTypes = ['Medication'];
+    component.inputData = { Medication: {} };
+    await component.submitEvent();
     expect(submittedSpy).toHaveBeenCalled();
+    expect(showChangeSpy).toHaveBeenCalledWith(false);
   });
 
   it('should emit showChange(false) when close() is called', () => {

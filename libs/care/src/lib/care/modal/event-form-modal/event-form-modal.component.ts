@@ -45,12 +45,6 @@ export class EventFormModalComponent implements OnChanges {
   timeValue: Date | null = null;
   noteValue?: string;
 
-  private currentUserId = '';
-
-  constructor() {
-    this.authService.getCurrentUserId().then(id => (this.currentUserId = id));
-  }
-
   ngOnChanges(changes: SimpleChanges) {
     if (changes['show'] && this.show) {
       this.reset();
@@ -70,6 +64,10 @@ export class EventFormModalComponent implements OnChanges {
 
   onEventTypeChange(types: string[]) {
     this.selectedEventTypes = types;
+    const typeSet = new Set(types);
+    for (const key of Object.keys(this.inputData)) {
+      if (!typeSet.has(key)) delete this.inputData[key];
+    }
     for (const t of types) {
       if (!this.inputData[t]) this.inputData[t] = {};
     }
@@ -80,6 +78,8 @@ export class EventFormModalComponent implements OnChanges {
   }
 
   async submitEvent() {
+    const currentUserId = await this.authService.getCurrentUserId();
+
     let startTime: string;
     if (this.dateValue && this.timeValue) {
       const combined = new Date(this.dateValue);
@@ -89,11 +89,14 @@ export class EventFormModalComponent implements OnChanges {
       startTime = new Date().toISOString();
     }
 
-    for (const type of this.selectedEventTypes) {
-      await this.addEvent(type, startTime, this.inputData[type] ?? {}, this.noteValue);
-    }
+    const results = await Promise.all(
+      this.selectedEventTypes.map(type =>
+        this.addEvent(type, startTime, this.inputData[type] ?? {}, this.noteValue, currentUserId)
+      )
+    );
+    const anySucceeded = results.some(r => r);
+    if (anySucceeded) this.submitted.emit();
     this.close();
-    this.submitted.emit();
   }
 
   close() {
@@ -105,10 +108,11 @@ export class EventFormModalComponent implements OnChanges {
     type: string,
     startTime: string,
     fields: { [k: string]: string },
-    note?: string,
-  ) {
+    note: string | undefined,
+    userId: string,
+  ): Promise<boolean> {
     const meta = this.getMetadata(type);
-    if (!meta) return;
+    if (!meta) return false;
 
     let data: DataPoint[] = [];
     if (meta.fields?.length) {
@@ -125,12 +129,12 @@ export class EventFormModalComponent implements OnChanges {
 
     if (!this.receiverService.currentReceiverId) {
       this.alertService.show('No receiver selected.', AlertType.Failure);
-      return;
+      return false;
     }
 
     const req: EventRequest = {
       receiverId: this.receiverService.currentReceiverId,
-      userId: this.currentUserId,
+      userId,
       startTime,
       endTime,
       type,
@@ -145,8 +149,10 @@ export class EventFormModalComponent implements OnChanges {
         error: () =>
           this.alertService.show('Error logging event. Please try again.', AlertType.Failure),
       });
+      return true;
     } catch {
       this.alertService.show('Error logging event. Please try again.', AlertType.Failure);
+      return false;
     }
   }
 
