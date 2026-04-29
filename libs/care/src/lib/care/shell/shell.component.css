@@ -10,7 +10,7 @@
 
 .shell-sidenav {
   width: 160px;
-  background: #1a237e;
+  background: var(--color-brand-purple);
   border-right: none;
   display: flex;
   flex-direction: column;
