@@ -117,3 +117,5 @@ libs/care/src/lib/care/modal/
 ## Styling
 
 Follow `CLAUDE.md` conventions: use CSS custom properties from `_tokens.scss`, apply shared utility classes from `_utilities.scss` (`.modal-button`, `.btn-primary`, `.btn-secondary`, `.btn-danger`), keep component-specific layout in the component's own CSS file.
+
+Styles must be **mobile-first**: base styles target small screens, with `min-width` media queries layering in desktop enhancements. Both modal components must be fully usable on mobile (touch-friendly tap targets, scrollable body for long forms, no horizontal overflow) and polished on desktop (appropriate max-width, comfortable spacing).
