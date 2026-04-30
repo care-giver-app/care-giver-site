@@ -4,27 +4,12 @@
   </mat-progress-spinner>
   } @else {
   <div class="dashboard-content">
-    <care-upcoming-events [events]="events" [eventTypes]="eventTypes"></care-upcoming-events>
+    <care-upcoming-events [events]="events" [eventTypes]="eventTypes" (eventChange)="onNewEvent()"></care-upcoming-events>
     <care-quick-log [eventTypes]="eventTypes" (newEvent)="onNewEvent()"></care-quick-log>
-    <care-status-monitor [events]="events" [eventTypes]="eventTypes"></care-status-monitor>
-    <care-daily-timeline></care-daily-timeline>
-
-    <care-calendar
-      [events]="events"
-      (eventToDelete)="handleDeleteEvent($event)"
-      (eventToView)="handleViewEvent($event)"
-    ></care-calendar>
+    <care-status-monitor [events]="events" [eventTypes]="eventTypes" (eventChange)="onNewEvent()"></care-status-monitor>
+    <care-daily-timeline (eventChange)="onNewEvent()"></care-daily-timeline>
   </div>
   }
 </div>
-
-@if (selectedEvent){
-<care-event-modal
-  [event]="selectedEvent"
-  [(eventAction)]="eventAction"
-  [(showModal)]="showEventModal"
-  (eventChange)="getLatestEvents()"
-></care-event-modal>
-}
 
 <care-alert></care-alert>

@@ -25,12 +25,12 @@
 </div>
 
 @if (selectedEvent){
-<care-event-modal
+<care-event-view-modal
   [event]="selectedEvent"
-  [(eventAction)]="eventAction"
-  [(showModal)]="showEventModal"
+  [eventTypes]="eventTypes"
+  [(show)]="showEventModal"
   (eventChange)="getLatestEvents()"
-></care-event-modal>
+></care-event-view-modal>
 }
 
 <care-alert></care-alert>

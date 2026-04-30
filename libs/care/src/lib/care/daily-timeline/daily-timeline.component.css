@@ -171,6 +171,17 @@
   flex-shrink: 0;
 }
 
+.clickable-row {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 4px;
+  margin: -4px;
+}
+
+.clickable-row:hover {
+  background: var(--color-surface-hover, #f9f9f9);
+}
+
 .empty-state {
   text-align: center;
   color: #9ca3af;

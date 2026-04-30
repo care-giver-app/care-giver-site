@@ -1,8 +1,7 @@
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Event, EventMetadata } from '@care-giver-site/models';
-import { ModalComponent } from '../modal/modal.component';
-import { MatButtonModule } from '@angular/material/button';
+import { EventViewModalComponent } from '../modal/event-view-modal/event-view-modal.component';
 
 type StatusLevel = 'green' | 'yellow' | 'red' | 'critical';
 
@@ -17,17 +16,17 @@ interface MonitorRow {
 
 @Component({
   selector: 'care-status-monitor',
-  imports: [CommonModule, ModalComponent, MatButtonModule],
+  imports: [CommonModule, EventViewModalComponent],
   templateUrl: './status-monitor.component.html',
   styleUrl: './status-monitor.component.css',
 })
 export class StatusMonitorComponent implements OnInit, OnChanges {
   @Input() events!: Event[];
   @Input() eventTypes!: EventMetadata[];
+  @Output() eventChange = new EventEmitter<void>();
 
   rows: MonitorRow[] = [];
-
-  showModal = false;
+  showEventModal = false;
   selectedRow: MonitorRow | null = null;
 
   ngOnInit(): void { this.buildRows(); }
@@ -77,15 +76,12 @@ export class StatusMonitorComponent implements OnInit, OnChanges {
 
   onRowClick(row: MonitorRow): void {
     this.selectedRow = row;
-    this.showModal = true;
+    this.showEventModal = true;
   }
 
-  closeModal(): void {
-    this.showModal = false;
+  onEventChange(): void {
     this.selectedRow = null;
-  }
-
-  getFieldLabel(meta: EventMetadata, name: string): string {
-    return meta.fields?.find(f => f.name === name)?.label ?? name;
+    this.showEventModal = false;
+    this.eventChange.emit();
   }
 }

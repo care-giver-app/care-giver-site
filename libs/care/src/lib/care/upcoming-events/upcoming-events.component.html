@@ -3,7 +3,10 @@
   <h2 class="upcoming-title">Upcoming Events</h2>
   <ul class="upcoming-list">
     @for (row of rows; track row.event.eventId) {
-    <li class="upcoming-row">
+    <li class="upcoming-row" role="button" tabindex="0"
+        (click)="onRowClick(row.event)"
+        (keydown.enter)="onRowClick(row.event)"
+        (keydown.space)="onRowClick(row.event)">
       <span class="icon-badge" [style.background]="row.meta.color.primary" [style.box-shadow]="'0 0 0 3px ' + row.meta.color.secondary">
         <img class="event-icon" [src]="row.meta.icon" [alt]="row.meta.type" />
       </span>
@@ -18,4 +21,13 @@
     }
   </ul>
 </div>
+}
+
+@if (selectedEvent) {
+  <care-event-view-modal
+    [event]="selectedEvent"
+    [eventTypes]="eventTypes"
+    [(show)]="showEventModal"
+    (eventChange)="onEventChange()"
+  ></care-event-view-modal>
 }

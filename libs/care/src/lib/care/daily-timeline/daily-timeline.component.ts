@@ -1,8 +1,9 @@
-import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReceiverService, EventService, AuthService } from '@care-giver-site/services';
 import { Event, EventMetadata } from '@care-giver-site/models';
+import { EventViewModalComponent } from '../modal/event-view-modal/event-view-modal.component';
 
 export interface TimelineRow {
   meta: EventMetadata;
@@ -13,7 +14,7 @@ export interface TimelineRow {
 
 @Component({
   selector: 'care-daily-timeline',
-  imports: [CommonModule],
+  imports: [CommonModule, EventViewModalComponent],
   templateUrl: './daily-timeline.component.html',
   styleUrl: './daily-timeline.component.css',
 })
@@ -23,10 +24,14 @@ export class DailyTimelineComponent implements OnInit {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
+  @Output() eventChange = new EventEmitter<void>();
+
   selectedDate = new Date();
   rows: TimelineRow[] = [];
   loading = false;
   eventTypes: EventMetadata[] = [];
+  selectedEvent: Event | null = null;
+  showEventModal = false;
 
   private cache = new Map<string, Event[]>();
   private userId = '';
@@ -74,13 +79,25 @@ export class DailyTimelineComponent implements OnInit {
   }
 
   refresh() {
-    const key = `${this.selectedDate.getFullYear()}-${String(this.selectedDate.getMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getDate()).padStart(2, '0')}`;
+    const key = this.dateKey(this.selectedDate);
     this.cache.delete(key);
     this.loadDate(this.selectedDate);
   }
 
+  onRowClick(event: Event): void {
+    this.selectedEvent = event;
+    this.showEventModal = true;
+  }
+
+  onEventChange(): void {
+    this.selectedEvent = null;
+    this.showEventModal = false;
+    this.refresh();
+    this.eventChange.emit();
+  }
+
   async loadDate(date: Date) {
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    const key = this.dateKey(date);
     const cached = this.cache.get(key);
     if (cached) {
       this.rows = this.buildRows(cached);
@@ -142,5 +159,9 @@ export class DailyTimelineComponent implements OnInit {
       return event.data.map(d => d.value).join(' · ');
     }
     return '';
+  }
+
+  private dateKey(date: Date): string {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 }

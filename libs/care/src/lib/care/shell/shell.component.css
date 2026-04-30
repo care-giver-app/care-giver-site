@@ -24,10 +24,13 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: center;
+  padding: 8px;
 }
 
 .sidenav-logo {
-  height: 64px;
+  height: 48px;
+  background-color: white;
+  border-radius: 10%;
 }
 
 .sidenav-nav {
@@ -115,17 +118,4 @@
   bottom: 24px;
   right: 24px;
   z-index: 200;
-}
-
-.quick-log-host {
-  position: absolute;
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.quick-log-host ::ng-deep care-modal {
-  visibility: visible;
-  pointer-events: all;
 }

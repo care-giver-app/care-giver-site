@@ -1,6 +1,7 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Event, EventMetadata } from '@care-giver-site/models';
+import { EventViewModalComponent } from '../modal/event-view-modal/event-view-modal.component';
 
 interface UpcomingRow {
   meta: EventMetadata;
@@ -10,15 +11,18 @@ interface UpcomingRow {
 
 @Component({
   selector: 'care-upcoming-events',
-  imports: [CommonModule],
+  imports: [CommonModule, EventViewModalComponent],
   templateUrl: './upcoming-events.component.html',
   styleUrl: './upcoming-events.component.css',
 })
 export class UpcomingEventsComponent implements OnChanges {
   @Input() events!: Event[];
   @Input() eventTypes!: EventMetadata[];
+  @Output() eventChange = new EventEmitter<void>();
 
   rows: UpcomingRow[] = [];
+  selectedEvent: Event | null = null;
+  showEventModal = false;
 
   ngOnChanges() {
     this.rows = this.buildRows();
@@ -51,5 +55,16 @@ export class UpcomingEventsComponent implements OnChanges {
   getDataSummary(event: Event): string {
     if (!event.data?.length) return '';
     return event.data.map(d => `${d.name}: ${d.value}`).join(' · ');
+  }
+
+  onRowClick(event: Event): void {
+    this.selectedEvent = event;
+    this.showEventModal = true;
+  }
+
+  onEventChange(): void {
+    this.selectedEvent = null;
+    this.showEventModal = false;
+    this.eventChange.emit();
   }
 }

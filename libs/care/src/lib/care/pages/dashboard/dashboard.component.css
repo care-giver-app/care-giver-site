@@ -4,13 +4,19 @@
 }
 
 .dashboard-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  padding: var(--space-md);
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .dashboard-content {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .spinner {

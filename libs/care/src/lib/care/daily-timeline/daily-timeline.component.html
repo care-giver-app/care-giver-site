@@ -32,7 +32,10 @@
   } @else {
     <div class="timeline-body">
       @for (row of rows; track row.event.eventId; let last = $last) {
-        <div class="timeline-row">
+        <div class="timeline-row clickable-row" role="button" tabindex="0"
+             (click)="onRowClick(row.event)"
+             (keydown.enter)="onRowClick(row.event)"
+             (keydown.space)="onRowClick(row.event)">
           <div class="spine-col">
             <div class="icon-badge" [style.background-color]="row.meta.color.primary">
               <img class="event-icon" [src]="row.meta.icon" [alt]="row.meta.type" />
@@ -60,3 +63,12 @@
     </div>
   }
 </div>
+
+@if (selectedEvent) {
+  <care-event-view-modal
+    [event]="selectedEvent"
+    [eventTypes]="eventTypes"
+    [(show)]="showEventModal"
+    (eventChange)="onEventChange()"
+  ></care-event-view-modal>
+}

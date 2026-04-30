@@ -5,13 +5,12 @@ import { RouterModule, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subject, takeUntil } from 'rxjs';
 
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ReceiverSelectionComponent } from '../receiver-selection/receiver-selection.component';
-import { QuickLogComponent } from '../quick-log/quick-log.component';
+import { EventFormModalComponent } from '../modal/event-form-modal/event-form-modal.component';
 import { AuthService, EventService, ReceiverService } from '@care-giver-site/services';
 import { EventMetadata } from '@care-giver-site/models';
 
@@ -25,17 +24,15 @@ import { EventMetadata } from '@care-giver-site/models';
     MatSidenavModule,
     MatIconModule,
     MatButtonModule,
-    MatMenuModule,
     NavbarComponent,
     ReceiverSelectionComponent,
-    QuickLogComponent,
+    EventFormModalComponent,
   ],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.css',
 })
 export class ShellComponent implements OnInit, OnDestroy {
   @ViewChild('sidenav') sidenav!: MatSidenav;
-  @ViewChild(QuickLogComponent) quickLog!: QuickLogComponent;
 
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
@@ -45,6 +42,7 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   isMobile = false;
   eventTypes: EventMetadata[] = [];
+  showFormModal = false;
 
   ngOnInit() {
     this.breakpointObserver
@@ -76,8 +74,8 @@ export class ShellComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLogEventType(meta: EventMetadata) {
-    this.quickLog?.onButtonClick(meta);
+  onFabClick() {
+    this.showFormModal = true;
   }
 
   onNewEvent() {
