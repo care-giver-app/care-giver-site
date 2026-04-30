@@ -1,0 +1,121 @@
+/* libs/care/src/lib/care/shell/shell.component.css */
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.shell-container {
+  height: 100%;
+}
+
+.shell-sidenav {
+  width: 160px;
+  background: var(--color-brand-purple);
+  border-right: none;
+}
+
+.sidenav-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidenav-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+}
+
+.sidenav-logo {
+  height: 48px;
+  background-color: white;
+  border-radius: 10%;
+}
+
+.sidenav-nav {
+  flex: 1;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-item--active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-weight: 700;
+}
+
+.nav-item--active .nav-icon {
+  color: #fff;
+}
+
+.nav-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.nav-label {
+  flex: 1;
+}
+
+.nav-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}
+
+.sidenav-receiver {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidenav-bottom {
+  margin-top: auto;
+}
+
+.sign-out-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.shell-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg-app);
+  overflow-x: clip;
+}
+
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.fab {
+  position: fixed !important;
+  bottom: 24px;
+  right: 24px;
+  z-index: 200;
+}

@@ -1,4 +1,4 @@
-<div class="event-table-card">
+<div class="event-table-card card-lg">
   <div class="event-table-header">
     <h2 class="event-table-title">{{ configs[variant].tableTitle }}</h2>
     <button matButton="filled" type="button" (click)="onLogEvent()">
@@ -121,16 +121,11 @@
               <span class="event-description-entry">
                 <mat-icon>person</mat-icon> {{ row.loggedUser || 'N/A' }}
               </span>
-              @if (row.data) {
+              @for (point of row.dataPoints; track point.name) {
               <span class="event-description-entry">
                 <mat-icon>bar_chart</mat-icon>
-                {{
-                  row.data
-                    ? row.data.value +
-                      ' ' +
-                      (row.meta.data ? row.meta.data.unit : '')
-                    : ''
-                }}
+                <strong>{{ getFieldLabel(row.meta.type, point.name) }}:</strong>
+                {{ point.value }}{{ getFieldUnit(row.meta.type, point.name) ? ' ' + getFieldUnit(row.meta.type, point.name) : '' }}
               </span>
               } @if (row.note) {
               <span class="event-description-entry">
@@ -175,96 +170,9 @@
   }
 </div>
 
-<care-modal [show]="showModal" [header]="'Add Event'" (close)="closeModal()">
-  <div modal-body>
-    <mat-form-field class="modal-full-width">
-      <mat-label>Type</mat-label>
-      <mat-select
-        multiple
-        id="eventTypeSelect"
-        [(ngModel)]="selectedEventTypes"
-        (ngModelChange)="getMetadata($event)"
-        class="form-control"
-      >
-        @for (type of eventTypes; track type) {
-        <mat-option [value]="type.type">{{ type.type }}</mat-option>
-        }
-      </mat-select>
-      <mat-button
-        mat-icon-button
-        matSuffix
-        aria-label="Clear"
-        *ngIf="selectedEventTypes.length > 0"
-        (click)="selectedEventTypes = []"
-      >
-        <mat-icon>close</mat-icon>
-      </mat-button>
-    </mat-form-field>
-    <mat-form-field class="modal-full-width">
-      <mat-label>Date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="datePicker"
-        [(ngModel)]="dateValue"
-        placeholder="MM/DD/YYYY"
-        class="form-control"
-      />
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="datePicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #datePicker> </mat-datepicker>
-    </mat-form-field>
-    <mat-form-field class="modal-full-width">
-      <mat-label>Time</mat-label>
-      <input
-        matInput
-        [matTimepicker]="timePicker"
-        [(ngModel)]="timeValue"
-        placeholder="HH:MM"
-        class="form-control"
-      />
-      <mat-timepicker-toggle matIconSuffix [for]="timePicker" />
-      <mat-timepicker #timePicker interval="10min"></mat-timepicker>
-    </mat-form-field>
-    @for (type of selectedEventTypes; track type) { @let meta =
-    getMetadata(type); @if (meta && meta.data) {
-    <mat-form-field class="modal-full-width">
-      <mat-label>{{ meta.data.name }}</mat-label>
-      <input
-        matInput
-        id="dataInput"
-        [(ngModel)]="inputData[type]"
-        type="number"
-        placeholder="Enter {{ meta.data.name }} ({{ meta.data.unit }})"
-        class="form-control"
-      />
-    </mat-form-field>
-    } }
-    <mat-form-field class="modal-full-width">
-      <mat-label>Optional Note</mat-label>
-      <textarea
-        matInput
-        id="dataInput"
-        [(ngModel)]="noteValue"
-        placeholder="Enter an optional note"
-        class="form-control"
-        maxlength="200"
-        rows="4"
-      ></textarea>
-    </mat-form-field>
-  </div>
-  <div modal-footer>
-    <button matButton="filled" class="modal-button" (click)="submitEvent()">
-      @if (selectedEventTypes.length > 1) { Add Events } @else { Add Event }
-    </button>
-    <button
-      matButton="filled"
-      class="secondary-button modal-button"
-      (click)="closeModal()"
-    >
-      Cancel
-    </button>
-  </div>
-</care-modal>
+<care-event-form-modal
+  [eventTypes]="eventTypes"
+  [initialTypes]="initialTypesForModal"
+  [(show)]="showFormModal"
+  (submitted)="newEvent.emit()"
+></care-event-form-modal>

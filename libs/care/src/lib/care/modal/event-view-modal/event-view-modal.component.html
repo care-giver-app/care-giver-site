@@ -1,0 +1,154 @@
+<care-modal [show]="show" [header]="modalHeader" (close)="close()">
+  <div modal-body class="view-modal-body">
+    @switch (state) {
+      @case ('view') {
+        <div class="detail-row"><strong>Event:</strong> {{ event.type }}</div>
+        <div class="detail-row"><strong>Logged By:</strong> {{ loggedUser }}</div>
+        <div class="detail-row"><strong>Time:</strong> {{ readableTimestamp }}</div>
+        @for (point of dataPoints; track point.name) {
+          <div class="detail-row">
+            <strong>{{ getFieldLabel(point.name) }}:</strong>
+            {{ point.value }}{{ getFieldUnit(point.name) ? ' ' + getFieldUnit(point.name) : '' }}
+          </div>
+        }
+        @if (event.note) {
+          <div class="detail-row"><strong>Note:</strong> {{ event.note }}</div>
+        }
+      }
+
+      @case ('edit') {
+        <mat-form-field class="modal-full-width">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="editType" (ngModelChange)="onEditTypeChange()">
+            @for (t of eventTypes; track t.type) {
+              <mat-option [value]="t.type">{{ t.type }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="modal-full-width">
+          <mat-label>Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="editDatePicker"
+            [(ngModel)]="editDate"
+            placeholder="MM/DD/YYYY"
+          />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="editDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #editDatePicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="modal-full-width">
+          <mat-label>Time</mat-label>
+          <input
+            matInput
+            [matTimepicker]="editTimePicker"
+            [(ngModel)]="editTime"
+            placeholder="HH:MM"
+          />
+          <mat-timepicker-toggle matIconSuffix [for]="editTimePicker"></mat-timepicker-toggle>
+          <mat-timepicker #editTimePicker interval="10min"></mat-timepicker>
+        </mat-form-field>
+
+        @let editFields = getMetadata(editType)?.fields ?? [];
+        @let editDataConfig = getMetadata(editType)?.data;
+        @if (editFields.length > 0) {
+          @for (field of editFields; track field.name) {
+            @switch (field.inputType) {
+              @case ('textarea') {
+                <mat-form-field class="modal-full-width">
+                  <mat-label>{{ field.label }}</mat-label>
+                  <textarea
+                    matInput
+                    [(ngModel)]="editInputData[field.name]"
+                    [placeholder]="field.placeholder"
+                    [required]="field.required"
+                    rows="3"
+                  ></textarea>
+                </mat-form-field>
+              }
+              @case ('date') {
+                <mat-form-field class="modal-full-width">
+                  <mat-label>{{ field.label }}</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="editFieldDatePicker"
+                    [(ngModel)]="editInputData[field.name]"
+                    [placeholder]="field.placeholder"
+                  />
+                  <mat-datepicker-toggle matIconSuffix [for]="editFieldDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #editFieldDatePicker></mat-datepicker>
+                </mat-form-field>
+              }
+              @default {
+                <mat-form-field class="modal-full-width">
+                  <mat-label>{{ field.label }}</mat-label>
+                  <input
+                    matInput
+                    [(ngModel)]="editInputData[field.name]"
+                    [type]="field.inputType"
+                    [placeholder]="field.placeholder"
+                    [required]="field.required"
+                  />
+                </mat-form-field>
+              }
+            }
+          }
+        } @else if (editDataConfig) {
+          <mat-form-field class="modal-full-width">
+            <mat-label>{{ editDataConfig.name }}</mat-label>
+            <input
+              matInput
+              [(ngModel)]="editInputData['value']"
+              type="number"
+              [placeholder]="'Enter ' + editDataConfig.name + ' (' + editDataConfig.unit + ')'"
+            />
+          </mat-form-field>
+        }
+
+        <mat-form-field class="modal-full-width">
+          <mat-label>Optional Note</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="editNote"
+            placeholder="Enter an optional note"
+            maxlength="200"
+            rows="3"
+          ></textarea>
+        </mat-form-field>
+      }
+
+      @case ('delete-confirm') {
+        <p class="confirm-message">Are you sure you want to delete this event?</p>
+        <div class="detail-row"><strong>Event:</strong> {{ event.type }}</div>
+        <div class="detail-row"><strong>Time:</strong> {{ readableTimestamp }}</div>
+      }
+    }
+  </div>
+
+  <div modal-footer>
+    @switch (state) {
+      @case ('view') {
+        <button matButton="filled" class="modal-button" (click)="startEdit()">Edit</button>
+        <button matButton="filled" class="btn-danger modal-button" (click)="startDeleteConfirm()">
+          Delete
+        </button>
+      }
+      @case ('edit') {
+        <button matButton="filled" class="modal-button" (click)="saveEdit()">Save</button>
+        <button matButton="filled" class="btn-secondary modal-button" (click)="cancelAction()">
+          Cancel
+        </button>
+      }
+      @case ('delete-confirm') {
+        <button matButton="filled" class="btn-danger modal-button" (click)="confirmDelete()">
+          Confirm Delete
+        </button>
+        <button matButton="filled" class="btn-secondary modal-button" (click)="cancelAction()">
+          Cancel
+        </button>
+      }
+    }
+  </div>
+</care-modal>

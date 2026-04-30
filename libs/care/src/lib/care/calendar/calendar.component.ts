@@ -53,7 +53,8 @@ export class CareCalendarComponent implements OnChanges, OnInit {
         const eventColor = this.eventService.getEventColor(event.type);
 
         const calEvent: CalendarEvent = {
-          start: new Date(event.timestamp),
+          start: new Date(event.startTime),
+          end: new Date(event.endTime),
           title: event.type,
           color: {
             primary: eventColor.primary,
@@ -61,14 +62,6 @@ export class CareCalendarComponent implements OnChanges, OnInit {
             secondaryText: eventColor.primary,
           },
           id: event.eventId,
-        }
-
-        const unit = this.eventService.getDataUnit(event);
-        if (unit === "Mins") {
-          const end = new Date(event.timestamp) 
-          const duration = parseInt(event.data[0].value)
-          end.setMinutes(end.getMinutes() + duration);
-          calEvent.end = end;
         }
 
         this.calendarEvents.push(calEvent);

@@ -1,15 +1,19 @@
+// libs/services/src/lib/receiver/receiver.service.ts
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Event, Receiver, EventRequest } from '@care-giver-site/models';
+import { Event, Receiver, EventRequest, UpdateEventRequest } from '@care-giver-site/models';
 import { AuthService } from '../auth/auth.service';
-import { Observable, firstValueFrom } from 'rxjs';
-import { formatRFC3339 } from 'date-fns'
+import { Observable, firstValueFrom, Subject } from 'rxjs';
+import { formatRFC3339 } from 'date-fns';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ReceiverService {
     currentReceiverId: string | undefined;
+
+    readonly receiverChanged$ = new Subject<void>();
+    readonly eventAdded$ = new Subject<void>();
 
     constructor(
         private http: HttpClient,
@@ -21,16 +25,21 @@ export class ReceiverService {
         }
     }
 
+    setCurrentReceiver(receiverId: string) {
+        this.currentReceiverId = receiverId;
+        localStorage.setItem('currentReceiverId', receiverId);
+        this.receiverChanged$.next();
+    }
+
+    notifyEventAdded() {
+        this.eventAdded$.next();
+    }
+
     async getReceivers(userId: string, receiverIds: string[]): Promise<Receiver[]> {
         const receiverPromises = receiverIds.map(id =>
             this.getReceiver(id, userId).then(obs => firstValueFrom(obs))
         );
         return Promise.all(receiverPromises);
-    }
-
-    setCurrentReceiver(receiverId: string) {
-        this.currentReceiverId = receiverId;
-        localStorage.setItem('currentReceiverId', receiverId);
     }
 
     getReceiver(receiverId: string, userId: string): Promise<Observable<Receiver>> {
@@ -39,7 +48,6 @@ export class ReceiverService {
         if (cached) {
             try {
                 const receiver: Receiver = JSON.parse(cached);
-                // Return an Observable that emits the cached value
                 return Promise.resolve(new Observable<Receiver>(subscriber => {
                     subscriber.next(receiver);
                     subscriber.complete();
@@ -49,11 +57,9 @@ export class ReceiverService {
             }
         }
         return this.authService.getBearerToken().then((token) => {
-            const headers: HttpHeaders = new HttpHeaders({
-                'Authorization': token,
-            });
+            const headers: HttpHeaders = new HttpHeaders({ 'Authorization': token });
             const url = `/receiver/${encodeURIComponent(receiverId)}?userId=${encodeURIComponent(userId)}`;
-            const obs = this.http.get<Receiver>(url, { headers: headers });
+            const obs = this.http.get<Receiver>(url, { headers });
             obs.subscribe({
                 next: (receiver) => {
                     localStorage.setItem(cacheKey, JSON.stringify(receiver));
@@ -63,44 +69,54 @@ export class ReceiverService {
         });
     }
 
-    getReceiverEvents(receiverId: string, userId: string): Promise<Observable<Event[]>> {
+    getReceiverEvents(receiverId: string, userId: string, startTime?: string, endTime?: string): Promise<Observable<Event[]>> {
         return this.authService.getBearerToken().then((token) => {
-            const headers: HttpHeaders = new HttpHeaders({
-                'Authorization': token,
-            });
-
-            const url = `/events/${encodeURIComponent(receiverId)}?userId=${encodeURIComponent(userId)}`;
-            return this.http.get<Event[]>(url, { headers: headers });
-        })
+            const headers: HttpHeaders = new HttpHeaders({ 'Authorization': token });
+            let url = `/events/${encodeURIComponent(receiverId)}?userId=${encodeURIComponent(userId)}`;
+            if (startTime && endTime) {
+                url += `&startTime=${encodeURIComponent(startTime)}&endTime=${encodeURIComponent(endTime)}`;
+            }
+            return this.http.get<Event[]>(url, { headers });
+        });
     }
 
     addEvent(eventRequest: EventRequest): Promise<Observable<any>> {
         return this.authService.getBearerToken().then((token) => {
-            const headers: HttpHeaders = new HttpHeaders({
-                'Authorization': token,
-            });
-
-            eventRequest.timestamp = formatRFC3339(eventRequest.timestamp);
-
-            return this.http.post(`/event`, eventRequest, { headers: headers });
-        })
+            const headers: HttpHeaders = new HttpHeaders({ 'Authorization': token });
+            eventRequest.startTime = formatRFC3339(eventRequest.startTime);
+            eventRequest.endTime = formatRFC3339(eventRequest.endTime);
+            return this.http.post(`/event`, eventRequest, { headers });
+        });
     }
 
     deleteEvent(receiverId: string, userId: string, eventId: string): Promise<Observable<any>> {
         return this.authService.getBearerToken().then((token) => {
-            const headers: HttpHeaders = new HttpHeaders({
-                'Authorization': token,
-            });
-
+            const headers: HttpHeaders = new HttpHeaders({ 'Authorization': token });
             const url = `/event/${encodeURIComponent(eventId)}?userId=${encodeURIComponent(userId)}&receiverId=${encodeURIComponent(receiverId)}`;
+            return this.http.delete(url, { headers });
+        });
+    }
 
-            return this.http.delete(url, { headers: headers });
-        })
+    updateEvent(request: UpdateEventRequest): Promise<Observable<any>> {
+        return this.authService.getBearerToken().then((token) => {
+            const headers: HttpHeaders = new HttpHeaders({ 'Authorization': token });
+            const url = `/event/${encodeURIComponent(request.eventId)}`;
+            const body = {
+                receiverId: request.receiverId,
+                userId: request.userId,
+                startTime: formatRFC3339(request.startTime),
+                endTime: formatRFC3339(request.endTime),
+                type: request.type,
+                data: request.data,
+                note: request.note,
+            };
+            return this.http.put(url, body, { headers });
+        });
     }
 
     getEventsOfType(event: Event[], type: string): Event[] {
         return event
             .filter(e => e.type === type)
-            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+            .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
     }
 }

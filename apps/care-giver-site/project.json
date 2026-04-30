@@ -28,7 +28,10 @@
             "output": "assets"
           }
         ],
-        "styles": ["apps/care-giver-site/src/styles.scss"],
+        "styles": [
+          "libs/ui-tokens/src/styles/index.scss",
+          "apps/care-giver-site/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {

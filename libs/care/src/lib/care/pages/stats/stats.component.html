@@ -1,9 +1,4 @@
 <div class="care-body">
-  <care-navbar></care-navbar>
-  <care-receiver-selection
-    (receiverChange)="onReceiverChange()"
-  ></care-receiver-selection>
-
   <care-event-table
     [variant]="'all_events'"
     [events]="events"
@@ -30,12 +25,12 @@
 </div>
 
 @if (selectedEvent){
-<care-event-modal
+<care-event-view-modal
   [event]="selectedEvent"
-  [(eventAction)]="eventAction"
-  [(showModal)]="showEventModal"
+  [eventTypes]="eventTypes"
+  [(show)]="showEventModal"
   (eventChange)="getLatestEvents()"
-></care-event-modal>
+></care-event-view-modal>
 }
 
 <care-alert></care-alert>

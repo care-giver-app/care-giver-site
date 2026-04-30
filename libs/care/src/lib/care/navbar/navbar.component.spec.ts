@@ -1,13 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from './navbar.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('CommonComponent', () => {
+describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavbarComponent],
+      imports: [NavbarComponent, HttpClientTestingModule, RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavbarComponent);
@@ -17,5 +19,17 @@ describe('CommonComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('emits menuToggle when toggleMenu() is called', () => {
+    let emitted = false;
+    component.menuToggle.subscribe(() => emitted = true);
+    component.toggleMenu();
+    expect(emitted).toBe(true);
+  });
+
+  it('does not render nav links', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.navbar-links')).toBeNull();
   });
 });

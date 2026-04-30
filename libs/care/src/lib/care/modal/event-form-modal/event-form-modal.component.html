@@ -1,0 +1,126 @@
+<care-modal
+  [show]="show"
+  [header]="selectedEventTypes.length > 1 ? 'Add Events' : 'Add Event'"
+  (close)="close()"
+>
+  <div modal-body class="form-body">
+    <mat-form-field class="modal-full-width">
+      <mat-label>Type</mat-label>
+      <mat-select
+        multiple
+        [(ngModel)]="selectedEventTypes"
+        (ngModelChange)="onEventTypeChange($event)"
+      >
+        @for (type of eventTypes; track type.type) {
+          <mat-option [value]="type.type">{{ type.type }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="modal-full-width">
+      <mat-label>Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        [(ngModel)]="dateValue"
+        placeholder="MM/DD/YYYY"
+      />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="modal-full-width">
+      <mat-label>Time</mat-label>
+      <input
+        matInput
+        [matTimepicker]="timePicker"
+        [(ngModel)]="timeValue"
+        placeholder="HH:MM"
+      />
+      <mat-timepicker-toggle matIconSuffix [for]="timePicker"></mat-timepicker-toggle>
+      <mat-timepicker #timePicker interval="10min"></mat-timepicker>
+    </mat-form-field>
+
+    @for (type of selectedEventTypes; track type) {
+      @let fields = getMetadata(type)?.fields ?? [];
+      @let dataConfig = getMetadata(type)?.data;
+      @if (selectedEventTypes.length > 1) {
+        <p class="type-section-label">{{ type }}</p>
+      }
+      @if (fields.length > 0) {
+        @for (field of fields; track field.name) {
+          @switch (field.inputType) {
+            @case ('textarea') {
+              <mat-form-field class="modal-full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <textarea
+                  matInput
+                  [(ngModel)]="inputData[type][field.name]"
+                  [placeholder]="field.placeholder"
+                  [required]="field.required"
+                  rows="3"
+                ></textarea>
+              </mat-form-field>
+            }
+            @case ('date') {
+              <mat-form-field class="modal-full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="fieldDatePicker"
+                  [(ngModel)]="inputData[type][field.name]"
+                  [placeholder]="field.placeholder"
+                />
+                <mat-datepicker-toggle matIconSuffix [for]="fieldDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #fieldDatePicker></mat-datepicker>
+              </mat-form-field>
+            }
+            @default {
+              <mat-form-field class="modal-full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="inputData[type][field.name]"
+                  [type]="field.inputType"
+                  [placeholder]="field.placeholder"
+                  [required]="field.required"
+                />
+              </mat-form-field>
+            }
+          }
+        }
+      } @else if (dataConfig) {
+        <mat-form-field class="modal-full-width">
+          <mat-label>{{ dataConfig.name }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="inputData[type]['value']"
+            type="number"
+            [placeholder]="'Enter ' + dataConfig.name + ' (' + dataConfig.unit + ')'"
+          />
+        </mat-form-field>
+      }
+    }
+
+    <mat-form-field class="modal-full-width">
+      <mat-label>Optional Note</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="noteValue"
+        placeholder="Enter an optional note"
+        maxlength="200"
+        rows="3"
+      ></textarea>
+    </mat-form-field>
+  </div>
+
+  <div modal-footer>
+    <button matButton="filled" class="modal-button" (click)="submitEvent()">
+      @if (selectedEventTypes.length > 1) { Add Events } @else { Add Event }
+    </button>
+    <button matButton="filled" class="btn-secondary modal-button" (click)="close()">
+      Cancel
+    </button>
+  </div>
+</care-modal>

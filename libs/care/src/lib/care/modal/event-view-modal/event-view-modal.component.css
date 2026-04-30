@@ -1,0 +1,25 @@
+.modal-full-width {
+  width: 100%;
+}
+
+/* Mobile-first: scrollable body for edit form */
+.view-modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.detail-row {
+  margin-bottom: var(--space-sm);
+  line-height: 1.5;
+}
+
+.confirm-message {
+  margin: 0 0 var(--space-md);
+  color: var(--color-text-primary);
+}
+
+@media (min-width: 600px) {
+  .view-modal-body {
+    max-height: 70vh;
+  }
+}

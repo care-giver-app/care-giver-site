@@ -1,3 +1,4 @@
+/* libs/care/src/lib/care/navbar/navbar.component.css */
 .navbar {
   position: sticky;
   top: 0;
@@ -9,27 +10,36 @@
 .navbar-content {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   width: 100%;
+  height: 56px;
+  padding: 0 8px;
+}
+
+.hamburger {
+  display: flex;
 }
 
 .navbar-logo {
   display: flex;
   align-items: center;
+  margin-left: 4px;
 }
 
 .navbar-logo img {
-  height: 70px;
+  height: 44px;
 }
 
-.navbar-links {
-  display: flex;
-  align-items: center;
-  margin-left: 0.25rem;
+.navbar-spacer {
+  flex: 1;
 }
 
-.navbar-user {
-  margin-left: auto;
-  padding-right: 1rem;
-  position: relative;
+/* Hide hamburger and logo on desktop — sidenav is always visible */
+@media (min-width: 768px) {
+  .hamburger {
+    display: none;
+  }
+
+  .navbar-logo {
+    display: none;
+  }
 }

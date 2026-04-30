@@ -1,39 +1,12 @@
+<!-- libs/care/src/lib/care/navbar/navbar.component.html -->
 <nav class="navbar">
   <div class="navbar-content">
-    <!-- Logo Section -->
-    <div class="navbar-logo">
-      <a href="/">
-        <img src="assets/caretosher-logo.png" alt="Logo" />
-      </a>
-    </div>
-    <!-- Navigation Links -->
-    <div class="navbar-links">
-      <a matButton href="/" class="nav-link"><strong>Dashboard</strong></a>
-      <a matButton href="/stats" class="nav-link"><strong>Stats</strong></a>
-      <a matButton href="/submit-feedback" class="nav-link"
-        ><strong>Feedback</strong></a
-      >
-    </div>
-    <!-- User Section -->
-    <div class="navbar-user">
-      <button matIconButton [matMenuTriggerFor]="userMenu">
-        <span style="display: inline-flex; align-items: center; gap: 8px">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 0 24 24"
-            width="24px"
-            fill="#000"
-          >
-            <path
-              d="M12 12c2.7 0 8 1.34 8 4v2H4v-2c0-2.66 5.3-4 8-4zm0-2c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"
-            />
-          </svg>
-        </span>
-      </button>
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item (click)="signOut()">Sign Out</button>
-      </mat-menu>
-    </div>
+    <button class="hamburger" matIconButton (click)="toggleMenu()" aria-label="Toggle navigation">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a class="navbar-logo" routerLink="/">
+      <img src="assets/caretosher-logo.png" alt="CareToSher" />
+    </a>
+    <div class="navbar-spacer"></div>
   </div>
 </nav>
