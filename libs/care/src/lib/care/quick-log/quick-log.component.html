@@ -1,0 +1,26 @@
+<div class="quick-log-card card">
+  <h2 class="quick-log-title">Quick Log</h2>
+
+  <div class="quick-log-grid">
+    @for (meta of quickAddTypes; track meta.type) {
+      <button
+        class="quick-log-btn"
+        type="button"
+        [style.background-color]="meta.color.secondary"
+        [style.border-color]="meta.color.primary"
+        (click)="onButtonClick(meta)"
+        [title]="meta.type"
+      >
+        <img class="quick-log-icon" [src]="meta.icon" [alt]="meta.type" />
+        <span class="quick-log-label">{{ meta.type }}</span>
+      </button>
+    }
+  </div>
+</div>
+
+<care-event-form-modal
+  [eventTypes]="eventTypes"
+  [initialTypes]="initialTypes"
+  [(show)]="showFormModal"
+  (submitted)="newEvent.emit()"
+></care-event-form-modal>

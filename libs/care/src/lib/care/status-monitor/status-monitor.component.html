@@ -1,0 +1,37 @@
+<div class="status-monitor-card card-lg">
+  <h2 class="status-monitor-title">Status Monitor</h2>
+
+  @if (rows.length === 0) {
+    <p class="status-monitor-empty">No monitored event types with logged data.</p>
+  }
+
+  <ul class="status-monitor-list">
+    @for (row of rows; track row.meta.type) {
+      <li class="status-monitor-row" (click)="onRowClick(row)" role="button" tabindex="0"
+          (keydown.enter)="onRowClick(row)" (keydown.space)="onRowClick(row)">
+        <div class="icon-badge" [style.background]="row.meta.color.primary">
+          <img [src]="row.meta.icon" [alt]="row.meta.type" class="icon-badge-img" />
+        </div>
+        <div class="row-info">
+          <span class="row-type-name">{{ row.meta.type }}</span>
+          <span class="row-relative-time" [title]="row.absoluteTime">{{ row.relativeTime }}</span>
+          @if (row.meta.monitor?.showLastValue && row.lastEvent.data?.length) {
+            <span class="row-last-value">{{ row.lastEvent.data[0].value }} {{ row.meta.data?.unit }}</span>
+          }
+        </div>
+        @if (row.meta.monitor?.alertThresholds) {
+          <div class="status-dot" [ngClass]="'status-dot--' + row.status"></div>
+        }
+      </li>
+    }
+  </ul>
+</div>
+
+@if (selectedRow) {
+  <care-event-view-modal
+    [event]="selectedRow.lastEvent"
+    [eventTypes]="eventTypes"
+    [(show)]="showEventModal"
+    (eventChange)="onEventChange()"
+  ></care-event-view-modal>
+}

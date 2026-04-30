@@ -1,35 +1,15 @@
 <div class="care-body">
-  <care-navbar></care-navbar>
-  <care-receiver-selection
-    (receiverChange)="onReceiverChange()"
-  ></care-receiver-selection>
-
   @if (showSpinner) {
   <mat-progress-spinner class="spinner" mode="indeterminate">
   </mat-progress-spinner>
   } @else {
-  <care-event-table
-    [events]="events"
-    [eventTypes]="eventTypes"
-    (newEvent)="getLatestEvents()"
-    (eventToDelete)="handleDeleteEvent($event)"
-  ></care-event-table>
-
-  <care-calendar
-    [events]="events"
-    (eventToDelete)="handleDeleteEvent($event)"
-    (eventToView)="handleViewEvent($event)"
-  ></care-calendar>
+  <div class="dashboard-content">
+    <care-upcoming-events [events]="events" [eventTypes]="eventTypes" (eventChange)="onNewEvent()"></care-upcoming-events>
+    <care-quick-log [eventTypes]="eventTypes" (newEvent)="onNewEvent()"></care-quick-log>
+    <care-status-monitor [events]="events" [eventTypes]="eventTypes" (eventChange)="onNewEvent()"></care-status-monitor>
+    <care-daily-timeline (eventChange)="onNewEvent()"></care-daily-timeline>
+  </div>
   }
 </div>
-
-@if (selectedEvent){
-<care-event-modal
-  [event]="selectedEvent"
-  [(eventAction)]="eventAction"
-  [(showModal)]="showEventModal"
-  (eventChange)="getLatestEvents()"
-></care-event-modal>
-}
 
 <care-alert></care-alert>

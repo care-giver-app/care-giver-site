@@ -1,0 +1,24 @@
+.modal-full-width {
+  width: 100%;
+}
+
+/* Mobile-first: scrollable body for tall forms */
+.form-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.type-section-label {
+  font-weight: var(--font-weight-medium);
+  margin: var(--space-sm) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (min-width: 600px) {
+  .form-body {
+    max-height: 70vh;
+  }
+}

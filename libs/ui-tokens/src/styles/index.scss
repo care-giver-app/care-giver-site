@@ -1,0 +1,5 @@
+// Global style entry point — registers CSS custom properties and utility classes.
+// These partials emit CSS rules only (no SCSS variables/mixins).
+// Do not @use this file from component SCSS — import via angular.json styles array instead.
+@use 'tokens';
+@use 'utilities';
