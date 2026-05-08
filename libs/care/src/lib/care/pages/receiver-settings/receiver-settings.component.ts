@@ -68,7 +68,7 @@ export class ReceiverSettingsComponent implements OnInit, OnDestroy {
 
       const [relationships, careGivers, receiverObs] = await Promise.all([
         this.userService.getUserRelationships(this.userId),
-        this.userService.getCareGiversForReceiver(receiverId),
+        this.userService.getCareGiversForReceiver(receiverId, this.userId),
         this.receiverService.getReceiver(receiverId, this.userId),
       ]);
 
@@ -100,7 +100,7 @@ export class ReceiverSettingsComponent implements OnInit, OnDestroy {
       const result = await this.userService.addCareGiver(this.userId, receiverId, email);
       if (result) {
         this.alertService.show('Caregiver added successfully.', AlertType.Success);
-        this.careGivers = await this.userService.getCareGiversForReceiver(receiverId);
+        this.careGivers = await this.userService.getCareGiversForReceiver(receiverId, this.userId);
       } else {
         this.alertService.show('Failed to add caregiver. Please try again.', AlertType.Failure);
         this.careGiverList.reopenModal();

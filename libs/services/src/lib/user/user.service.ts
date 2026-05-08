@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -121,13 +121,14 @@ export class UserService {
         }
     }
 
-    async getCareGiversForReceiver(receiverId: string): Promise<CareGiver[]> {
+    async getCareGiversForReceiver(receiverId: string, userId: string): Promise<CareGiver[]> {
         const token = await this.authService.getBearerToken();
         const headers = new HttpHeaders({ 'Authorization': token });
+        const params = new HttpParams().set('userId', userId);
         const response = await firstValueFrom(
             this.http.get<{ careGivers: CareGiver[] }>(
                 `/receiver/care-givers/${encodeURIComponent(receiverId)}`,
-                { headers }
+                { headers, params }
             )
         );
         return response.careGivers ?? [];

@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync, flushMicrotasks } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
@@ -36,11 +36,11 @@ describe('UserService.getCareGiversForReceiver', () => {
     ];
 
     let result: CareGiver[] | undefined;
-    service.getCareGiversForReceiver('Receiver#123').then(r => (result = r));
+    service.getCareGiversForReceiver('Receiver#123', 'User#123').then(r => (result = r));
 
     flushMicrotasks();
 
-    const req = httpMock.expectOne('/receiver/care-givers/Receiver%23123');
+    const req = httpMock.expectOne('/receiver/care-givers/Receiver%23123?userId=User%23123');
     expect(req.request.method).toBe('GET');
     req.flush({ careGivers: mockCareGivers, status: 'success' });
 
@@ -50,11 +50,11 @@ describe('UserService.getCareGiversForReceiver', () => {
 
   it('throws on error', fakeAsync(() => {
     let caughtError: unknown;
-    service.getCareGiversForReceiver('Receiver#123').catch(err => (caughtError = err));
+    service.getCareGiversForReceiver('Receiver#123', 'User#123').catch(err => (caughtError = err));
 
     flushMicrotasks();
 
-    const req = httpMock.expectOne('/receiver/care-givers/Receiver%23123');
+    const req = httpMock.expectOne('/receiver/care-givers/Receiver%23123?userId=User%23123');
     req.error(new ProgressEvent('error'));
 
     flushMicrotasks();
