@@ -1,9 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { firstValueFrom } from 'rxjs';
+import { Subject, takeUntil, firstValueFrom } from 'rxjs';
 
 import { ReceiverService, AuthService, UserService, AlertService } from '@care-giver-site/services';
 import { Receiver, CareGiver, AlertType } from '@care-giver-site/models';
@@ -14,7 +11,6 @@ import { AlertComponent } from '../../alert/alert.component';
 @Component({
   selector: 'lib-receiver-settings',
   imports: [
-    CommonModule,
     MatProgressSpinnerModule,
     ReceiverInfoComponent,
     CareGiverListComponent,
@@ -60,11 +56,12 @@ export class ReceiverSettingsComponent implements OnInit, OnDestroy {
 
   async loadData() {
     const receiverId = this.receiverService.currentReceiverId;
-    if (!receiverId) {
-      return;
-    }
+    if (!receiverId) return;
 
     this.showSpinner = true;
+    this.receiver = undefined;
+    this.isPrimary = false;
+    this.careGivers = [];
 
     try {
       this.userId = await this.authService.getCurrentUserId();
@@ -74,6 +71,9 @@ export class ReceiverSettingsComponent implements OnInit, OnDestroy {
         this.userService.getCareGiversForReceiver(receiverId),
         this.receiverService.getReceiver(receiverId, this.userId),
       ]);
+
+      // Bail if receiver changed while loading
+      if (this.receiverService.currentReceiverId !== receiverId) return;
 
       this.careGivers = careGivers;
 
@@ -103,11 +103,11 @@ export class ReceiverSettingsComponent implements OnInit, OnDestroy {
         this.careGivers = await this.userService.getCareGiversForReceiver(receiverId);
       } else {
         this.alertService.show('Failed to add caregiver. Please try again.', AlertType.Failure);
-        this.careGiverList.showAddModal = true;
+        this.careGiverList.reopenModal();
       }
     } catch {
       this.alertService.show('Failed to add caregiver. Please try again.', AlertType.Failure);
-      this.careGiverList.showAddModal = true;
+      this.careGiverList.reopenModal();
     }
   }
 }

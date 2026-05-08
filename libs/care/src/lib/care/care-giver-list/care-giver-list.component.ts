@@ -27,4 +27,8 @@ export class CareGiverListComponent {
     this.showAddModal = false;
     this.newCareGiverEmail = '';
   }
+
+  reopenModal() {
+    this.showAddModal = true;
+  }
 }
