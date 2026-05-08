@@ -1,0 +1,39 @@
+<div class="card">
+  <div class="list-header">
+    <div class="section-label">Care Team</div>
+    @if (isPrimary) {
+      <button matButton="filled" class="btn-primary add-caregiver-btn" (click)="showAddModal = true">
+        <mat-icon>add</mat-icon> Add Care Giver
+      </button>
+    }
+  </div>
+  <div class="section-divider"></div>
+
+  @for (cg of careGivers; track cg.userId) {
+    <div class="caregiver-row">
+      <span class="caregiver-name">{{ cg.firstName }} {{ cg.lastName }}</span>
+      <span class="badge" [class.badge-primary]="cg.isPrimary" [class.badge-additional]="!cg.isPrimary">
+        {{ cg.isPrimary ? 'PRIMARY' : 'ADDITIONAL' }}
+      </span>
+    </div>
+  }
+</div>
+
+<care-modal
+  [show]="showAddModal"
+  header="Add Additional Care Giver"
+  (close)="showAddModal = false"
+>
+  <div modal-body>
+    <form (ngSubmit)="submitAddCareGiver()" #addCareGiverForm="ngForm">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="newCareGiverEmail" name="careGiverEmail" required />
+      </mat-form-field>
+    </form>
+  </div>
+  <div modal-footer>
+    <button matButton="filled" class="modal-button" (click)="submitAddCareGiver()">Add</button>
+    <button matButton="filled" class="btn-secondary modal-button" (click)="showAddModal = false">Cancel</button>
+  </div>
+</care-modal>
