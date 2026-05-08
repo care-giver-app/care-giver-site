@@ -124,18 +124,13 @@ export class UserService {
     async getCareGiversForReceiver(receiverId: string): Promise<CareGiver[]> {
         const token = await this.authService.getBearerToken();
         const headers = new HttpHeaders({ 'Authorization': token });
-        try {
-            const response = await firstValueFrom(
-                this.http.get<{ careGivers: CareGiver[] }>(
-                    `/receiver/care-givers/${encodeURIComponent(receiverId)}`,
-                    { headers }
-                )
-            );
-            return response.careGivers ?? [];
-        } catch (err) {
-            console.error('Error fetching care givers for receiver:', err);
-            return [];
-        }
+        const response = await firstValueFrom(
+            this.http.get<{ careGivers: CareGiver[] }>(
+                `/receiver/care-givers/${encodeURIComponent(receiverId)}`,
+                { headers }
+            )
+        );
+        return response.careGivers ?? [];
     }
 
     getLoggedUser(userId: string): Promise<string> {

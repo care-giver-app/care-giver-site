@@ -48,9 +48,9 @@ describe('UserService.getCareGiversForReceiver', () => {
     expect(result).toEqual(mockCareGivers);
   }));
 
-  it('returns empty array on error', fakeAsync(() => {
-    let result: CareGiver[] | undefined;
-    service.getCareGiversForReceiver('Receiver#123').then(r => (result = r));
+  it('throws on error', fakeAsync(() => {
+    let caughtError: unknown;
+    service.getCareGiversForReceiver('Receiver#123').catch(err => (caughtError = err));
 
     flushMicrotasks();
 
@@ -58,6 +58,6 @@ describe('UserService.getCareGiversForReceiver', () => {
     req.error(new ProgressEvent('error'));
 
     flushMicrotasks();
-    expect(result).toEqual([]);
+    expect(caughtError).toBeDefined();
   }));
 });

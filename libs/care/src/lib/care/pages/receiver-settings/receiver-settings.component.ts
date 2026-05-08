@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subject } from 'rxjs';
@@ -28,6 +28,8 @@ export class ReceiverSettingsComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private alertService = inject(AlertService);
+
+  @ViewChild(CareGiverListComponent) careGiverList!: CareGiverListComponent;
 
   private destroy$ = new Subject<void>();
 
@@ -101,9 +103,11 @@ export class ReceiverSettingsComponent implements OnInit, OnDestroy {
         this.careGivers = await this.userService.getCareGiversForReceiver(receiverId);
       } else {
         this.alertService.show('Failed to add caregiver. Please try again.', AlertType.Failure);
+        this.careGiverList.showAddModal = true;
       }
     } catch {
       this.alertService.show('Failed to add caregiver. Please try again.', AlertType.Failure);
+      this.careGiverList.showAddModal = true;
     }
   }
 }
