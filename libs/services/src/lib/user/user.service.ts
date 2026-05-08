@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Observable, firstValueFrom } from 'rxjs';
-import { User, Relationships } from '@care-giver-site/models'
+import { User, Relationships, CareGiver } from '@care-giver-site/models'
 
 interface CreateUserResponse {
     userId: string;
@@ -118,6 +118,23 @@ export class UserService {
         } catch (err) {
             console.error('Error adding additional care giver:', err);
             return undefined;
+        }
+    }
+
+    async getCareGiversForReceiver(receiverId: string): Promise<CareGiver[]> {
+        const token = await this.authService.getBearerToken();
+        const headers = new HttpHeaders({ 'Authorization': token });
+        try {
+            const response = await firstValueFrom(
+                this.http.get<{ careGivers: CareGiver[] }>(
+                    `/receiver/care-givers/${encodeURIComponent(receiverId)}`,
+                    { headers }
+                )
+            );
+            return response.careGivers ?? [];
+        } catch (err) {
+            console.error('Error fetching care givers for receiver:', err);
+            return [];
         }
     }
 
