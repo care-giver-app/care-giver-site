@@ -31,11 +31,9 @@ export class ReceiverSelectionComponent implements OnInit {
   userId = '';
 
   showAddReceiverModal = false;
-  showAddCareGiverModal = false;
   isLoading = true;
 
   newReceiver = { firstName: '', lastName: '' };
-  additionalCareGiverEmail = '';
 
   ngOnInit() {
     this.fetchReceivers();
@@ -83,7 +81,6 @@ export class ReceiverSelectionComponent implements OnInit {
     return '';
   }
 
-
   submitAddReceiver() {
     this.userService.addCareReceiver(this.userId, this.newReceiver.firstName, this.newReceiver.lastName).then((resp) => {
       if (resp) {
@@ -96,17 +93,4 @@ export class ReceiverSelectionComponent implements OnInit {
       this.newReceiver = { firstName: '', lastName: '' };
     })
   }
-
-  submitAddCareGiver() {
-    this.userService.addCareGiver(this.userId, this.selectedReceiverId, this.additionalCareGiverEmail).then((resp) => {
-      if (resp) {
-        this.alertService.show('Care Giver added successfully', AlertType.Success);
-      } else {
-        this.alertService.show('Error adding care giver. Please try again later.', AlertType.Failure);
-      }
-      this.showAddCareGiverModal = false;
-      this.additionalCareGiverEmail = '';
-    })
-  }
 }
-
