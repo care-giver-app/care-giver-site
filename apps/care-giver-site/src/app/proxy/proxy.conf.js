@@ -12,7 +12,7 @@ if (process.env.ENV === 'prod') {
 
 const proxyConfig = [
   {
-    context: ['/receiver/', '/user/', '/event/', '/events/configs', '/feedback'],
+    context: ['/receiver/', '/user/', '/event/', '/events/', '/feedback'],
     target: caretosherUrl,
     secure: false,
     changeOrigin: true,
