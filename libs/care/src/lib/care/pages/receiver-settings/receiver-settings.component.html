@@ -1,0 +1,22 @@
+@if (!hasReceiver) {
+  <div class="no-receiver-message">
+    <p>Please select a receiver to view their settings.</p>
+  </div>
+} @else if (showSpinner) {
+  <div class="spinner-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+} @else {
+  <div class="receiver-settings">
+    @if (receiver) {
+      <care-receiver-info [receiver]="receiver"></care-receiver-info>
+    }
+    <care-care-giver-list
+      [careGivers]="careGivers"
+      [isPrimary]="isPrimary"
+      (addCareGiver)="onAddCareGiver($event)">
+    </care-care-giver-list>
+  </div>
+}
+
+<care-alert></care-alert>
