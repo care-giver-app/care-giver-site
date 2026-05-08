@@ -20,6 +20,11 @@ export const appRoutes: Routes = [
                     import('@care-giver-site/care').then((m) => m.StatsComponent),
             },
             {
+                path: 'receiver-settings',
+                loadComponent: () =>
+                    import('@care-giver-site/care').then((m) => m.ReceiverSettingsComponent),
+            },
+            {
                 path: 'submit-feedback',
                 loadComponent: () =>
                     import('@care-giver-site/care').then((m) => m.FeedbackComponent),

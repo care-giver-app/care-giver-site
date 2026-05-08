@@ -1,0 +1,18 @@
+.section-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.section-divider {
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-sm) 0;
+}
+
+.receiver-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}

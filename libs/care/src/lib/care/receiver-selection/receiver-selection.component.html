@@ -7,10 +7,7 @@
       <button
         class="receiver-initials"
         matMiniFab
-        [matMenuTriggerFor]="currentReceiverMenu"
-        aria-label="Receiver options"
-        (click)="$event.stopPropagation()"
-        (touchend)="$event.stopPropagation()"
+        aria-label="Receiver initials"
       >
         {{ getInitials() }}
       </button>
@@ -24,12 +21,6 @@
   }
 </div>
 
-<mat-menu #currentReceiverMenu="matMenu">
-  <button mat-menu-item (click)="showAddCareGiverModal = true">
-    Add Additional Care Giver
-  </button>
-</mat-menu>
-
 <mat-menu #changeReceiverMenu="matMenu">
   @for (r of receivers; track r.receiverId) {
     <button mat-menu-item (click)="selectReceiver(r.receiverId)">
@@ -41,7 +32,6 @@
   </button>
 </mat-menu>
 
-<!-- Add Receiver modal — unchanged -->
 <care-modal
   [show]="showAddReceiverModal"
   header="Add Care Receiver"
@@ -62,25 +52,5 @@
   <div modal-footer>
     <button matButton="filled" class="modal-button" (click)="submitAddReceiver()">Add</button>
     <button matButton="filled" class="btn-secondary modal-button" (click)="showAddReceiverModal = false">Cancel</button>
-  </div>
-</care-modal>
-
-<!-- Add Care Giver modal — unchanged -->
-<care-modal
-  [show]="showAddCareGiverModal"
-  header="Add Additional Care Giver"
-  (close)="showAddCareGiverModal = false"
->
-  <div modal-body>
-    <form (ngSubmit)="submitAddCareGiver()" #addCareGiverForm="ngForm">
-      <mat-form-field>
-        <mat-label>Email</mat-label>
-        <input matInput [(ngModel)]="additionalCareGiverEmail" name="careGiverEmail" required />
-      </mat-form-field>
-    </form>
-  </div>
-  <div modal-footer>
-    <button matButton="filled" class="modal-button" (click)="submitAddCareGiver()">Add</button>
-    <button matButton="filled" class="btn-secondary modal-button" (click)="showAddCareGiverModal = false">Cancel</button>
   </div>
 </care-modal>

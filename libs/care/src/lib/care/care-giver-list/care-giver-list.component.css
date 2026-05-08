@@ -1,0 +1,53 @@
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.section-divider {
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-sm) 0;
+}
+
+.caregiver-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.caregiver-row:last-child {
+  border-bottom: none;
+}
+
+.caregiver-name {
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+}
+
+.badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.05em;
+}
+
+.badge-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.badge-additional {
+  background-color: var(--color-bg-disabled);
+  color: var(--color-text-secondary);
+}

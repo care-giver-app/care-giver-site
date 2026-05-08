@@ -15,3 +15,10 @@ export interface Relationship {
 export interface Relationships {
     relationships: Relationship[];
 }
+
+export interface CareGiver {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    isPrimary: boolean;
+}
