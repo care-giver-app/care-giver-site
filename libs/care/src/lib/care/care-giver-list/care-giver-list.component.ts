@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +9,7 @@ import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'care-care-giver-list',
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, ModalComponent],
+  imports: [FormsModule, MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, ModalComponent],
   templateUrl: './care-giver-list.component.html',
   styleUrl: './care-giver-list.component.css',
 })
@@ -23,7 +22,8 @@ export class CareGiverListComponent {
   newCareGiverEmail = '';
 
   submitAddCareGiver() {
-    this.addCareGiver.emit(this.newCareGiverEmail);
+    if (!this.newCareGiverEmail.trim()) return;
+    this.addCareGiver.emit(this.newCareGiverEmail.trim());
     this.showAddModal = false;
     this.newCareGiverEmail = '';
   }

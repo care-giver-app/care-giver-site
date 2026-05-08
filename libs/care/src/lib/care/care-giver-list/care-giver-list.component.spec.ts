@@ -47,7 +47,7 @@ describe('CareGiverListComponent', () => {
     expect(button).toBeFalsy();
   });
 
-  it('emits addCareGiver with email when modal is submitted', () => {
+  it('emits addCareGiver with trimmed email when modal is submitted', () => {
     fixture.componentInstance.careGivers = mockCareGivers;
     fixture.componentInstance.isPrimary = true;
     fixture.detectChanges();
@@ -55,11 +55,25 @@ describe('CareGiverListComponent', () => {
     const emitted: string[] = [];
     fixture.componentInstance.addCareGiver.subscribe((email: string) => emitted.push(email));
 
-    fixture.componentInstance.newCareGiverEmail = 'new@example.com';
+    fixture.componentInstance.newCareGiverEmail = '  new@example.com  ';
     fixture.componentInstance.submitAddCareGiver();
 
     expect(emitted).toEqual(['new@example.com']);
     expect(fixture.componentInstance.newCareGiverEmail).toBe('');
+    expect(fixture.componentInstance.showAddModal).toBe(false);
+  });
+
+  it('does not emit when email is empty', () => {
+    fixture.componentInstance.isPrimary = true;
+    fixture.detectChanges();
+
+    const emitted: string[] = [];
+    fixture.componentInstance.addCareGiver.subscribe((email: string) => emitted.push(email));
+
+    fixture.componentInstance.newCareGiverEmail = '   ';
+    fixture.componentInstance.submitAddCareGiver();
+
+    expect(emitted).toEqual([]);
     expect(fixture.componentInstance.showAddModal).toBe(false);
   });
 });
