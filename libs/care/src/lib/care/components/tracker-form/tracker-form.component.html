@@ -1,0 +1,145 @@
+<form (ngSubmit)="onSubmit()" #trackerForm="ngForm" novalidate>
+
+  <!-- Name -->
+  <mat-form-field class="full-width">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="name" name="trackerName" required [disabled]="isSaving" />
+    @if (nameConflict) {
+      <mat-error>A tracker with this name already exists.</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Kind: selector in create, read-only in edit -->
+  @if (mode === 'create') {
+    <mat-form-field class="full-width">
+      <mat-label>Kind</mat-label>
+      <mat-select [(ngModel)]="kind" name="trackerKind" required [disabled]="isSaving">
+        @for (k of kindOptions; track k) {
+          <mat-option [value]="k">{{ k }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  } @else {
+    <div class="read-only-field">
+      <span class="read-only-label">Kind</span>
+      <span class="read-only-value">{{ kind }}</span>
+    </div>
+  }
+
+  <!-- Icon -->
+  <mat-form-field class="full-width">
+    <mat-label>Icon</mat-label>
+    <input matInput [(ngModel)]="icon" name="trackerIcon" [disabled]="isSaving" placeholder="e.g. 💊 or icon name" />
+  </mat-form-field>
+
+  <!-- Colour picker -->
+  <div class="colour-section">
+    <span class="field-label">Colour</span>
+    <div class="colour-swatches">
+      @for (color of colorPresets; track color.primary) {
+        <button
+          type="button"
+          class="colour-swatch"
+          [style.background-color]="color.primary"
+          [class.selected]="isColorSelected(color)"
+          (click)="selectColor(color)"
+          [disabled]="isSaving"
+          [attr.aria-label]="'Select colour ' + color.primary">
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Active toggle (edit only) -->
+  @if (mode === 'edit') {
+    <div class="active-toggle">
+      <mat-checkbox [(ngModel)]="isActive" name="trackerIsActive" [disabled]="isSaving">
+        Active
+      </mat-checkbox>
+    </div>
+  }
+
+  <!-- Fields builder -->
+  <div class="fields-section">
+    <div class="subsection-header">
+      <span class="field-label">Fields</span>
+      <button type="button" matButton="outlined" (click)="addField()" [disabled]="isSaving">
+        <mat-icon>add</mat-icon> Add Field
+      </button>
+    </div>
+    @for (field of fields; track $index; let i = $index) {
+      <div class="field-row">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="fields[i].name" [name]="'fieldName' + i" [disabled]="isSaving" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Label</mat-label>
+          <input matInput [(ngModel)]="fields[i].label" [name]="'fieldLabel' + i" [disabled]="isSaving" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="fields[i].inputType" [name]="'fieldType' + i" [disabled]="isSaving">
+            <mat-option value="text">text</mat-option>
+            <mat-option value="number">number</mat-option>
+            <mat-option value="boolean">boolean</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-checkbox [(ngModel)]="fields[i].required" [name]="'fieldRequired' + i" [disabled]="isSaving">
+          Required
+        </mat-checkbox>
+        <button type="button" matIconButton (click)="removeField(i)" [disabled]="isSaving" aria-label="Remove field">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Alert thresholds (measurement only) -->
+  @if (showAlertThresholds) {
+    <div class="thresholds-section">
+      <div class="subsection-header">
+        <span class="field-label">Alert Thresholds</span>
+        <button type="button" matButton="outlined" (click)="addThreshold()" [disabled]="isSaving">
+          <mat-icon>add</mat-icon> Add Threshold
+        </button>
+      </div>
+      @for (threshold of alertThresholds; track $index; let i = $index) {
+        <div class="threshold-row">
+          <mat-form-field>
+            <mat-label>Field</mat-label>
+            <input matInput [(ngModel)]="alertThresholds[i].fieldName" [name]="'thresholdField' + i" [disabled]="isSaving" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Comparator</mat-label>
+            <mat-select [(ngModel)]="alertThresholds[i].comparator" [name]="'thresholdComparator' + i" [disabled]="isSaving">
+              <mat-option value=">=">>=</mat-option>
+              <mat-option value="<="><=</mat-option>
+              <mat-option value=">">></mat-option>
+              <mat-option value="<"><</mat-option>
+              <mat-option value="==">=</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Value</mat-label>
+            <input matInput type="number" [(ngModel)]="alertThresholds[i].value" [name]="'thresholdValue' + i" [disabled]="isSaving" />
+          </mat-form-field>
+          <button type="button" matIconButton (click)="removeThreshold(i)" [disabled]="isSaving" aria-label="Remove threshold">
+            <mat-icon>remove_circle_outline</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  @if (validationError) {
+    <p class="validation-error">{{ validationError }}</p>
+  }
+
+  <div class="form-actions">
+    <button type="submit" matButton="filled" class="btn-primary" [disabled]="isSaving">
+      {{ isSaving ? 'Saving…' : 'Save' }}
+    </button>
+    <button type="button" matButton="outlined" (click)="cancel.emit()" [disabled]="isSaving">Cancel</button>
+  </div>
+</form>

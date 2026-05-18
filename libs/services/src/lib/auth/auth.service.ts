@@ -32,6 +32,12 @@ export class AuthService {
         });
     }
 
+    getIdToken(): Promise<string> {
+        return fetchAuthSession().then((session) => {
+            return `Bearer ${session.tokens?.idToken?.toString() || ''}`;
+        });
+    }
+
     async signInUser(email: string, password: string): Promise<SignInAction> {
         let output: SignInOutput | undefined = undefined
         let errorMessage: string | undefined = undefined

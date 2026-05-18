@@ -7,6 +7,7 @@ import { Receiver, CareGiver, AlertType } from '@care-giver-site/models';
 import { ReceiverInfoComponent } from '../../receiver-info/receiver-info.component';
 import { CareGiverListComponent } from '../../care-giver-list/care-giver-list.component';
 import { AlertComponent } from '../../alert/alert.component';
+import { TrackerManagementComponent } from '../../components/tracker-management/tracker-management.component';
 
 @Component({
   selector: 'lib-receiver-settings',
@@ -15,6 +16,7 @@ import { AlertComponent } from '../../alert/alert.component';
     ReceiverInfoComponent,
     CareGiverListComponent,
     AlertComponent,
+    TrackerManagementComponent,
   ],
   templateUrl: './receiver-settings.component.html',
   styleUrl: './receiver-settings.component.css',

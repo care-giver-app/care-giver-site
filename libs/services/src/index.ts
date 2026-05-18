@@ -5,3 +5,4 @@ export * from './lib/user/user.service';
 export * from './lib/alert/alert.service';
 export * from './lib/view/view.service';
 export * from './lib/feedback/feedback.service';
+export * from './lib/tracker/tracker.service';

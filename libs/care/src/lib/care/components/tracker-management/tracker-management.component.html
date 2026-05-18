@@ -1,0 +1,94 @@
+<div class="card">
+  <div class="list-header">
+    <div class="section-label">Trackers</div>
+    <button matButton="filled" class="btn-primary" (click)="openCreateModal()">
+      <mat-icon>add</mat-icon> Add Tracker
+    </button>
+  </div>
+  <div class="section-divider"></div>
+
+  @if (isLoading) {
+    <div class="spinner-container">
+      <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+    </div>
+  } @else if (loadError) {
+    <div class="error-state">
+      <p>Failed to load trackers.</p>
+      <button matButton="outlined" (click)="loadTrackers()">Retry</button>
+    </div>
+  } @else if (trackers.length === 0) {
+    <div class="empty-state">
+      <p>No trackers yet.</p>
+      <button matButton="filled" class="btn-primary" (click)="openCreateModal()">Add Tracker</button>
+    </div>
+  } @else {
+    @for (tracker of trackers; track tracker.trackerId) {
+      <care-tracker-list-item
+        [tracker]="tracker"
+        (editRequested)="onEditRequested($event)"
+        (deleteRequested)="onDeleteRequested($event)">
+      </care-tracker-list-item>
+    }
+  }
+
+  @if (deletingTracker) {
+    <div class="delete-confirm">
+      <p>Permanently delete <strong>{{ deletingTracker.name }}</strong>? This action cannot be undone.</p>
+      <div class="delete-confirm-actions">
+        <button matButton="filled" class="btn-danger" (click)="confirmDelete()">Delete</button>
+        <button matButton="outlined" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Create modal: step 1 — template picker -->
+<care-modal
+  [show]="showCreateModal && createStep === 1"
+  header="Choose a Template"
+  (close)="onCreateCancel()">
+  <div modal-body>
+    <care-tracker-template-picker
+      [templates]="templates"
+      [isLoading]="templatesLoading"
+      [loadError]="templatesError"
+      (templateSelected)="onTemplateSelected($event)">
+    </care-tracker-template-picker>
+  </div>
+</care-modal>
+
+<!-- Create modal: step 2 — form -->
+<care-modal
+  [show]="showCreateModal && createStep === 2"
+  header="New Tracker"
+  (close)="onCreateCancel()">
+  <div modal-body>
+    <care-tracker-form
+      mode="create"
+      [initialValue]="createInitialValue"
+      [nameConflict]="nameConflict"
+      [isSaving]="isSaving"
+      (save)="onCreateSave($event)"
+      (cancel)="onCreateCancel()">
+    </care-tracker-form>
+  </div>
+</care-modal>
+
+<!-- Edit modal -->
+<care-modal
+  [show]="showEditModal"
+  header="Edit Tracker"
+  (close)="onEditCancel()">
+  <div modal-body>
+    @if (editingTracker) {
+      <care-tracker-form
+        mode="edit"
+        [initialValue]="editingTracker"
+        [nameConflict]="nameConflict"
+        [isSaving]="isSaving"
+        (save)="onEditSave($event)"
+        (cancel)="onEditCancel()">
+      </care-tracker-form>
+    }
+  </div>
+</care-modal>

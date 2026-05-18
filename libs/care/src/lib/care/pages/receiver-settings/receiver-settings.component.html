@@ -16,6 +16,12 @@
       [isPrimary]="isPrimary"
       (addCareGiver)="onAddCareGiver($event)">
     </care-care-giver-list>
+    @if (receiver) {
+      <care-tracker-management
+        [receiverId]="receiver.receiverId"
+        [isPrimary]="isPrimary">
+      </care-tracker-management>
+    }
   </div>
 }
 
