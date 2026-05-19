@@ -47,12 +47,12 @@ const TRACKER_KINDS: TrackerKind[] = ['event', 'event_with_note', 'measurement',
 })
 export class TrackerFormComponent implements OnChanges {
   @Input({ required: true }) mode!: 'create' | 'edit';
+  @Input() formId = 'trackerForm';
   @Input() initialValue: Partial<Tracker> | null = null;
   @Input() nameConflict = false;
   @Input() isSaving = false;
 
   @Output() save = new EventEmitter<CreateTrackerRequest | UpdateTrackerRequest>();
-  @Output() cancel = new EventEmitter<void>();
 
   colorPresets = TRACKER_COLOR_PRESETS;
   kindOptions = TRACKER_KINDS;

@@ -65,12 +65,18 @@
   <div modal-body>
     <care-tracker-form
       mode="create"
+      formId="trackerCreateForm"
       [initialValue]="createInitialValue"
       [nameConflict]="nameConflict"
       [isSaving]="isSaving"
-      (save)="onCreateSave($event)"
-      (cancel)="onCreateCancel()">
+      (save)="onCreateSave($event)">
     </care-tracker-form>
+  </div>
+  <div modal-footer>
+    <button type="submit" form="trackerCreateForm" matButton="filled" class="btn-primary" [disabled]="isSaving">
+      {{ isSaving ? 'Saving…' : 'Save' }}
+    </button>
+    <button type="button" matButton="outlined" (click)="onCreateCancel()" [disabled]="isSaving">Cancel</button>
   </div>
 </care-modal>
 
@@ -83,12 +89,18 @@
     @if (editingTracker) {
       <care-tracker-form
         mode="edit"
+        formId="trackerEditForm"
         [initialValue]="editingTracker"
         [nameConflict]="nameConflict"
         [isSaving]="isSaving"
-        (save)="onEditSave($event)"
-        (cancel)="onEditCancel()">
+        (save)="onEditSave($event)">
       </care-tracker-form>
     }
+  </div>
+  <div modal-footer>
+    <button type="submit" form="trackerEditForm" matButton="filled" class="btn-primary" [disabled]="isSaving">
+      {{ isSaving ? 'Saving…' : 'Save' }}
+    </button>
+    <button type="button" matButton="outlined" (click)="onEditCancel()" [disabled]="isSaving">Cancel</button>
   </div>
 </care-modal>

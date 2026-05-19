@@ -1,4 +1,4 @@
-<form (ngSubmit)="onSubmit()" #trackerForm="ngForm" novalidate>
+<form [attr.id]="formId" (ngSubmit)="onSubmit()" #trackerForm="ngForm" novalidate>
 
   <!-- Name -->
   <mat-form-field class="full-width">
@@ -136,10 +136,4 @@
     <p class="validation-error">{{ validationError }}</p>
   }
 
-  <div class="form-actions">
-    <button type="submit" matButton="filled" class="btn-primary" [disabled]="isSaving">
-      {{ isSaving ? 'Saving…' : 'Save' }}
-    </button>
-    <button type="button" matButton="outlined" (click)="cancel.emit()" [disabled]="isSaving">Cancel</button>
-  </div>
 </form>
