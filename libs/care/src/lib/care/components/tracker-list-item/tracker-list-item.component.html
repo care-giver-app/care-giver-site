@@ -1,0 +1,22 @@
+<div class="tracker-item" [class.inactive]="!tracker.isActive">
+  <div class="tracker-icon" [style.background-color]="tracker.color.secondary" [style.color]="tracker.color.primary">
+    {{ tracker.icon }}
+  </div>
+  <div class="tracker-info">
+    <span class="tracker-name">{{ tracker.name }}</span>
+    <span class="tracker-kind">{{ tracker.kind }}</span>
+  </div>
+  <div class="tracker-badges">
+    @if (!tracker.isActive) {
+      <span class="badge badge-inactive">Inactive</span>
+    }
+  </div>
+  <div class="tracker-actions">
+    <button matIconButton (click)="editRequested.emit(tracker)" aria-label="Edit tracker">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button matIconButton (click)="deleteRequested.emit(tracker)" aria-label="Delete tracker">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>

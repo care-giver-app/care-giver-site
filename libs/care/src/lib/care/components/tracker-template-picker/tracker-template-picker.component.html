@@ -1,0 +1,27 @@
+@if (isLoading) {
+  <div class="loading-state">
+    <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+  </div>
+} @else if (loadError) {
+  <div class="error-state">
+    <p>Failed to load templates.</p>
+    <button matButton="outlined" (click)="templateSelected.emit(null)">Continue Without Template</button>
+  </div>
+} @else {
+  <div class="template-grid">
+    @for (template of templates; track template.name) {
+      <button class="template-tile" (click)="selectTemplate(template)">
+        <div class="template-icon"
+          [style.background-color]="template.color.secondary"
+          [style.color]="template.color.primary">
+          {{ template.icon }}
+        </div>
+        <span class="template-name">{{ template.name }}</span>
+      </button>
+    }
+    <button class="template-tile template-scratch" (click)="selectFromScratch()">
+      <div class="template-icon template-icon-scratch">+</div>
+      <span class="template-name">From Scratch</span>
+    </button>
+  </div>
+}

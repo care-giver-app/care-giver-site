@@ -1,0 +1,74 @@
+.tracker-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tracker-item:last-child {
+  border-bottom: none;
+}
+
+.tracker-item.inactive {
+  opacity: 0.5;
+}
+
+.tracker-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-md);
+  flex-shrink: 0;
+}
+
+.tracker-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tracker-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tracker-kind {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+.tracker-badges {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.05em;
+}
+
+.badge-inactive {
+  background-color: var(--color-bg-disabled);
+  color: var(--color-text-secondary);
+}
+
+.tracker-actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
